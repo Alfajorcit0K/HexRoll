@@ -1,0 +1,247 @@
+{
+  "fuente": "Localizaciones de la instalación de Dead by Daylight del autor, consultadas en modo de lectura.",
+  "fecha": "2026-11-24",
+  "steamAppId": 381210,
+  "steamBuildId": "26718868",
+  "versionArchivo": "DBD_Waffle_REL_Steam_Shipping_8_3993125",
+  "recursos": [
+    "DeadByDaylight/Content/Localization/DeadByDaylight/en/DeadByDaylight.locres",
+    "DeadByDaylight/Content/Localization/DeadByDaylight/es/DeadByDaylight.locres",
+    "DeadByDaylight/Content/Localization/DeadByDaylight/es-MX/DeadByDaylight.locres"
+  ],
+  "lector": {
+    "nombre": "DBDTables",
+    "version": "1.0.8",
+    "url": "https://github.com/ThatPreston/DBDTables"
+  },
+  "perks": [
+    {
+      "id": "cenobite1",
+      "personaje": "The Cenobite",
+      "originales": {
+        "en": "Deadlock",
+        "es": "Candado",
+        "es-MX": "Callejón sin Salida"
+      },
+      "generales": {
+        "en": "No Holds Barred",
+        "es": "Todo vale",
+        "es-MX": "Sin restricciones"
+      },
+      "namespace": "",
+      "claves": [
+        "384063C6430C5D39085790A3101E01DB",
+        "EA4EE62D4087ABEE3B35DC96C737748A"
+      ]
+    },
+    {
+      "id": "cenobite2",
+      "personaje": "The Cenobite",
+      "originales": {
+        "en": "Hex: Plaything",
+        "es": "Maleficio: Juguete",
+        "es-MX": "Maleficio: Tiempo de Jugar"
+      },
+      "generales": {
+        "en": "Hex: Fortune’s Fool",
+        "es": "Maleficio: Títere de la fortuna",
+        "es-MX": "Maleficio: El bufón de la fortuna"
+      },
+      "namespace": "",
+      "claves": [
+        "26B87A054285FDD9917BA4912EC0642E",
+        "7CBB4C6A489105AFF3B3A9973ECC3E79"
+      ]
+    },
+    {
+      "id": "cenobite3",
+      "personaje": "The Cenobite",
+      "originales": {
+        "en": "Scourge Hook: Gift of Pain",
+        "es": "Gancho Flagelante: Obsequio Doloroso",
+        "es-MX": "Gancho Torturador: Obsequio de Dolor"
+      },
+      "generales": {
+        "en": "Scourge Hook: Weeping Wounds",
+        "es": "Gancho flagelante: Heridas supurantes",
+        "es-MX": "Gancho torturador: Heridas supurantes"
+      },
+      "namespace": "",
+      "claves": [
+        "BBAACB6246D9F897674CF9BBD08BFB82",
+        "EF0196B6418C1E2C92BE76BB6AE6098D"
+      ]
+    },
+    {
+      "id": "shape1",
+      "personaje": "The Shape",
+      "originales": {
+        "en": "Dying Light",
+        "es": "Luz que Agoniza",
+        "es-MX": "Luz que Agoniza"
+      },
+      "generales": {
+        "en": "Cull the Weak",
+        "es": "Sacrifica a los débiles",
+        "es-MX": "Sacrifica a los débiles"
+      },
+      "namespace": "",
+      "claves": [
+        "A7C5E7064104713AE84A508A6D317D52",
+        "276FD56F41DDD402E579788F77FC9507"
+      ]
+    },
+    {
+      "id": "shape2",
+      "personaje": "The Shape",
+      "originales": {
+        "en": "Play With Your Food",
+        "es": "Jugar con la Comida",
+        "es-MX": "Jugar con la Comida"
+      },
+      "generales": {
+        "en": "See How They Run",
+        "es": "Mira cómo corren",
+        "es-MX": "Mira cómo corren"
+      },
+      "namespace": "",
+      "claves": [
+        "4FA95EFB42EBD7E6813C14A8906414C3",
+        "2565D2524C5EE75316436091EDE46E08"
+      ]
+    },
+    {
+      "id": "shape3",
+      "personaje": "The Shape",
+      "originales": {
+        "en": "Save the Best for Last",
+        "es": "Lo Mejor Para el Final",
+        "es-MX": "Lo Mejor Para el Final"
+      },
+      "generales": {
+        "en": "Keep Them Waiting",
+        "es": "Que esperen",
+        "es-MX": "Que sigan esperando"
+      },
+      "namespace": "",
+      "claves": [
+        "22A33AEB4888A2D90FF815AA96E6FEE7",
+        "FCDDDEDB47B803F817E6F99815AF6D8A"
+      ]
+    },
+    {
+      "id": "laurie1",
+      "personaje": "Laurie Strode",
+      "originales": {
+        "en": "Decisive Strike",
+        "es": "Golpe Decisivo",
+        "es-MX": "Golpe Decisivo"
+      },
+      "generales": {
+        "en": "Will to Live",
+        "es": "Ganas de vivir",
+        "es-MX": "Ganas de vivir"
+      },
+      "namespace": "",
+      "claves": [
+        "87C653654F9E24B52D9EA4B9D90BF1EC",
+        "59083104454884693DE0AEB4516D15E6"
+      ]
+    },
+    {
+      "id": "laurie2",
+      "personaje": "Laurie Strode",
+      "originales": {
+        "en": "Object of Obsession",
+        "es": "Objeto de Obsesión",
+        "es-MX": "Objeto de Obsesión"
+      },
+      "generales": {
+        "en": "Bound by Obsession",
+        "es": "Unidos por la obsesión",
+        "es-MX": "Unión obsesiva"
+      },
+      "namespace": "",
+      "claves": [
+        "8C11222E4F14C96404AE0F8725E3E983",
+        "2F3594A346B991CE62573E9C61CE532E"
+      ]
+    },
+    {
+      "id": "laurie3",
+      "personaje": "Laurie Strode",
+      "originales": {
+        "en": "Sole Survivor",
+        "es": "Solo Quedo Yo",
+        "es-MX": "Solo Quedo Yo"
+      },
+      "generales": {
+        "en": "Down to the Last",
+        "es": "Hasta el último",
+        "es-MX": "Hasta terminar con el último"
+      },
+      "namespace": "",
+      "claves": [
+        "7987D30F4399266063C050B103BD20C3",
+        "D784EE814487BBEFBC4854B195015955"
+      ]
+    },
+    {
+      "id": "goodguy1",
+      "personaje": "The Good Guy",
+      "originales": {
+        "en": "Batteries Included",
+        "es": "Pilas Incluídas",
+        "es-MX": "Baterías Incluídas"
+      },
+      "generales": {
+        "en": "Gaining Steam",
+        "es": "Cogiendo impulso",
+        "es-MX": "Recuperando potencia"
+      },
+      "namespace": "",
+      "claves": [
+        "2C97C657432609042E0675AE3CB1BF19",
+        "6BC7FB1E49E37CBBFF422EA684157C92"
+      ]
+    },
+    {
+      "id": "goodguy2",
+      "personaje": "The Good Guy",
+      "originales": {
+        "en": "Friends 'Til the End",
+        "es": "Amigos Para Siempre",
+        "es-MX": "Amigos Hasta el Fin"
+      },
+      "generales": {
+        "en": "One-Track Mind",
+        "es": "Obsesión única",
+        "es-MX": "Idea fija"
+      },
+      "namespace": "",
+      "claves": [
+        "B14A1C934C6953F2A1452085287F884C",
+        "DFE4148247FDBEDBE3803BAA9B3C426C"
+      ]
+    },
+    {
+      "id": "goodguy3",
+      "personaje": "The Good Guy",
+      "originales": {
+        "en": "Hex: Two Can Play",
+        "es": "Maleficio: Dos Pueden Jugar",
+        "es-MX": "Maleficio: Yo También Puedo Jugar"
+      },
+      "generales": {
+        "en": "Hex: Eye for an Eye",
+        "es": "Maleficio: Ojo por ojo",
+        "es-MX": "Maleficio: Ojo por ojo"
+      },
+      "namespace": "",
+      "claves": [
+        "12EA3FEF4BF29A66BBFE489FEEF4107A",
+        "67ECE25549F8F88C83F40E9059B3A65D"
+      ]
+    }
+  ]
+}

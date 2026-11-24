@@ -8,7 +8,7 @@ El repositorio de desarrollo [Perks-Killer-Roulette](https://github.com/Alfajorc
 
 La aplicación instalable para Windows incluye todo lo necesario. El cliente **no necesita instalar Node.js**.
 
-1. Ejecuta `Ruleta-Perks-Killers-1.3.0-Setup.exe` y completa el asistente.
+1. Ejecuta `Ruleta-Perks-Killers-1.3.1-Setup.exe` y completa el asistente.
 2. Abre **Ruleta Perks y Killers** desde el escritorio o el menú Inicio.
 3. En **Mi contenido**, activa personajes completos o elige perks y killers individuales. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
 4. En la tarjeta **Ruleta de perks**, pulsa **Copiar ruta de perks**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
@@ -27,6 +27,8 @@ El switch **Modo oscuro / Modo claro**, arriba a la derecha, cambia el tema del 
 **Mi contenido** agrupa las perks por personaje; al activar un asesino también se activa su entrada en la ruleta de killers. **Perfiles y respaldos** guarda selecciones y apariencia con un nombre, permite cargar perfiles y restaurar respaldos anteriores. Al cargar un perfil o restaurar se respalda primero el estado actual.
 
 La versión 1.3.0 agrega a **The Terrifier** (Terrifier en ambos españoles), sus tres perks y las tres perks de **Sienna Shaw**. Al actualizar, las entradas nuevas quedan desactivadas; búscalas en **Mi contenido** para incorporarlas a tus sorteos.
+
+La versión 1.3.1 añade los nombres generales de las 12 perks de The Cenobite, The Shape, Laurie Strode y The Good Guy, entre paréntesis después de sus nombres originales. Las traducciones de Español ES y Español MX se verificaron por separado en los archivos del juego; las referencias de localización están en [el registro del catálogo](docs/localizaciones-perks.json). Cada perk conserva su identificador, imagen y selección, sin duplicarse en los sorteos.
 
 Si antes usabas `ruleta-perks.html` en modo killer, cambia esa fuente a la nueva ruta de killers. Para recuperar la ruleta combinada anterior está disponible `ruleta-completa.html`; los nombres antiguos con sufijo `-libre` también se siguen generando para compatibilidad.
 
