@@ -6,21 +6,34 @@ El repositorio de desarrollo [Perks-Killer-Roulette](https://github.com/Alfajorc
 
 ## Usar la ruleta
 
-Extrae el paquete completo en una carpeta permanente. Instala Node.js desde [su sitio oficial](https://nodejs.org), abre `ABRIR_EDITOR_PERKS.bat` y elige tus perks y killers. No hace falta ejecutar `npm install`.
+La aplicación instalable para Windows incluye todo lo necesario. El cliente **no necesita instalar Node.js**.
 
-En OBS, agrega una fuente de navegador, marca **Archivo local** y selecciona `ruleta-perks.html`. Comienza con un tamaño de 1000 × 600 y ajusta a tu escena. Usa **Interactuar** para cambiar idioma, color y modo. Oculta y muestra la fuente para sortear; también puedes pulsar Espacio al interactuar.
+1. Ejecuta `Ruleta-Perks-Killers-1.1.0-Setup.exe` y completa el asistente.
+2. Abre **Ruleta Perks y Killers** desde el escritorio o el menú Inicio.
+3. Elige tus perks y killers. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
+4. Pulsa **Copiar ruta para OBS**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
+5. Comienza con 1000 × 600 y ajusta a tu escena. Usa **Interactuar** para cambiar idioma, color y modo. Oculta y muestra la fuente para sortear.
 
-El widget sigue funcionando cuando cierras el editor. Consulta `MANUAL_CLIENTE.txt` para más ayuda. Esta primera versión todavía requiere Node.js para el editor.
+El widget y las imágenes se guardan en `%APPDATA%\RuletaPerksKillers\widget`, fuera de la carpeta del programa. OBS sigue funcionando cuando cierras la aplicación. Los ajustes se conservan al instalar una versión nueva y al desinstalar; puedes abrir su carpeta desde la aplicación para respaldarlos.
+
+El instalador actual es para Windows x64 y no está firmado digitalmente. La integración directa con OBS y las actualizaciones automáticas siguen pendientes; la aplicación guía la configuración de la fuente local.
+
+El paquete ZIP anterior se mantiene como alternativa de desarrollo y sigue necesitando Node.js para su editor.
 
 ## Desarrollo y distribución
 
-- `npm start`: abrir el servidor del editor en `http://127.0.0.1:4002/editor`.
+- `npm ci`: instalar las herramientas de desarrollo (Node.js 24 recomendado).
+- `npm start`: abrir la aplicación de escritorio en desarrollo.
+- `npm run start:server`: abrir únicamente el servidor en `http://127.0.0.1:4002/editor`.
 - `npm test`: ejecutar las pruebas de datos y distribución.
+- `npm run dist:windows`: generar el instalador x64 en `release/`.
 - `npm run build`: generar carpeta y ZIP de la versión normal en `dist/`.
 - `npm run build:lite`: generar la variante de menor carga visual.
 - `node generar_distribucion.js --sin-zip`: generar solamente la carpeta.
 
 Los paquetes locales incluyen el catálogo y las imágenes existentes para probar el funcionamiento. Su publicación requiere resolver los permisos indicados en los avisos de terceros.
+
+GitHub Actions ejecuta las pruebas y genera el instalador como artefacto privado después de cada push. No publica releases automáticamente. Para obtenerlo, abre la ejecución de **Pruebas** y descarga el artefacto **instalador-windows**.
 
 La distribución usa una lista explícita de archivos. Los paquetes son comunes para todos; `clientes/` y `Claude outputs/` están excluidos del paquete y de Git. `generar_cliente.js` se conserva como acceso compatible al nuevo generador; sus argumentos antiguos ya no se usan.
 

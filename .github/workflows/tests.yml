@@ -3,6 +3,7 @@ name: Pruebas
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,3 +16,28 @@ jobs:
         uses: actions/checkout@v4
       - name: Ejecutar pruebas
         run: npm test
+  installer:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: windows-latest
+    steps:
+      - name: Obtener codigo
+        uses: actions/checkout@v4
+      - name: Preparar Node para construir
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Instalar herramientas de construccion
+        run: npm ci --no-audit --no-fund
+      - name: Generar instalador
+        run: npm run dist:windows
+      - name: Probar aplicacion empaquetada sin Node en PATH
+        run: npm run test:desktop
+      - name: Guardar instalador privado
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-windows
+          path: release/*-Setup.exe
+          if-no-files-found: error
+          retention-days: 14

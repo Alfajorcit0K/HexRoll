@@ -1,6 +1,8 @@
 /clientes/
 /Claude outputs/
 /dist/
+/release/
+/.build-cache/
 /.codex/
 /node_modules/
 /backups/

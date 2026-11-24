@@ -5,22 +5,26 @@ La ruleta es gratuita. Todas las funciones estan disponibles para todos.
 
 PRIMER USO
 ----------
-1. Extrae el ZIP completo a una carpeta permanente.
-2. Para el editor, instala Node.js desde https://nodejs.org si no lo tienes.
-3. Haz doble clic en ABRIR_EDITOR_PERKS.bat.
-4. El editor se abre en tu navegador. Manten el programa abierto al configurar.
+1. Ejecuta el instalador Ruleta-Perks-Killers-1.1.0-Setup.exe.
+2. Sigue el asistente y abre Ruleta Perks y Killers desde su acceso directo.
+3. No necesitas instalar Node.js ni abrir una consola.
+4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
+   su data.json. Se conservaran sus selecciones y se creara un respaldo.
 5. Busca perks o killers y marca lo que quieres incluir en los sorteos.
    Los cambios se guardan automaticamente.
 
 CONFIGURACION DE OBS
 -------------------
 1. En Fuentes, pulsa + y elige Navegador.
-2. Marca "Archivo local" y selecciona ruleta-perks.html de esta carpeta.
+2. En la aplicacion pulsa "Copiar ruta para OBS". Marca "Archivo local" en
+   las propiedades de la fuente de OBS y pega esa ruta.
 3. Como punto de partida, usa 1000 de ancho y 600 de alto; ajusta a tu escena.
 4. Para usar los controles, haz clic derecho en la fuente y elige Interactuar.
 5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
    interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
 
+Puedes usar "Probar ruleta" para verla antes de configurarla en OBS.
+Marca "Usar version ligera en OBS" si prefieres menos efectos visuales.
 El editor puede cerrarse al terminar: el widget funciona desde el archivo local.
 La ruleta no necesita conexion para autorizar su uso. Las fuentes tipograficas
 externas pueden necesitar internet; se usa una fuente de respaldo sin conexion.
@@ -38,22 +42,31 @@ los espacios vacios. Para sortear un killer, activa al menos uno.
 ACTUALIZACIONES Y RESPALDOS
 -------------------------
 Esta version todavia no descarga actualizaciones automaticamente desde GitHub.
-Antes de reemplazar una instalacion, cierra el editor y guarda una copia de
-data.json: contiene tus selecciones. No lo reemplaces por el de otra descarga.
+Para actualizar, cierra la aplicacion e instala la nueva version. Los ajustes
+estan separados del programa, en %APPDATA%\RuletaPerksKillers\widget.
+La aplicacion combina el catalogo nuevo con tus selecciones y crea un respaldo.
+El contenido nuevo queda desactivado para que puedas elegir si quieres usarlo.
+Puedes abrir la carpeta de tus datos con "Abrir carpeta" y respaldarla.
 Conserva tambien las imagenes propias si agregaste contenido personalizado.
 Despues de cambiar el widget, refresca la fuente en OBS.
 El importador del servidor conserva selecciones y crea un respaldo en backups/.
 Las nuevas entradas importadas quedan desactivadas para que puedas elegirlas.
-La interfaz de importacion y el actualizador se incorporaran despues.
+"Importar ajustes anteriores" permite migrar tus selecciones desde otra carpeta.
 
 PROBLEMAS COMUNES
 ----------------
-No abre el editor: comprueba que Node.js este instalado y revisa la ventana del
-programa. Si el puerto 4002 ya esta ocupado, cierra la otra instancia.
+No abre la aplicacion: comprueba que usas Windows de 64 bits e intenta reinstalar.
+Los datos se conservan separados del programa. Un mensaje de arranque indica
+su ubicacion si hay que recuperar un respaldo.
 No gira: revisa que haya suficientes entradas activas del tipo seleccionado.
 No refleja cambios: actualiza la cache de la fuente de navegador en OBS.
 Un data.json dañado detiene el arranque para evitar sobrescribir tus ajustes.
 Guarda el archivo dañado y recupera una copia desde tu respaldo.
+
+PAQUETE ZIP ANTERIOR
+-------------------
+Si recibiste el paquete antiguo en lugar del instalador, su editor todavia usa
+Node.js y ABRIR_EDITOR_PERKS.bat. El instalador nuevo ya incluye su propio entorno.
 
 CODIGO Y RECURSOS DEL JUEGO
 -------------------------

@@ -41,12 +41,46 @@
   .encabezados{display:grid;grid-template-columns:36px 1fr 1fr 1fr 20px;gap:10px;padding:0 12px;margin-bottom:6px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
   .fila input[type=checkbox]{width:20px;height:20px;cursor:pointer;}
   .contador{font-size:13px;color:var(--dim);margin-bottom:10px;}
+  [hidden]{display:none!important;}
+  .inicio{background:linear-gradient(135deg,#302039,#242329);border-color:#74438b;}
+  .inicio h2{font-size:22px;margin-bottom:8px;}
+  .inicio p{color:#cbc5d1;line-height:1.5;margin:0 0 16px;}
+  .pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+  .paso{background:#1a1a1f99;border:1px solid #4d3b57;border-radius:10px;padding:14px;font-size:15px;line-height:1.4;}
+  .paso strong{display:block;color:#e6b8ff;margin-bottom:5px;}
+  .ruta{font-family:monospace!important;font-size:12px!important;}
+  .nota{color:var(--dim);font-size:14px;}
+  .estado-app{min-height:22px;margin-top:12px;color:#d9b4ef;}
+  a{color:#e4b1ff;}
+  @media(max-width:850px){body{padding:18px;}.pasos{grid-template-columns:1fr;}.fila .nombre{grid-template-columns:1fr;gap:2px;}.encabezados{display:none;}}
 </style>
 </head>
 <body>
 
 <h1>Ruleta Perks — Editor</h1>
-<p class="sub">Desde aquí solo puedes activar o desactivar perks, y cargar una lista actualizada cuando te la entreguen.</p>
+<p class="sub">Elige tus perks y killers. Los cambios se guardan automáticamente.</p>
+<section class="panel inicio" id="inicioDesktop" hidden aria-labelledby="tituloInicio">
+  <h2 id="tituloInicio">Tu ruleta, lista para OBS</h2>
+  <p>Configúrala aquí y úsala en tus transmisiones. Al terminar puedes cerrar esta aplicación: la ruleta seguirá disponible en OBS.</p>
+  <div class="pasos">
+    <div class="paso"><strong>1. Elige tu contenido</strong>Activa las perks y killers que quieras incluir en los sorteos.</div>
+    <div class="paso"><strong>2. Añádela a OBS</strong>Crea una fuente de Navegador, marca «Archivo local» y pega la ruta de abajo.</div>
+    <div class="paso"><strong>3. Hazla girar</strong>Oculta y muestra la fuente. Usa «Interactuar» en OBS para cambiar el color, idioma y modo.</div>
+  </div>
+  <label for="rutaWidget">Archivo para tu fuente de OBS</label>
+  <input class="ruta" id="rutaWidget" type="text" readonly aria-label="Ruta del widget para OBS">
+  <div class="toolbar" style="margin-top:12px">
+    <button id="copiarRuta">Copiar ruta para OBS</button>
+    <button class="secondary" id="probarRuleta">Probar ruleta</button>
+    <button class="secondary" id="abrirCarpeta">Abrir carpeta</button>
+  </div>
+  <div class="toolbar">
+    <label><input type="checkbox" id="usarLite"> Usar versión ligera en OBS</label>
+    <button class="secondary" id="importarAnterior">Importar ajustes anteriores</button>
+  </div>
+  <div class="nota">Tamaño inicial en OBS: 1000 × 600. Si cambias tus selecciones, refresca la fuente de navegador en OBS.</div>
+  <div class="estado-app" id="estadoDesktop" role="status" aria-live="polite"></div>
+</section>
 <div class="banner">
   Ruleta Perks es gratuita. Todas las funciones están disponibles para todos.
   <a id="enlaceRepositorio" hidden target="_blank" rel="noopener noreferrer" style="color:inherit;margin-left:12px">Ver el proyecto en GitHub</a>
@@ -224,9 +258,36 @@
       link.hidden = false;
     } catch(error) { console.warn('No se pudo cargar el enlace del proyecto.'); }
   }
-  load().then(loadAsesinos).then(render).catch(()=>{
+  async function cargarListas(){ await load(); await loadAsesinos(); render(); }
+  async function iniciarDesktop(){
+    if(!window.ruletaDesktop) return;
+    const api = window.ruletaDesktop;
+    const status = document.getElementById('estadoDesktop');
+    const info = await api.informacion();
+    document.getElementById('inicioDesktop').hidden = false;
+    document.getElementById('rutaWidget').value = info.ruta;
+    status.textContent = 'Versión ' + info.version + ' · Lista para configurar';
+    const lite = document.getElementById('usarLite');
+    lite.addEventListener('change',()=>{ document.getElementById('rutaWidget').value = lite.checked ? info.rutaLite : info.ruta; });
+    async function ejecutar(id, action, message){
+      const button = document.getElementById(id);
+      button.disabled = true;
+      try { const result = await action(); if(message) status.textContent = message; return result; }
+      catch(error) { status.textContent = 'No se pudo completar la acción. ' + error.message; }
+      finally { button.disabled = false; }
+    }
+    document.getElementById('copiarRuta').addEventListener('click',()=>ejecutar('copiarRuta',()=>api.copiarRuta(lite.checked),'Ruta copiada. Pégala en el campo «Archivo local» de OBS.'));
+    document.getElementById('probarRuleta').addEventListener('click',()=>ejecutar('probarRuleta',()=>api.vistaPrevia(),''));
+    document.getElementById('abrirCarpeta').addEventListener('click',()=>ejecutar('abrirCarpeta',()=>api.abrirCarpeta(),''));
+    document.getElementById('importarAnterior').addEventListener('click',()=>ejecutar('importarAnterior',async()=>{
+      const result = await api.importar();
+      if(!result.cancelado){ await cargarListas(); status.textContent = 'Ajustes importados. Guardamos un respaldo de la configuración anterior. Refresca la fuente en OBS.'; }
+    },''));
+  }
+  cargarListas().catch(()=>{
     document.getElementById('contador').textContent = 'No se pudo cargar el editor. Comprueba que el programa siga abierto y recarga la pagina.';
   });
+  iniciarDesktop().catch(error=>{ document.getElementById('contador').textContent = 'No se pudo preparar la aplicación: ' + error.message; });
   loadProyecto();
 </script>
 </body>

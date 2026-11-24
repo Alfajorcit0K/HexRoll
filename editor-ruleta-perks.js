@@ -14,13 +14,15 @@ const path = require('path');
 const url = require('url');
 const { validarDatos, fusionarDatos, construirWidget, guardarDatos } = require('./ruleta-core');
 
-const PORT = Number(process.env.RULETA_PORT || 4002);
-const ROOT = __dirname;
+function iniciarServidor({ root = __dirname, source = __dirname, port = Number(process.env.RULETA_PORT || 4002) } = {}) {
+const PORT = port;
+const ROOT = root;
+const SOURCE = source;
 const DATA_FILE = path.join(ROOT, 'data.json');
 const IMG_DIR = path.join(ROOT, 'imagenes');
-const TEMPLATE_FILE = path.join(ROOT, 'widget-template.html');
+const TEMPLATE_FILE = path.join(SOURCE, 'widget-template.html');
 const WIDGET_FILE = path.join(ROOT, 'ruleta-perks.html');
-const ASESINOS_DEFAULT_FILE = path.join(ROOT, 'asesinos-default.json');
+const ASESINOS_DEFAULT_FILE = path.join(SOURCE, 'asesinos-default.json');
 
 if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
 if (!fs.existsSync(DATA_FILE)) {
@@ -76,7 +78,7 @@ migrarCarpetasImagenesSiHaceFalta();
 // nombre en ingles (no depende del id, asi funciona aunque hayas renombrado
 // los tuyos). No toca nada mas de la perk.
 function migrarPersonajesSiHaceFalta() {
-  const archivoMapa = path.join(ROOT, 'personajes-habilidades.json');
+  const archivoMapa = path.join(SOURCE, 'personajes-habilidades.json');
   if (!fs.existsSync(archivoMapa)) return;
   const mapa = JSON.parse(fs.readFileSync(archivoMapa, 'utf8'));
   const data = readData();
@@ -104,7 +106,7 @@ function construirWidgetDesde(templateFile, destinoFile) {
 // Mantiene los nombres anteriores para fuentes de OBS ya configuradas.
 const VARIANTES_EXTRA = [
   { template: TEMPLATE_FILE, destino: path.join(ROOT, 'ruleta-perks-libre.html') },
-  { template: path.join(ROOT, 'widget-template-lite.html'), destino: path.join(ROOT, 'ruleta-perks-lite-libre.html') },
+  { template: path.join(SOURCE, 'widget-template-lite.html'), destino: path.join(ROOT, 'ruleta-perks-lite-libre.html') },
 ];
 
 function regenerateWidget() {
@@ -162,12 +164,15 @@ function safeFilename(name) {
 }
 
 const server = http.createServer(async (req, res) => {
-  const parsed = url.parse(req.url, true);
-  const pathname = decodeURIComponent(parsed.pathname);
-
   try {
+    const parsed = url.parse(req.url, true);
+    const pathname = decodeURIComponent(parsed.pathname);
+    if (req.headers.origin && !['GET', 'HEAD'].includes(req.method) &&
+        req.headers.origin !== 'http://127.0.0.1:' + server.address().port) {
+      return sendJSON(res, 403, { error: 'Esta accion debe realizarse desde el editor.' });
+    }
     if (pathname === '/api/proyecto' && req.method === 'GET') {
-      const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'config-publica.json'), 'utf8'));
+      const config = JSON.parse(fs.readFileSync(path.join(SOURCE, 'config-publica.json'), 'utf8'));
       return sendJSON(res, 200, config);
     }
     if (pathname === '/api/habilidades' && req.method === 'GET') {
@@ -285,7 +290,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/' || pathname === '/editor') {
-      return serveStatic(res, path.join(ROOT, 'editor-habilidades.html'));
+      return serveStatic(res, path.join(SOURCE, 'editor-habilidades.html'));
     }
 
     if (pathname === '/ruleta-perks.html') {
@@ -327,3 +332,9 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log('   (' + TWITCH_URL + '  -  ' + DISCORD_URL + ')');
   console.log('=================================================');
 });
+server.regenerateWidget = regenerateWidget;
+return server;
+}
+
+module.exports = { iniciarServidor };
+if (require.main === module) iniciarServidor();

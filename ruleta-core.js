@@ -13,6 +13,9 @@ function validarDatos(data) {
         throw new Error('Identificador ausente, invalido o repetido en ' + key + '.');
       }
       ids.add(item.id);
+      if (item.imagen != null && (typeof item.imagen !== 'string' || /[\\/<>:"'\u0000-\u001f]/.test(item.imagen))) {
+        throw new Error('La imagen debe ser un nombre de archivo local valido.');
+      }
       if (item.activo !== undefined && typeof item.activo !== 'boolean') {
         throw new Error('El campo activo debe ser verdadero o falso.');
       }
