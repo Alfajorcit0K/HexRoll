@@ -8,11 +8,21 @@ El repositorio de desarrollo [Perks-Killer-Roulette](https://github.com/Alfajorc
 
 La aplicación instalable para Windows incluye todo lo necesario. El cliente **no necesita instalar Node.js**.
 
-1. Ejecuta `Ruleta-Perks-Killers-1.1.0-Setup.exe` y completa el asistente.
+1. Ejecuta `Ruleta-Perks-Killers-1.2.0-Setup.exe` y completa el asistente.
 2. Abre **Ruleta Perks y Killers** desde el escritorio o el menú Inicio.
 3. Elige tus perks y killers. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
-4. Pulsa **Copiar ruta para OBS**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
-5. Comienza con 1000 × 600 y ajusta a tu escena. Usa **Interactuar** para cambiar idioma, color y modo. Oculta y muestra la fuente para sortear.
+4. En la tarjeta **Ruleta de perks**, pulsa **Copiar ruta de perks**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
+5. Repite con **Copiar ruta de killers** para crear una segunda fuente independiente. Puedes usar una o ambas en tu escena.
+6. Usa **Interactuar** para personalizar cada widget. Oculta y muestra su fuente para sortear.
+
+| Widget | Archivo | Tamaño inicial en OBS |
+| --- | --- | --- |
+| Cuatro perks | `ruleta-perks.html` | 1120 × 520 |
+| Un killer | `ruleta-killers.html` | 460 × 520 |
+
+Cada tarjeta tiene su propia vista previa y opción ligera (`ruleta-perks-lite.html` o `ruleta-killers-lite.html`). El color y el idioma se guardan por separado para perks y killers. Los widgets independientes no tienen selector PERKS/KILLER; el de perks conserva SURV/KILLER para elegir el tipo de habilidades.
+
+Si antes usabas `ruleta-perks.html` en modo killer, cambia esa fuente a la nueva ruta de killers. Para recuperar la ruleta combinada anterior está disponible `ruleta-completa.html`; los nombres antiguos con sufijo `-libre` también se siguen generando para compatibilidad.
 
 El widget y las imágenes se guardan en `%APPDATA%\RuletaPerksKillers\widget`, fuera de la carpeta del programa. OBS sigue funcionando cuando cierras la aplicación. Los ajustes se conservan al instalar una versión nueva y al desinstalar; puedes abrir su carpeta desde la aplicación para respaldarlos.
 

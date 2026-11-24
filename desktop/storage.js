@@ -47,7 +47,11 @@ function prepararInstalacion(source, root, version = 'desarrollo') {
   }
   copiarImagenes(source, root, hashPrevio !== hash);
   fs.writeFileSync(estadoFile, JSON.stringify({ hash }, null, 2));
-  return { root, widget: path.join(root, 'ruleta-perks.html'), widgetLite: path.join(root, 'ruleta-perks-lite-libre.html') };
+  return {
+    root,
+    widget: path.join(root, 'ruleta-perks.html'), widgetLite: path.join(root, 'ruleta-perks-lite.html'),
+    killer: path.join(root, 'ruleta-killers.html'), killerLite: path.join(root, 'ruleta-killers-lite.html')
+  };
 }
 
 function importarInstalacion(source, root, archivo) {

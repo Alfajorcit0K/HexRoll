@@ -90,6 +90,10 @@ test('servidor instalado escribe solo en la carpeta del usuario y sirve el edito
   assert.equal(JSON.parse(fs.readFileSync(path.join(source, 'data.json'), 'utf8')).habilidades[0].activo, true);
   assert.ok(fs.existsSync(path.join(root, 'ruleta-perks.html')));
   assert.ok(fs.existsSync(path.join(root, 'ruleta-perks-lite-libre.html')));
+  for (const archivo of ['ruleta-perks-lite.html', 'ruleta-killers.html', 'ruleta-killers-lite.html']) {
+    assert.ok(fs.existsSync(path.join(root, archivo)));
+    assert.equal((await fetch(base + '/' + archivo)).status, 200);
+  }
   await new Promise(resolve => server.close(resolve));
   // El widget y las imagenes siguen disponibles cuando se cierra la aplicacion.
   assert.ok(fs.readFileSync(path.join(root, 'ruleta-perks.html'), 'utf8').includes('One'));

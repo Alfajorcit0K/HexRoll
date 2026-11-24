@@ -44,16 +44,40 @@ function fusionarDatos(actual, catalogo) {
   return resultado;
 }
 
-function construirWidget(template, data) {
+function construirWidget(template, data, { modo = null } = {}) {
   validarDatos(data);
+  if (![null, 'perks', 'asesino'].includes(modo)) throw new Error('Modo de widget invalido.');
   let output = template;
-  for (const [marker, value] of [['HABILIDADES', data.habilidades], ['ASESINOS', data.asesinos || []]]) {
+  if (modo && !output.includes('/*START_MODO_FIJO*/')) throw new Error('La plantilla no admite widgets independientes.');
+  for (const [marker, value] of [['HABILIDADES', modo === 'asesino' ? [] : data.habilidades], ['ASESINOS', modo === 'perks' ? [] : data.asesinos || []]]) {
     const regex = new RegExp('/\\*START_' + marker + '\\*/.*?/\\*END_' + marker + '\\*/', 's');
     if (!regex.test(output)) throw new Error('Falta el marcador ' + marker + ' en la plantilla.');
     const json = JSON.stringify(value).replace(/</g, '\\u003c');
     output = output.replace(regex, () => '/*START_' + marker + '*/' + json + '/*END_' + marker + '*/');
   }
+  output = output.replace(/\/\*START_MODO_FIJO\*\/.*?\/\*END_MODO_FIJO\*\//s,
+    () => '/*START_MODO_FIJO*/' + JSON.stringify(modo) + '/*END_MODO_FIJO*/');
+  if (modo) {
+    output = output.replace(/\s*<div class="idioma-toggle" id="modoToggle" title="Modo de ruleta">[\s\S]*?<\/div>/, '');
+    output = output.replace('<title>Ruleta Perks</title>', '<title>Ruleta de ' + (modo === 'perks' ? 'perks' : 'killers') + '</title>');
+  }
   return output;
+}
+
+const VARIANTES_WIDGET = Object.freeze([
+  { archivo: 'ruleta-perks.html', modo: 'perks' },
+  { archivo: 'ruleta-killers.html', modo: 'asesino' },
+  { archivo: 'ruleta-perks-lite.html', modo: 'perks', lite: true },
+  { archivo: 'ruleta-killers-lite.html', modo: 'asesino', lite: true },
+  // Compatibilidad para fuentes anteriores y para recuperar la ruleta combinada.
+  { archivo: 'ruleta-perks-libre.html', modo: null },
+  { archivo: 'ruleta-perks-lite-libre.html', modo: null, lite: true },
+  { archivo: 'ruleta-completa.html', modo: null }
+]);
+
+function construirWidgets({ normal, lite = normal }, data) {
+  return Object.fromEntries(VARIANTES_WIDGET.map(variante => [variante.archivo,
+    construirWidget(variante.lite ? lite : normal, data, { modo: variante.modo })]));
 }
 
 function guardarDatos(file, data) {
@@ -62,4 +86,4 @@ function guardarDatos(file, data) {
   fs.renameSync(file + '.tmp', file);
 }
 
-module.exports = { validarDatos, fusionarDatos, construirWidget, guardarDatos };
+module.exports = { validarDatos, fusionarDatos, construirWidget, construirWidgets, VARIANTES_WIDGET, guardarDatos };

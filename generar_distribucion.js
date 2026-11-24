@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
-const { validarDatos, construirWidget } = require('./ruleta-core');
+const { validarDatos, construirWidgets } = require('./ruleta-core');
 
 function generar({ lite = false, zip = true } = {}) {
   const root = __dirname;
@@ -26,7 +26,11 @@ function generar({ lite = false, zip = true } = {}) {
   const catalogo = validarDatos(JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8')));
   fs.writeFileSync(path.join(destino, 'widget-template.html'), template);
   fs.writeFileSync(path.join(destino, 'data.json'), JSON.stringify(catalogo, null, 2));
-  fs.writeFileSync(path.join(destino, 'ruleta-perks.html'), construirWidget(template, catalogo));
+  const templateLite = fs.readFileSync(path.join(root, 'widget-template-lite.html'), 'utf8');
+  fs.writeFileSync(path.join(destino, 'widget-template-lite.html'), templateLite);
+  for (const [archivo, html] of Object.entries(construirWidgets({ normal: template, lite: templateLite }, catalogo))) {
+    fs.writeFileSync(path.join(destino, archivo), html);
+  }
   fs.writeFileSync(path.join(destino, 'version.json'), JSON.stringify({ version, lite }, null, 2));
 
   // Incluye solo las imagenes referenciadas por el catalogo.

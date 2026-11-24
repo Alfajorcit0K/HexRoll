@@ -7,6 +7,9 @@
 /node_modules/
 /backups/
 /ruleta-perks*.html
+/ruleta-killers*.html
+/ruleta-completa.html
+/instalado/
 /widget-template-libre.html
 /widget-template-lite-libre.html
 *.tmp

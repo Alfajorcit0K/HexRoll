@@ -371,7 +371,7 @@
       <button class="tipo-btn" data-tipo="survivor">SURV</button>
       <button class="tipo-btn" data-tipo="killer">KILLER</button>
     </div>
-    <div class="idioma-toggle" title="Modo de ruleta">
+    <div class="idioma-toggle" id="modoToggle" title="Modo de ruleta">
       <button class="modo-btn" data-modo="perks">PERKS</button>
       <button class="modo-btn" data-modo="asesino">KILLER</button>
     </div>
@@ -439,6 +439,18 @@
     const HABILIDADES = /*START_HABILIDADES*/[]/*END_HABILIDADES*/;
     const ASESINOS = /*START_ASESINOS*/[]/*END_ASESINOS*/;
 
+    const MODO_FIJO = /*START_MODO_FIJO*/null/*END_MODO_FIJO*/;
+    const STORAGE_PREFIX = MODO_FIJO === 'asesino' ? 'ruleta_killers_' : MODO_FIJO === 'perks' ? 'ruleta_perks_' : 'perks_';
+    function preferencia(clave, valorInicial) {
+      const actual = localStorage.getItem(STORAGE_PREFIX + clave);
+      if (actual != null) return actual;
+      const anterior = localStorage.getItem('perks_' + clave);
+      const valor = anterior ?? valorInicial;
+      localStorage.setItem(STORAGE_PREFIX + clave, valor);
+      return valor;
+    }
+    if (MODO_FIJO === 'asesino') document.querySelector('.modo-stage').style.width = '420px';
+
     const CARD_H = 170;
     const CARD_H_ASESINO = 302;
     const REEL_COUNT = 4;
@@ -475,11 +487,11 @@
     function applyColor(hue) {
       const color = 'hsl(' + Math.round(hue) + ',90%,55%)';
       document.documentElement.style.setProperty('--neon', color);
-      localStorage.setItem('perks_color', color);
+      localStorage.setItem(STORAGE_PREFIX + 'color', color);
       colorToggle.style.background = color;
       hueThumb.style.left = (hue / 360 * 100) + '%';
     }
-    applyColor(hueFromColorValue(localStorage.getItem('perks_color')));
+    applyColor(hueFromColorValue(preferencia('color', 'hsl(280,90%,55%)')));
 
     colorToggle.addEventListener('click', () => { colorPopup.hidden = !colorPopup.hidden; });
     let arrastrandoHue = false;
@@ -495,7 +507,7 @@
     hueSlider.addEventListener('touchmove', e => { applyColor(hueDesdeEvento(e.touches[0])); });
 
 
-    let currentIdioma = localStorage.getItem('perks_idioma') || 'es';
+    let currentIdioma = preferencia('idioma', 'es');
     const lastTargets = [null, null, null, null];
 
     function displayName(item, idioma) {
@@ -523,7 +535,7 @@
     idiomaBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         currentIdioma = btn.dataset.idioma;
-        localStorage.setItem('perks_idioma', currentIdioma);
+        localStorage.setItem(STORAGE_PREFIX + 'idioma', currentIdioma);
         marcarIdiomaActivo();
         columns.forEach((c, i) => updateNamePlate(i));
         mostrarNombreEnPlaca(namePlateAsesino, lastAsesino, currentIdioma);
@@ -531,7 +543,7 @@
     });
     marcarIdiomaActivo();
 
-    let currentTipo = localStorage.getItem('perks_tipo') || 'survivor';
+    let currentTipo = preferencia('tipo', 'survivor');
     const tipoBtns = Array.from(document.querySelectorAll('.tipo-btn'));
     function marcarTipoActivo() {
       tipoBtns.forEach(b => b.classList.toggle('activo', b.dataset.tipo === currentTipo));
@@ -539,14 +551,14 @@
     tipoBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         currentTipo = btn.dataset.tipo;
-        localStorage.setItem('perks_tipo', currentTipo);
+        localStorage.setItem(STORAGE_PREFIX + 'tipo', currentTipo);
         marcarTipoActivo();
         renderIdle();
       });
     });
     marcarTipoActivo();
 
-    let currentModo = localStorage.getItem('perks_modo') || 'perks';
+    let currentModo = MODO_FIJO || preferencia('modo', 'perks');
     const modoBtns = Array.from(document.querySelectorAll('.modo-btn'));
     function aplicarModo() {
       modoBtns.forEach(b => b.classList.toggle('activo', b.dataset.modo === currentModo));
@@ -559,7 +571,7 @@
     modoBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         currentModo = btn.dataset.modo;
-        localStorage.setItem('perks_modo', currentModo);
+        localStorage.setItem(STORAGE_PREFIX + 'modo', currentModo);
         aplicarModo();
         girarModoActual();
       });

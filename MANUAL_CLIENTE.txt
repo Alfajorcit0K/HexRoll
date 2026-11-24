@@ -5,7 +5,7 @@ La ruleta es gratuita. Todas las funciones estan disponibles para todos.
 
 PRIMER USO
 ----------
-1. Ejecuta el instalador Ruleta-Perks-Killers-1.1.0-Setup.exe.
+1. Ejecuta el instalador Ruleta-Perks-Killers-1.2.0-Setup.exe.
 2. Sigue el asistente y abre Ruleta Perks y Killers desde su acceso directo.
 3. No necesitas instalar Node.js ni abrir una consola.
 4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
@@ -16,28 +16,34 @@ PRIMER USO
 CONFIGURACION DE OBS
 -------------------
 1. En Fuentes, pulsa + y elige Navegador.
-2. En la aplicacion pulsa "Copiar ruta para OBS". Marca "Archivo local" en
-   las propiedades de la fuente de OBS y pega esa ruta.
-3. Como punto de partida, usa 1000 de ancho y 600 de alto; ajusta a tu escena.
+2. En la tarjeta de perks pulsa "Copiar ruta de perks". Marca "Archivo local"
+   en las propiedades de la fuente de OBS y pega esa ruta.
+3. Para killers, crea otra fuente y usa "Copiar ruta de killers" de su tarjeta.
+   Tamanos recomendados: perks 1120 x 520; killers 460 x 520.
 4. Para usar los controles, haz clic derecho en la fuente y elige Interactuar.
 5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
    interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
 
-Puedes usar "Probar ruleta" para verla antes de configurarla en OBS.
-Marca "Usar version ligera en OBS" si prefieres menos efectos visuales.
+Cada tarjeta tiene un boton para probar su widget antes de configurarlo en OBS.
+Marca "Usar version ligera" en la tarjeta que prefieras aligerar.
 El editor puede cerrarse al terminar: el widget funciona desde el archivo local.
 La ruleta no necesita conexion para autorizar su uso. Las fuentes tipograficas
 externas pueden necesitar internet; se usa una fuente de respaldo sin conexion.
 
 CONTROLES
 ---------
-- Color: cambia el borde de la ruleta.
-- ES-MX / ES-ES / EN: selecciona el idioma.
-- SURV / KILLER: selecciona el tipo de perks.
-- PERKS / ASESINO: sortea cuatro perks o un killer.
-Color, idioma y modo se conservan en el navegador de OBS.
+- Widget de perks: sortea cuatro perks. SURV / KILLER selecciona su tipo.
+- Widget de killers: sortea un killer. Puede usarse a la vez que el de perks.
+- Color y ES-MX / ES-ES / EN: personaliza cada widget de forma independiente.
+Los colores e idiomas de perks y killers se conservan por separado en OBS.
 Para sortear perks, activa al menos cuatro entradas del tipo elegido, contando
 los espacios vacios. Para sortear un killer, activa al menos uno.
+
+SI USABAS LA RULETA COMBINADA
+---------------------------
+ruleta-perks.html ahora es exclusivamente de perks. Si la usabas para killers,
+cambia esa fuente de OBS a la ruta que muestra la nueva tarjeta de killers.
+La version combinada anterior sigue disponible como ruleta-completa.html.
 
 ACTUALIZACIONES Y RESPALDOS
 -------------------------

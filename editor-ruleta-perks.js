@@ -12,7 +12,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const { validarDatos, fusionarDatos, construirWidget, guardarDatos } = require('./ruleta-core');
+const { validarDatos, fusionarDatos, construirWidgets, VARIANTES_WIDGET, guardarDatos } = require('./ruleta-core');
 
 function iniciarServidor({ root = __dirname, source = __dirname, port = Number(process.env.RULETA_PORT || 4002) } = {}) {
 const PORT = port;
@@ -21,7 +21,6 @@ const SOURCE = source;
 const DATA_FILE = path.join(ROOT, 'data.json');
 const IMG_DIR = path.join(ROOT, 'imagenes');
 const TEMPLATE_FILE = path.join(SOURCE, 'widget-template.html');
-const WIDGET_FILE = path.join(ROOT, 'ruleta-perks.html');
 const ASESINOS_DEFAULT_FILE = path.join(SOURCE, 'asesinos-default.json');
 
 if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
@@ -97,24 +96,12 @@ function migrarPersonajesSiHaceFalta() {
 }
 migrarPersonajesSiHaceFalta();
 
-function construirWidgetDesde(templateFile, destinoFile) {
-  const data = readData();
-  const output = construirWidget(fs.readFileSync(templateFile, 'utf8'), data);
-  fs.writeFileSync(destinoFile, output);
-}
-
-// Mantiene los nombres anteriores para fuentes de OBS ya configuradas.
-const VARIANTES_EXTRA = [
-  { template: TEMPLATE_FILE, destino: path.join(ROOT, 'ruleta-perks-libre.html') },
-  { template: path.join(SOURCE, 'widget-template-lite.html'), destino: path.join(ROOT, 'ruleta-perks-lite-libre.html') },
-];
-
 function regenerateWidget() {
-  construirWidgetDesde(TEMPLATE_FILE, WIDGET_FILE);
-  for (const variante of VARIANTES_EXTRA) {
-    if (fs.existsSync(variante.template)) {
-      construirWidgetDesde(variante.template, variante.destino);
-    }
+  const normal = fs.readFileSync(TEMPLATE_FILE, 'utf8');
+  const liteFile = path.join(SOURCE, 'widget-template-lite.html');
+  const lite = fs.existsSync(liteFile) ? fs.readFileSync(liteFile, 'utf8') : normal;
+  for (const [archivo, html] of Object.entries(construirWidgets({ normal, lite }, readData()))) {
+    fs.writeFileSync(path.join(ROOT, archivo), html);
   }
 }
 
@@ -293,8 +280,8 @@ const server = http.createServer(async (req, res) => {
       return serveStatic(res, path.join(SOURCE, 'editor-habilidades.html'));
     }
 
-    if (pathname === '/ruleta-perks.html') {
-      return serveStatic(res, WIDGET_FILE);
+    if (VARIANTES_WIDGET.some(variante => pathname === '/' + variante.archivo)) {
+      return serveStatic(res, path.join(ROOT, pathname.slice(1)));
     }
     if (pathname.startsWith('/imagenes/')) {
       const rel = pathname.replace('/imagenes/', '');

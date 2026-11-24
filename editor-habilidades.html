@@ -51,8 +51,15 @@
   .ruta{font-family:monospace!important;font-size:12px!important;}
   .nota{color:var(--dim);font-size:14px;}
   .estado-app{min-height:22px;margin-top:12px;color:#d9b4ef;}
+  .widgets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
+  .widget-config{min-width:0;background:#1a1a1f99;border:1px solid #654275;border-radius:12px;padding:18px;}
+  .widget-config h3{margin:0 0 8px;font-family:'Chakra Petch',sans-serif;font-size:20px;}
+  .widget-config p{font-size:15px;}
+  .widget-config .toolbar{margin:12px 0;}
+  .widget-config button{font-size:12px;letter-spacing:0;padding:10px 12px;}
+  .widget-config label{font-size:14px;}
   a{color:#e4b1ff;}
-  @media(max-width:850px){body{padding:18px;}.pasos{grid-template-columns:1fr;}.fila .nombre{grid-template-columns:1fr;gap:2px;}.encabezados{display:none;}}
+  @media(max-width:850px){body{padding:18px;}.pasos,.widgets{grid-template-columns:1fr;}.fila .nombre{grid-template-columns:1fr;gap:2px;}.encabezados{display:none;}}
 </style>
 </head>
 <body>
@@ -60,25 +67,38 @@
 <h1>Ruleta Perks — Editor</h1>
 <p class="sub">Elige tus perks y killers. Los cambios se guardan automáticamente.</p>
 <section class="panel inicio" id="inicioDesktop" hidden aria-labelledby="tituloInicio">
-  <h2 id="tituloInicio">Tu ruleta, lista para OBS</h2>
-  <p>Configúrala aquí y úsala en tus transmisiones. Al terminar puedes cerrar esta aplicación: la ruleta seguirá disponible en OBS.</p>
+  <h2 id="tituloInicio">Dos ruletas, tu propia escena</h2>
+  <p>Agrega las perks y los killers como fuentes independientes en OBS. Cada widget conserva su propio color e idioma. Puedes usar ambos a la vez y cerrar esta aplicación al terminar.</p>
   <div class="pasos">
     <div class="paso"><strong>1. Elige tu contenido</strong>Activa las perks y killers que quieras incluir en los sorteos.</div>
-    <div class="paso"><strong>2. Añádela a OBS</strong>Crea una fuente de Navegador, marca «Archivo local» y pega la ruta de abajo.</div>
-    <div class="paso"><strong>3. Hazla girar</strong>Oculta y muestra la fuente. Usa «Interactuar» en OBS para cambiar el color, idioma y modo.</div>
+    <div class="paso"><strong>2. Agrega cada widget</strong>Crea dos fuentes de Navegador en OBS, marca «Archivo local» y pega la ruta correspondiente.</div>
+    <div class="paso"><strong>3. Hazlos girar</strong>Oculta y muestra cada fuente para sortear de forma independiente. Usa «Interactuar» para personalizarla.</div>
   </div>
-  <label for="rutaWidget">Archivo para tu fuente de OBS</label>
-  <input class="ruta" id="rutaWidget" type="text" readonly aria-label="Ruta del widget para OBS">
-  <div class="toolbar" style="margin-top:12px">
-    <button id="copiarRuta">Copiar ruta para OBS</button>
-    <button class="secondary" id="probarRuleta">Probar ruleta</button>
-    <button class="secondary" id="abrirCarpeta">Abrir carpeta</button>
+  <div class="widgets">
+    <section class="widget-config" aria-labelledby="tituloPerks">
+      <h3 id="tituloPerks">Ruleta de perks</h3>
+      <p>Cuatro perks por sorteo. Elige supervivientes o asesinos desde los controles del widget.</p>
+      <label for="rutaWidgetPerks">Archivo de perks para OBS</label>
+      <input class="ruta" id="rutaWidgetPerks" type="text" readonly>
+      <div class="toolbar"><button id="copiarPerks">Copiar ruta de perks</button><button class="secondary" id="probarPerks">Probar perks</button></div>
+      <label><input type="checkbox" id="litePerks"> Usar versión ligera</label>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoPerks">1120 × 520</strong></p>
+    </section>
+    <section class="widget-config" aria-labelledby="tituloKillers">
+      <h3 id="tituloKillers">Ruleta de killers</h3>
+      <p>Un killer por sorteo. Ubícala donde quieras, con su propio tamaño y apariencia.</p>
+      <label for="rutaWidgetKillers">Archivo de killers para OBS</label>
+      <input class="ruta" id="rutaWidgetKillers" type="text" readonly>
+      <div class="toolbar"><button id="copiarKillers">Copiar ruta de killers</button><button class="secondary" id="probarKillers">Probar killers</button></div>
+      <label><input type="checkbox" id="liteKillers"> Usar versión ligera</label>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoKillers">460 × 520</strong></p>
+    </section>
   </div>
   <div class="toolbar">
-    <label><input type="checkbox" id="usarLite"> Usar versión ligera en OBS</label>
+    <button class="secondary" id="abrirCarpeta">Abrir carpeta de widgets</button>
     <button class="secondary" id="importarAnterior">Importar ajustes anteriores</button>
   </div>
-  <div class="nota">Tamaño inicial en OBS: 1000 × 600. Si cambias tus selecciones, refresca la fuente de navegador en OBS.</div>
+  <div class="nota">Si cambias tus selecciones, refresca las fuentes de navegador en OBS. Si antes usabas la ruleta combinada para killers, copia ahora su ruta independiente.</div>
   <div class="estado-app" id="estadoDesktop" role="status" aria-live="polite"></div>
 </section>
 <div class="banner">
@@ -265,10 +285,7 @@
     const status = document.getElementById('estadoDesktop');
     const info = await api.informacion();
     document.getElementById('inicioDesktop').hidden = false;
-    document.getElementById('rutaWidget').value = info.ruta;
     status.textContent = 'Versión ' + info.version + ' · Lista para configurar';
-    const lite = document.getElementById('usarLite');
-    lite.addEventListener('change',()=>{ document.getElementById('rutaWidget').value = lite.checked ? info.rutaLite : info.ruta; });
     async function ejecutar(id, action, message){
       const button = document.getElementById(id);
       button.disabled = true;
@@ -276,8 +293,17 @@
       catch(error) { status.textContent = 'No se pudo completar la acción. ' + error.message; }
       finally { button.disabled = false; }
     }
-    document.getElementById('copiarRuta').addEventListener('click',()=>ejecutar('copiarRuta',()=>api.copiarRuta(lite.checked),'Ruta copiada. Pégala en el campo «Archivo local» de OBS.'));
-    document.getElementById('probarRuleta').addEventListener('click',()=>ejecutar('probarRuleta',()=>api.vistaPrevia(),''));
+    for(const [tipo,sufijo] of [['perks','Perks'],['killers','Killers']]){
+      const widget = info.widgets[tipo];
+      const lite = document.getElementById('lite' + sufijo);
+      const ruta = document.getElementById('rutaWidget' + sufijo);
+      ruta.value = widget.ruta;
+      document.getElementById('tamano' + sufijo).textContent = widget.ancho + ' × ' + widget.alto;
+      lite.addEventListener('change',()=>{ ruta.value = lite.checked ? widget.rutaLite : widget.ruta; });
+      const copiar = 'copiar' + sufijo, probar = 'probar' + sufijo;
+      document.getElementById(copiar).addEventListener('click',()=>ejecutar(copiar,()=>api.copiarRuta(tipo,lite.checked),'Ruta de ' + tipo + ' copiada. Pégala en su fuente de OBS.'));
+      document.getElementById(probar).addEventListener('click',()=>ejecutar(probar,()=>api.vistaPrevia(tipo,lite.checked),''));
+    }
     document.getElementById('abrirCarpeta').addEventListener('click',()=>ejecutar('abrirCarpeta',()=>api.abrirCarpeta(),''));
     document.getElementById('importarAnterior').addEventListener('click',()=>ejecutar('importarAnterior',async()=>{
       const result = await api.importar();

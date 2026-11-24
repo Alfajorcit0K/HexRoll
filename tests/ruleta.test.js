@@ -60,6 +60,9 @@ test('distribucion publica usa carpetas nuevas y excluye archivos historicos', t
     for (const excluded of ['clientes', 'Claude outputs', 'config-cliente.json', 'validador-licencias.gs.txt']) assert.ok(!files.includes(excluded));
     assert.ok(files.includes('LICENSE'));
     assert.ok(files.includes('ruleta-core.js'));
+    assert.ok(files.includes('ruleta-killers.html'));
+    assert.ok(files.includes('ruleta-perks-lite.html'));
+    assert.ok(files.includes('ruleta-killers-lite.html'));
     const widget = fs.readFileSync(path.join(dir, 'ruleta-perks.html'), 'utf8');
     assert.doesNotMatch(widget, /LICENSE_KEY|LICENSE_URL|perks_device_id|script\.google\.com/);
     assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'version.json'), 'utf8')).lite, lite);
