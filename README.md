@@ -8,19 +8,25 @@ El repositorio de desarrollo [Perks-Killer-Roulette](https://github.com/Alfajorc
 
 La aplicación instalable para Windows incluye todo lo necesario. El cliente **no necesita instalar Node.js**.
 
-1. Ejecuta `Ruleta-Perks-Killers-1.2.1-Setup.exe` y completa el asistente.
+1. Ejecuta `Ruleta-Perks-Killers-1.3.0-Setup.exe` y completa el asistente.
 2. Abre **Ruleta Perks y Killers** desde el escritorio o el menú Inicio.
-3. Elige tus perks y killers. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
+3. En **Mi contenido**, activa personajes completos o elige perks y killers individuales. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
 4. En la tarjeta **Ruleta de perks**, pulsa **Copiar ruta de perks**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
 5. Repite con **Copiar ruta de killers** para crear una segunda fuente independiente. Puedes usar una o ambas en tu escena.
-6. Usa **Interactuar** para personalizar cada widget. Oculta y muestra su fuente para sortear.
+6. Personaliza color, idioma, duración y tipo de perks en **Mis widgets** y pulsa **Aplicar apariencia**. Refresca las fuentes en OBS y oculta y muestra cada una para sortear.
 
 | Widget | Archivo | Tamaño inicial en OBS |
 | --- | --- | --- |
-| Cuatro perks | `ruleta-perks.html` | 1120 × 520 |
-| Un killer | `ruleta-killers.html` | 460 × 520 |
+| Cuatro perks | `ruleta-perks.html` | 1120 × 440 |
+| Un killer | `ruleta-killers.html` | 460 × 440 |
 
-Cada tarjeta tiene su propia vista previa y opción ligera (`ruleta-perks-lite.html` o `ruleta-killers-lite.html`). El color y el idioma se guardan por separado para perks y killers. Los widgets independientes no tienen selector PERKS/KILLER; el de perks conserva SURV/KILLER para elegir el tipo de habilidades.
+Cada tarjeta tiene su propia vista previa y opción ligera (`ruleta-perks-lite.html` o `ruleta-killers-lite.html`). Los ajustes se guardan por separado para perks y killers, dentro de tus datos de usuario. Las vistas previas abiertas se refrescan al aplicar cambios. Los controles están ocultos por defecto para mantener limpia la transmisión; si activas **Mostrar controles dentro del widget**, aumenta la altura de su fuente a 520.
+
+El switch **Modo oscuro / Modo claro**, arriba a la derecha, cambia el tema del editor y recuerda tu elección al reiniciar y actualizar. El editor usa una paleta suave y tipografía del sistema. Su tema se guarda en `editor-preferencias.json`, separado de la apariencia de los widgets.
+
+**Mi contenido** agrupa las perks por personaje; al activar un asesino también se activa su entrada en la ruleta de killers. **Perfiles y respaldos** guarda selecciones y apariencia con un nombre, permite cargar perfiles y restaurar respaldos anteriores. Al cargar un perfil o restaurar se respalda primero el estado actual.
+
+La versión 1.3.0 agrega a **The Terrifier** (Terrifier en ambos españoles), sus tres perks y las tres perks de **Sienna Shaw**. Al actualizar, las entradas nuevas quedan desactivadas; búscalas en **Mi contenido** para incorporarlas a tus sorteos.
 
 Si antes usabas `ruleta-perks.html` en modo killer, cambia esa fuente a la nueva ruta de killers. Para recuperar la ruleta combinada anterior está disponible `ruleta-completa.html`; los nombres antiguos con sufijo `-libre` también se siguen generando para compatibilidad.
 
@@ -44,7 +50,7 @@ El paquete ZIP anterior se mantiene como alternativa de desarrollo y sigue neces
 
 Los paquetes locales incluyen el catálogo y las imágenes existentes para probar el funcionamiento. Su publicación requiere resolver los permisos indicados en los avisos de terceros.
 
-GitHub Actions ejecuta las pruebas y genera el instalador como artefacto privado después de cada push. No publica releases automáticamente. Para obtenerlo, abre la ejecución de **Pruebas** y descarga el artefacto **instalador-windows**.
+GitHub Actions ejecuta las pruebas, comprueba instalación, reinstalación y conservación de ajustes en un Windows limpio, y genera el instalador como artefacto privado después de cada push. No publica releases automáticamente. Para obtenerlo, abre la ejecución de **Pruebas** y descarga el artefacto **instalador-windows**.
 
 El instalador comprueba el nombre exacto del ejecutable de la aplicación. Si está abierto, pide cerrarlo y permite reintentar; no busca procesos por carpeta ni cierra programas automáticamente. Esta comprobación evita los falsos avisos de cierre de la versión 1.2.0.
 
@@ -62,7 +68,7 @@ El campo `aportes` queda reservado y vacío. No se muestra ningún enlace de pag
 
 ## Conservar ajustes
 
-`data.json` contiene las selecciones de la instalación. Guarda una copia antes de actualizar manualmente y conserva las imágenes personalizadas. No reemplaces este archivo por el de una descarga nueva.
+`data.json` contiene las selecciones y la apariencia de la instalación. `perfiles.json` contiene los perfiles guardados y `backups/` conserva los respaldos de selección y apariencia. Puedes recuperarlos desde **Perfiles y respaldos**; para respaldar también perfiles e imágenes propias, copia la carpeta de usuario completa. Guarda una copia antes de actualizar manualmente y conserva las imágenes personalizadas. No reemplaces este archivo por el de una descarga nueva.
 
 La importación de catálogos del servidor conserva las selecciones por ID, mantiene los elementos propios y crea un respaldo en `backups/`. Las entradas nuevas quedan desactivadas. Un archivo de datos dañado detiene el arranque en lugar de reemplazarse por uno vacío.
 

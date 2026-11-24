@@ -1,6 +1,8 @@
 'use strict';
 const { app, BrowserWindow, Menu, dialog, shell, clipboard, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const { configuracionActual } = require('../app-state');
 const { once } = require('events');
 const { prepararInstalacion, importarInstalacion } = require('./storage');
 const { iniciarServidor } = require('../editor-ruleta-perks');
@@ -40,7 +42,7 @@ function widgetElegido(tipo, lite = false) {
   return {
     ruta: killer ? (lite ? instalacion.killerLite : instalacion.killer) : (lite ? instalacion.widgetLite : instalacion.widget),
     ancho: killer ? 460 : 1120,
-    alto: 520
+    alto: configuracionActual(JSON.parse(fs.readFileSync(path.join(instalacion.root, 'data.json'), 'utf8')))[tipo].mostrarControles ? 520 : 440
   };
 }
 
@@ -90,6 +92,14 @@ async function iniciar() {
     await abrirVistaPrevia(tipo, lite === true);
     return true;
   });
+  manejar('ruleta:refrescar-vistas', async () => {
+    for (const [key, win] of previewWindows) if (!win.isDestroyed()) {
+      const elegido = widgetElegido(key.split(':')[0]);
+      win.setSize(elegido.ancho + 40, elegido.alto + 70);
+      await win.loadURL(win.webContents.getURL());
+    }
+    return true;
+  });
   manejar('ruleta:importar', async () => {
     const selected = await dialog.showOpenDialog(mainWindow, { title: 'Selecciona el data.json de tu ruleta anterior', filters: [{ name: 'Ajustes de la ruleta', extensions: ['json'] }], properties: ['openFile'] });
     if (selected.canceled) return { cancelado: true };
@@ -100,6 +110,7 @@ async function iniciar() {
   await mainWindow.loadURL(origin + '/editor');
   if (smoke) {
     const estado = await mainWindow.webContents.executeJavaScript(`(async () => {
+      await window.ruletaLista;
       const info = await window.ruletaDesktop.informacion();
       const response = await fetch('/api/habilidades');
       const habilidades = await response.json();
@@ -117,6 +128,55 @@ async function iniciar() {
     const killersCorrectos = await killers.webContents.executeJavaScript("currentModo === 'asesino' && HABILIDADES.length === 0 && currentIdioma === 'es' && hueFromColorValue(localStorage.getItem(STORAGE_PREFIX + 'color')) !== 120 && document.querySelectorAll('.modo-btn').length === 0");
     if (!perksCorrectas || !killersCorrectos) throw new Error('Los widgets no son independientes.');
     estado.widgetsIndependientes = true;
+    // Prueba el formulario real, sus rutas HTTP y la recarga de vistas previas.
+    await mainWindow.webContents.executeJavaScript(`(async () => {
+      document.getElementById('colorPerks').value = '#22bb88';
+      document.getElementById('idiomaPerks').value = 'en';
+      document.getElementById('tipoPerks').value = 'killer';
+      document.getElementById('duracionPerks').value = '1000';
+      document.getElementById('ajustesPerks').requestSubmit();
+      while (document.getElementById('guardarPerks').disabled) await new Promise(r => setTimeout(r, 30));
+    })()`);
+    const ajustesCorrectos = await perks.webContents.executeJavaScript("currentIdioma === 'en' && currentTipo === 'killer' && BASE_DURATION === 1000 && document.querySelector('.top-controls').hidden && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'");
+    if (!ajustesCorrectos) throw new Error('La apariencia del formulario no se aplico al widget.');
+    const perfilCorrecto = await mainWindow.webContents.executeJavaScript(`(async () => {
+      document.getElementById('nombrePerfil').value = 'Prueba de escritorio';
+      document.getElementById('guardarPerfil').click();
+      while (document.getElementById('guardarPerfil').disabled) await new Promise(r => setTimeout(r, 30));
+      return [...document.querySelectorAll('#listaPerfiles option')].some(o => o.textContent === 'Prueba de escritorio');
+    })()`);
+    if (!perfilCorrecto) throw new Error('No se pudo guardar el perfil desde la aplicacion.');
+    estado.configuracionYPerfiles = true;
+    const temaAnterior = await mainWindow.webContents.executeJavaScript('document.documentElement.dataset.tema');
+    await mainWindow.webContents.executeJavaScript(`(async () => {
+      document.getElementById('cambiarTema').click();
+      while (document.getElementById('cambiarTema').disabled) await new Promise(r => setTimeout(r, 30));
+    })()`);
+    await mainWindow.loadURL(origin + '/editor');
+    const temaRecuperado = await mainWindow.webContents.executeJavaScript(`(async () => {
+      await window.ruletaLista;
+      return { tema: document.documentElement.dataset.tema, guardado: (await (await fetch('/api/estado')).json()).temaEditor,
+        checked: document.getElementById('cambiarTema').getAttribute('aria-checked') };
+    })()`);
+    if (temaRecuperado.tema === temaAnterior || temaRecuperado.tema !== temaRecuperado.guardado || temaRecuperado.checked !== String(temaRecuperado.tema === 'oscuro')) throw new Error('El tema del editor no se conserva.');
+    estado.temaPersistente = true;
+    if (process.env.RULETA_SMOKE_SCREENSHOTS) {
+      const dir = process.env.RULETA_SMOKE_SCREENSHOTS;
+      fs.mkdirSync(dir, { recursive: true });
+      for (const tab of ['widgets', 'contenido', 'perfiles']) {
+        await mainWindow.webContents.executeJavaScript(`pestana('${tab}')`);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        fs.writeFileSync(path.join(dir, tab + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
+      }
+      for (const [name, win] of [['widget-perks', perks], ['widget-killers', killers]]) {
+        fs.writeFileSync(path.join(dir, name + '.png'), (await win.webContents.capturePage()).toPNG());
+      }
+      for (const tema of ['oscuro', 'claro']) {
+        await mainWindow.webContents.executeJavaScript(`aplicarTema('${tema}'); pestana('widgets'); window.scrollTo(0,0)`);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        fs.writeFileSync(path.join(dir, 'editor-' + tema + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
+      }
+    }
     console.log('RULETA_SMOKE_OK ' + JSON.stringify(estado));
     app.quit();
   } else {

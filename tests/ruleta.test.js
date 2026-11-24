@@ -112,7 +112,7 @@ test('API publica importa con respaldo y conserva killers y selecciones', async 
     assert.ok(path.basename(resolved).startsWith('ruleta-test-'));
     fs.rmSync(resolved, { recursive: true, force: true });
   });
-  for (const file of ['editor-ruleta-perks.js', 'ruleta-core.js', 'widget-template.html', 'asesinos-default.json', 'personajes-habilidades.json', 'config-publica.json']) fs.copyFileSync(path.join(root, file), path.join(dir, file));
+  for (const file of ['editor-ruleta-perks.js', 'ruleta-core.js', 'app-state.js', 'widget-template.html', 'asesinos-default.json', 'personajes-habilidades.json', 'config-publica.json']) fs.copyFileSync(path.join(root, file), path.join(dir, file));
   const data = structuredClone(catalogo);
   data.habilidades[0].activo = false;
   data.asesinos[0].activo = false;

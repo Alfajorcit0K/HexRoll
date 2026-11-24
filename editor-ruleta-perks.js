@@ -11,8 +11,8 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 const { validarDatos, fusionarDatos, construirWidgets, VARIANTES_WIDGET, guardarDatos } = require('./ruleta-core');
+const { crearEstado } = require('./app-state');
 
 function iniciarServidor({ root = __dirname, source = __dirname, port = Number(process.env.RULETA_PORT || 4002) } = {}) {
 const PORT = port;
@@ -104,6 +104,7 @@ function regenerateWidget() {
     fs.writeFileSync(path.join(ROOT, archivo), html);
   }
 }
+const estado = crearEstado(ROOT, () => validarDatos(JSON.parse(fs.readFileSync(path.join(SOURCE, 'data.json'), 'utf8'))), readData, writeData, regenerateWidget);
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -152,7 +153,7 @@ function safeFilename(name) {
 
 const server = http.createServer(async (req, res) => {
   try {
-    const parsed = url.parse(req.url, true);
+    const parsed = new URL(req.url, 'http://127.0.0.1');
     const pathname = decodeURIComponent(parsed.pathname);
     if (req.headers.origin && !['GET', 'HEAD'].includes(req.method) &&
         req.headers.origin !== 'http://127.0.0.1:' + server.address().port) {
@@ -161,6 +162,31 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/proyecto' && req.method === 'GET') {
       const config = JSON.parse(fs.readFileSync(path.join(SOURCE, 'config-publica.json'), 'utf8'));
       return sendJSON(res, 200, config);
+    }
+    if (pathname === '/api/estado' && req.method === 'GET') return sendJSON(res, 200, estado.obtener());
+    if (pathname === '/api/preferencias-editor' && req.method === 'PUT') {
+      try { return sendJSON(res, 200, estado.temaEditor((await readBodyJSON(req)).tema)); }
+      catch (error) { return sendJSON(res, 400, { error: error.message }); }
+    }
+    if (pathname === '/api/configuracion' && req.method === 'PUT') {
+      try { return sendJSON(res, 200, estado.configurar(await readBodyJSON(req))); }
+      catch (error) { return sendJSON(res, 400, { error: error.message }); }
+    }
+    const personajeMatch = pathname.match(/^\/api\/personajes\/(.+)$/);
+    const perfilMatch = pathname.match(/^\/api\/perfiles\/([a-z0-9-]+)(\/aplicar)?$/);
+    const respaldoMatch = pathname.match(/^\/api\/respaldos\/([^/]+)\/restaurar$/);
+    if (personajeMatch && req.method === 'PUT' || pathname === '/api/perfiles' && req.method === 'POST' || perfilMatch && ['POST', 'DELETE'].includes(req.method) || pathname === '/api/respaldos' && req.method === 'POST' || respaldoMatch && req.method === 'POST') {
+      try {
+        let result;
+        if (personajeMatch) result = estado.personaje(personajeMatch[1], (await readBodyJSON(req)).activo);
+        else if (pathname === '/api/perfiles') result = estado.crearPerfil((await readBodyJSON(req)).nombre);
+        else if (perfilMatch && req.method === 'DELETE' && !perfilMatch[2]) result = estado.borrarPerfil(perfilMatch[1]);
+        else if (perfilMatch && req.method === 'POST' && perfilMatch[2]) result = estado.aplicarPerfil(perfilMatch[1]);
+        else if (pathname === '/api/respaldos') result = estado.crearRespaldo();
+        else if (respaldoMatch) result = estado.restaurar(respaldoMatch[1]);
+        else return sendJSON(res, 404, { error: 'Accion no encontrada.' });
+        return sendJSON(res, 200, result);
+      } catch (error) { return sendJSON(res, 400, { error: error.message }); }
     }
     if (pathname === '/api/habilidades' && req.method === 'GET') {
       return sendJSON(res, 200, readData().habilidades || []);
@@ -207,7 +233,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/upload' && req.method === 'POST') {
-      const filename = safeFilename(parsed.query.filename || ('img_' + Date.now() + '.png'));
+      const filename = safeFilename(parsed.searchParams.get('filename') || ('img_' + Date.now() + '.png'));
       const dest = path.join(IMG_DIR, filename);
       const writeStream = fs.createWriteStream(dest);
       req.pipe(writeStream);
@@ -279,6 +305,7 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/' || pathname === '/editor') {
       return serveStatic(res, path.join(SOURCE, 'editor-habilidades.html'));
     }
+    if (pathname === '/editor-ui.js') return serveStatic(res, path.join(SOURCE, 'editor-ui.js'));
 
     if (VARIANTES_WIDGET.some(variante => pathname === '/' + variante.archivo)) {
       return serveStatic(res, path.join(ROOT, pathname.slice(1)));

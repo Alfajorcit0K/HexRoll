@@ -5,5 +5,6 @@ contextBridge.exposeInMainWorld('ruletaDesktop', {
   copiarRuta: (tipo, lite) => ipcRenderer.invoke('ruleta:copiar-ruta', tipo, lite === true),
   abrirCarpeta: () => ipcRenderer.invoke('ruleta:abrir-carpeta'),
   vistaPrevia: (tipo, lite) => ipcRenderer.invoke('ruleta:vista-previa', tipo, lite === true),
+  refrescarVistas: () => ipcRenderer.invoke('ruleta:refrescar-vistas'),
   importar: () => ipcRenderer.invoke('ruleta:importar')
 });

@@ -17,7 +17,8 @@ function generar({ lite = false, zip = true } = {}) {
   fs.mkdirSync(destino, { recursive: true });
   // Lista explicita: excluye archivos personales y carpetas historicas.
   const archivos = [
-    'editor-ruleta-perks.js', 'ruleta-core.js', 'editor-habilidades.html',
+    'editor-ruleta-perks.js', 'ruleta-core.js', 'app-state.js', 'editor-habilidades.html',
+    'editor-ui.js',
     'ABRIR_EDITOR_PERKS.bat', 'MANUAL_CLIENTE.txt', 'README.md', 'LICENSE',
     'THIRD_PARTY_NOTICES.md', 'asesinos-default.json', 'personajes-habilidades.json', 'config-publica.json'
   ];

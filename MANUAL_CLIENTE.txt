@@ -5,13 +5,20 @@ La ruleta es gratuita. Todas las funciones estan disponibles para todos.
 
 PRIMER USO
 ----------
-1. Ejecuta el instalador Ruleta-Perks-Killers-1.2.1-Setup.exe.
+1. Ejecuta el instalador Ruleta-Perks-Killers-1.3.0-Setup.exe.
 2. Sigue el asistente y abre Ruleta Perks y Killers desde su acceso directo.
 3. No necesitas instalar Node.js ni abrir una consola.
 4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
    su data.json. Se conservaran sus selecciones y se creara un respaldo.
-5. Busca perks o killers y marca lo que quieres incluir en los sorteos.
+5. En "Mi contenido", busca personajes para activar sus perks de una vez,
+   o busca perks y killers individuales. Terrifier y Sienna Shaw ya estan incluidos.
    Los cambios se guardan automaticamente.
+
+APARIENCIA DEL EDITOR
+--------------------
+El switch de la esquina superior derecha alterna entre modo oscuro y claro.
+Tu eleccion se conserva al volver a abrir y al actualizar la aplicacion.
+Este tema es independiente del color de tus widgets en OBS.
 
 CONFIGURACION DE OBS
 -------------------
@@ -19,8 +26,9 @@ CONFIGURACION DE OBS
 2. En la tarjeta de perks pulsa "Copiar ruta de perks". Marca "Archivo local"
    en las propiedades de la fuente de OBS y pega esa ruta.
 3. Para killers, crea otra fuente y usa "Copiar ruta de killers" de su tarjeta.
-   Tamanos recomendados: perks 1120 x 520; killers 460 x 520.
-4. Para usar los controles, haz clic derecho en la fuente y elige Interactuar.
+   Tamanos recomendados: perks 1120 x 440; killers 460 x 440.
+4. En "Mis widgets", ajusta el color, idioma, duracion y tipo de perks.
+   Pulsa "Aplicar apariencia" y refresca la fuente de OBS.
 5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
    interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
 
@@ -32,10 +40,12 @@ externas pueden necesitar internet; se usa una fuente de respaldo sin conexion.
 
 CONTROLES
 ---------
-- Widget de perks: sortea cuatro perks. SURV / KILLER selecciona su tipo.
+- Widget de perks: sortea cuatro perks. Elige su tipo en la aplicacion.
 - Widget de killers: sortea un killer. Puede usarse a la vez que el de perks.
 - Color y ES-MX / ES-ES / EN: personaliza cada widget de forma independiente.
-Los colores e idiomas de perks y killers se conservan por separado en OBS.
+La apariencia se guarda por separado en la aplicacion y se conserva al actualizar.
+Los controles no se muestran en la transmision de forma predeterminada. Si marcas
+"Mostrar controles dentro del widget", usa 520 de alto e Interactuar en OBS.
 Para sortear perks, activa al menos cuatro entradas del tipo elegido, contando
 los espacios vacios. Para sortear un killer, activa al menos uno.
 
@@ -52,7 +62,11 @@ Para actualizar, cierra la aplicacion e instala la nueva version. Los ajustes
 estan separados del programa, en %APPDATA%\RuletaPerksKillers\widget.
 La aplicacion combina el catalogo nuevo con tus selecciones y crea un respaldo.
 El contenido nuevo queda desactivado para que puedas elegir si quieres usarlo.
-Puedes abrir la carpeta de tus datos con "Abrir carpeta" y respaldarla.
+En "Perfiles y respaldos", guarda selecciones y apariencia con nombres para
+recuperarlas despues. Tambien puedes crear y restaurar respaldos. Antes de cargar
+un perfil o restaurar se respalda tu configuracion actual.
+Puedes abrir la carpeta de tus datos con "Abrir carpeta de widgets" y copiarla
+completa para incluir perfiles.json, backups/ y tus imagenes propias.
 Conserva tambien las imagenes propias si agregaste contenido personalizado.
 Despues de cambiar el widget, refresca la fuente en OBS.
 El importador del servidor conserva selecciones y crea un respaldo en backups/.

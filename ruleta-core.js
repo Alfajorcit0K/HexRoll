@@ -21,6 +21,7 @@ function validarDatos(data) {
       }
     }
   }
+  if (data.ajustes !== undefined) require('./app-state').validarConfiguracion(data.ajustes);
   return data;
 }
 
@@ -44,7 +45,7 @@ function fusionarDatos(actual, catalogo) {
   return resultado;
 }
 
-function construirWidget(template, data, { modo = null } = {}) {
+function construirWidget(template, data, { modo = null, configuracion = null } = {}) {
   validarDatos(data);
   if (![null, 'perks', 'asesino'].includes(modo)) throw new Error('Modo de widget invalido.');
   let output = template;
@@ -57,6 +58,8 @@ function construirWidget(template, data, { modo = null } = {}) {
   }
   output = output.replace(/\/\*START_MODO_FIJO\*\/.*?\/\*END_MODO_FIJO\*\//s,
     () => '/*START_MODO_FIJO*/' + JSON.stringify(modo) + '/*END_MODO_FIJO*/');
+  output = output.replace(/\/\*START_CONFIG_WIDGET\*\/.*?\/\*END_CONFIG_WIDGET\*\//s,
+    () => '/*START_CONFIG_WIDGET*/' + JSON.stringify(configuracion).replace(/</g, '\\u003c') + '/*END_CONFIG_WIDGET*/');
   if (modo) {
     output = output.replace(/\s*<div class="idioma-toggle" id="modoToggle" title="Modo de ruleta">[\s\S]*?<\/div>/, '');
     output = output.replace('<title>Ruleta Perks</title>', '<title>Ruleta de ' + (modo === 'perks' ? 'perks' : 'killers') + '</title>');
@@ -76,8 +79,9 @@ const VARIANTES_WIDGET = Object.freeze([
 ]);
 
 function construirWidgets({ normal, lite = normal }, data) {
+  const config = require('./app-state').configuracionActual(data);
   return Object.fromEntries(VARIANTES_WIDGET.map(variante => [variante.archivo,
-    construirWidget(variante.lite ? lite : normal, data, { modo: variante.modo })]));
+    construirWidget(variante.lite ? lite : normal, data, { modo: variante.modo, configuracion: variante.modo ? { ...config[variante.modo === 'perks' ? 'perks' : 'killers'], administrado: !!data.ajustes } : null })]));
 }
 
 function guardarDatos(file, data) {

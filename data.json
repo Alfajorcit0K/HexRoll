@@ -3941,6 +3941,78 @@
       "tipo": "killer",
       "personaje": "",
       "general": true
+    },
+    {
+      "id": "terrifier1",
+      "nombre_es": "Nada de Jueguitos",
+      "nombre_es_es": "Triquiñuela",
+      "nombre_en": "Funny Business",
+      "imagen": "FunnyBusiness.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "killer",
+      "personaje": "The Terrifier",
+      "general": false
+    },
+    {
+      "id": "terrifier2",
+      "nombre_es": "Racha Asesina",
+      "nombre_es_es": "Oleada de Asesinatos",
+      "nombre_en": "Kill Spree",
+      "imagen": "KillSpree.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "killer",
+      "personaje": "The Terrifier",
+      "general": false
+    },
+    {
+      "id": "terrifier3",
+      "nombre_es": "Hazmerreír",
+      "nombre_es_es": "Hazmerreír",
+      "nombre_en": "Laughingstock",
+      "imagen": "Laughingstock.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "killer",
+      "personaje": "The Terrifier",
+      "general": false
+    },
+    {
+      "id": "sienna1",
+      "nombre_es": "El Mejor Regalo del Mundo",
+      "nombre_es_es": "El Mejor Regalo del Mundo",
+      "nombre_en": "Best Gift Ever",
+      "imagen": "BestGiftEver.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "survivor",
+      "personaje": "Sienna Shaw",
+      "general": false
+    },
+    {
+      "id": "sienna2",
+      "nombre_es": "Trauma Compartido",
+      "nombre_es_es": "Trauma Compartido",
+      "nombre_en": "Shared Trauma",
+      "imagen": "SharedTrauma.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "survivor",
+      "personaje": "Sienna Shaw",
+      "general": false
+    },
+    {
+      "id": "sienna3",
+      "nombre_es": "Furia de la Valquiria",
+      "nombre_es_es": "Furia de la Valquiria",
+      "nombre_en": "Valkyries Rage",
+      "imagen": "ValkyriesRage.png",
+      "esVacio": false,
+      "activo": true,
+      "tipo": "survivor",
+      "personaje": "Sienna Shaw",
+      "general": false
     }
   ],
   "asesinos": [
@@ -4294,6 +4366,14 @@
       "nombre_es_es": "La Sentencia",
       "nombre_en": "The Judgment",
       "imagen": "K44_TheJudgment_Portrait.png",
+      "activo": true
+    },
+    {
+      "id": "k_terrifier",
+      "nombre_es": "Terrifier",
+      "nombre_es_es": "Terrifier",
+      "nombre_en": "The Terrifier",
+      "imagen": "K45_TheTerrifier_Portrait.png",
       "activo": true
     }
   ]

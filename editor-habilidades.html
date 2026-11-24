@@ -2,105 +2,141 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Editor - Ruleta Perks</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<title>Ruleta Perks y Killers</title>
+<meta name="color-scheme" content="dark light">
 <style>
-  :root{ --neon:#C83CFF; --bg:#1a1a1f; --panel:#242329; --panel2:#2d2c33; --text:#eeeef2; --dim:#9a9aa4; }
+  :root{color-scheme:dark;--bg:#1b222b;--panel:#242d38;--panel2:#2b3542;--text:#e5eaf0;--dim:#aeb9c7;--borde:#425061;--acento:#86bfc4;--sobre-acento:#122c30;--suave:#223a42;--destacado:#b2d8dc;--imagen:#182029;--sombra:0 4px 18px #00000012;}
+  :root[data-tema=claro]{color-scheme:light;--bg:#f1f3f6;--panel:#ffffff;--panel2:#f5f7fa;--text:#253343;--dim:#586779;--borde:#c9d3df;--acento:#316b74;--sobre-acento:#ffffff;--suave:#e7f0f2;--destacado:#285b63;--imagen:#e2e8ef;--sombra:0 4px 18px #24344709;}
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:28px;}
-  h1{font-family:'Chakra Petch',sans-serif;font-size:24px;margin:0 0 6px;}
-  .sub{color:var(--dim);margin:0 0 26px;font-size:14px;}
-  .panel{background:var(--panel);border:1px solid #38373f;border-radius:12px;padding:20px;margin-bottom:22px;}
-  .panel h2{font-family:'Chakra Petch',sans-serif;font-size:16px;margin:0 0 16px;letter-spacing:.5px;}
-  input[type=text],input[type=file]{
-    width:100%;padding:9px 10px;border-radius:7px;border:1px solid #45444c;
-    background:var(--panel2);color:var(--text);font-family:inherit;font-size:15px;
-  }
-  button{
-    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;
-    background:var(--neon);color:#161217;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;
-  }
-  button:hover{filter:brightness(1.1);}
-  button.secondary{background:#3a3944;color:var(--text);padding:8px 14px;font-size:13px;}
-  select{
-    padding:9px 10px;border-radius:7px;border:1px solid #45444c;
-    background:var(--panel2);color:var(--text);font-family:inherit;font-size:14px;
-  }
-  .status{font-size:13px;color:var(--dim);margin-left:10px;}
-  .banner{background:#20262b;border:1px solid #3a4650;border-radius:8px;padding:12px 16px;margin-bottom:22px;font-size:13px;color:#9fd4ea;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;padding:28px;}
+  h1{font-size:24px;line-height:1.25;margin:0 0 8px;font-weight:650;letter-spacing:-.4px;}
+  .cabecera{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px;}
+  .sub{color:var(--dim);margin:0;font-size:14px;}
+  .panel{background:var(--panel);border:1px solid var(--borde);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:var(--sombra);}
+  .panel h2{font-size:17px;font-weight:650;margin:0 0 16px;}
+  input[type=text],input[type=file],select{padding:10px 12px;border-radius:8px;border:1px solid var(--borde);background:var(--panel2);color:var(--text);font:inherit;min-width:0;}
+  input[type=text],input[type=file]{width:100%;}
+  input::placeholder{color:var(--dim);opacity:1;}
+  button{font:inherit;font-weight:600;background:var(--acento);color:var(--sobre-acento);border:1px solid transparent;border-radius:8px;padding:10px 18px;cursor:pointer;}
+  button:hover:not(:disabled){filter:brightness(.94);}
+  button.secondary{background:var(--panel2);border-color:var(--borde);color:var(--text);padding:9px 14px;}
+  :is(button,input,select,a):focus-visible{outline:3px solid var(--acento);outline-offset:3px;}
+  button:disabled{opacity:.55;cursor:default;}
+  .status,.nota,.contador{font-size:13px;color:var(--dim);}
+  .contador{margin-bottom:12px;}
+  .banner{background:var(--suave);border:1px solid var(--borde);border-radius:9px;padding:12px 16px;margin-bottom:22px;font-size:13px;color:var(--destacado);}
   .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
   .toolbar input[type=text]{flex:1;min-width:180px;}
-  .lista{display:flex;flex-direction:column;gap:6px;max-height:520px;overflow-y:auto;}
-  .fila{display:flex;align-items:center;gap:12px;background:var(--panel2);border-radius:8px;padding:8px 12px;}
-  .fila img{width:36px;height:36px;border-radius:6px;background:#161217;object-fit:contain;flex:none;}
+  .lista{display:flex;flex-direction:column;gap:7px;max-height:520px;overflow-y:auto;}
+  .fila{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid transparent;border-radius:8px;padding:9px 12px;cursor:pointer;}
+  .fila:hover,.personaje:hover{border-color:var(--acento);}
+  .fila img{width:36px;height:36px;border-radius:6px;background:var(--imagen);object-fit:contain;flex:none;}
   .fila .vacio-tag{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;flex:none;}
-  .fila .nombre{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:14px;}
+  .fila .nombre{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:13px;min-width:0;}
   .fila .nombre span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .encabezados{display:grid;grid-template-columns:36px 1fr 1fr 1fr 20px;gap:10px;padding:0 12px;margin-bottom:6px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
-  .fila input[type=checkbox]{width:20px;height:20px;cursor:pointer;}
-  .contador{font-size:13px;color:var(--dim);margin-bottom:10px;}
+  .encabezados{display:grid;grid-template-columns:36px 1fr 1fr 1fr 20px;gap:10px;padding:0 12px;margin-bottom:8px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+  input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--acento);flex:none;vertical-align:middle;margin-right:5px;}
   [hidden]{display:none!important;}
-  .inicio{background:linear-gradient(135deg,#302039,#242329);border-color:#74438b;}
   .inicio h2{font-size:22px;margin-bottom:8px;}
-  .inicio p{color:#cbc5d1;line-height:1.5;margin:0 0 16px;}
+  .inicio p{color:var(--dim);line-height:1.6;margin:0 0 16px;}
   .pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
-  .paso{background:#1a1a1f99;border:1px solid #4d3b57;border-radius:10px;padding:14px;font-size:15px;line-height:1.4;}
-  .paso strong{display:block;color:#e6b8ff;margin-bottom:5px;}
-  .ruta{font-family:monospace!important;font-size:12px!important;}
-  .nota{color:var(--dim);font-size:14px;}
-  .estado-app{min-height:22px;margin-top:12px;color:#d9b4ef;}
+  .paso{background:var(--suave);border:1px solid var(--borde);border-radius:10px;padding:14px;font-size:13px;line-height:1.6;}
+  .paso strong{display:block;color:var(--destacado);margin-bottom:5px;}
+  .ruta{font-family:Consolas,monospace!important;font-size:12px!important;}
+  .estado-app{min-height:22px;margin-top:12px;color:var(--destacado);font-size:13px;}
   .widgets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
-  .widget-config{min-width:0;background:#1a1a1f99;border:1px solid #654275;border-radius:12px;padding:18px;}
-  .widget-config h3{margin:0 0 8px;font-family:'Chakra Petch',sans-serif;font-size:20px;}
-  .widget-config p{font-size:15px;}
+  .widget-config{min-width:0;background:var(--panel2);border:1px solid var(--borde);border-radius:12px;padding:18px;}
+  .widget-config h3{margin:0 0 8px;font-size:19px;font-weight:650;}
   .widget-config .toolbar{margin:12px 0;}
-  .widget-config button{font-size:12px;letter-spacing:0;padding:10px 12px;}
-  .widget-config label{font-size:14px;}
-  a{color:#e4b1ff;}
+  .widget-config button{font-size:13px;padding:10px 12px;}
+  .widget-config label{font-size:13px;}
+  .ajustes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;padding-bottom:18px;border-bottom:1px solid var(--borde);}
+  .ajustes label{display:flex;flex-direction:column;gap:6px;}
+  .ajustes label.ancho{grid-column:1/-1;display:block;}
+  input[type=color]{height:40px;width:100%;padding:3px;border:1px solid var(--borde);border-radius:7px;background:var(--panel);cursor:pointer;}
+  .personajes{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px;max-height:350px;overflow:auto;}
+  .personaje{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--borde);border-radius:8px;background:var(--panel2);cursor:pointer;}
+  .personaje span{display:block;}.personaje small{color:var(--dim);display:block;}
+  .tabs{position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;}
+  #estadoGlobal{position:sticky;top:68px;z-index:4;}
+  a{color:var(--destacado);text-underline-offset:3px;}
+  .tema-switch{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;}
+  .palanca{display:block;position:relative;width:38px;height:22px;border-radius:20px;background:var(--borde);}
+  .palanca::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--text);}
+  .tema-switch[aria-checked=true] .palanca{background:var(--acento);}
+  .tema-switch[aria-checked=true] .palanca::after{left:19px;background:var(--sobre-acento);}
   @media(max-width:850px){body{padding:18px;}.pasos,.widgets{grid-template-columns:1fr;}.fila .nombre{grid-template-columns:1fr;gap:2px;}.encabezados{display:none;}}
 </style>
 </head>
 <body>
 
-<h1>Ruleta Perks — Editor</h1>
-<p class="sub">Elige tus perks y killers. Los cambios se guardan automáticamente.</p>
-<section class="panel inicio" id="inicioDesktop" hidden aria-labelledby="tituloInicio">
+<header class="cabecera">
+  <div><h1>Ruleta Perks y Killers</h1><p class="sub">Configura tus widgets y elige el contenido de tus sorteos.</p></div>
+  <button id="cambiarTema" class="tema-switch secondary" type="button" role="switch" aria-checked="true" aria-label="Modo oscuro del editor"><span id="nombreTema">Modo oscuro</span><span class="palanca" aria-hidden="true"></span></button>
+</header>
+<nav class="toolbar tabs" aria-label="Secciones">
+  <button data-pestana="widgets">Mis widgets</button>
+  <button class="secondary" data-pestana="contenido">Mi contenido</button>
+  <button class="secondary" data-pestana="perfiles">Perfiles y respaldos</button>
+</nav>
+<div id="estadoGlobal" class="banner" role="status" aria-live="polite" hidden></div>
+<section class="panel inicio" id="inicioDesktop" data-vista="widgets" hidden aria-labelledby="tituloInicio">
   <h2 id="tituloInicio">Dos ruletas, tu propia escena</h2>
-  <p>Agrega las perks y los killers como fuentes independientes en OBS. Cada widget conserva su propio color e idioma. Puedes usar ambos a la vez y cerrar esta aplicación al terminar.</p>
+  <p>Personaliza cada widget aquí y agrégalo como fuente independiente en OBS. Puedes usar ambos a la vez y cerrar esta aplicación al terminar.</p>
   <div class="pasos">
-    <div class="paso"><strong>1. Elige tu contenido</strong>Activa las perks y killers que quieras incluir en los sorteos.</div>
+    <div class="paso"><strong>1. Elige tu contenido</strong>En «Mi contenido», activa personajes completos o selecciona perks y killers individuales.</div>
     <div class="paso"><strong>2. Agrega cada widget</strong>Crea dos fuentes de Navegador en OBS, marca «Archivo local» y pega la ruta correspondiente.</div>
-    <div class="paso"><strong>3. Hazlos girar</strong>Oculta y muestra cada fuente para sortear de forma independiente. Usa «Interactuar» para personalizarla.</div>
+    <div class="paso"><strong>3. Hazlos girar</strong>Oculta y muestra cada fuente para sortear. La transmisión muestra la ruleta sin controles superpuestos.</div>
   </div>
   <div class="widgets">
     <section class="widget-config" aria-labelledby="tituloPerks">
       <h3 id="tituloPerks">Ruleta de perks</h3>
-      <p>Cuatro perks por sorteo. Elige supervivientes o asesinos desde los controles del widget.</p>
+      <p>Cuatro perks por sorteo. Configura su apariencia y el tipo de habilidades.</p>
+      <form id="ajustesPerks" class="ajustes">
+        <label>Color <input type="color" id="colorPerks" value="#c83cff"></label>
+        <label>Idioma <select id="idiomaPerks"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Tipo <select id="tipoPerks"><option value="survivor">Supervivientes</option><option value="killer">Asesinos</option></select></label>
+        <label>Duración <select id="duracionPerks"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
+        <label class="ancho"><input type="checkbox" id="controlesPerks"> Mostrar controles dentro del widget</label>
+        <button type="submit" id="guardarPerks">Aplicar apariencia</button>
+      </form>
       <label for="rutaWidgetPerks">Archivo de perks para OBS</label>
       <input class="ruta" id="rutaWidgetPerks" type="text" readonly>
       <div class="toolbar"><button id="copiarPerks">Copiar ruta de perks</button><button class="secondary" id="probarPerks">Probar perks</button></div>
       <label><input type="checkbox" id="litePerks"> Usar versión ligera</label>
-      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoPerks">1120 × 520</strong></p>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoPerks">1120 × 440</strong></p>
     </section>
     <section class="widget-config" aria-labelledby="tituloKillers">
       <h3 id="tituloKillers">Ruleta de killers</h3>
       <p>Un killer por sorteo. Ubícala donde quieras, con su propio tamaño y apariencia.</p>
+      <form id="ajustesKillers" class="ajustes">
+        <label>Color <input type="color" id="colorKillers" value="#c83cff"></label>
+        <label>Idioma <select id="idiomaKillers"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Duración <select id="duracionKillers"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
+        <label class="ancho"><input type="checkbox" id="controlesKillers"> Mostrar controles dentro del widget</label>
+        <button type="submit" id="guardarKillers">Aplicar apariencia</button>
+      </form>
       <label for="rutaWidgetKillers">Archivo de killers para OBS</label>
       <input class="ruta" id="rutaWidgetKillers" type="text" readonly>
       <div class="toolbar"><button id="copiarKillers">Copiar ruta de killers</button><button class="secondary" id="probarKillers">Probar killers</button></div>
       <label><input type="checkbox" id="liteKillers"> Usar versión ligera</label>
-      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoKillers">460 × 520</strong></p>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoKillers">460 × 440</strong></p>
     </section>
   </div>
   <div class="toolbar">
     <button class="secondary" id="abrirCarpeta">Abrir carpeta de widgets</button>
     <button class="secondary" id="importarAnterior">Importar ajustes anteriores</button>
   </div>
-  <div class="nota">Si cambias tus selecciones, refresca las fuentes de navegador en OBS. Si antes usabas la ruleta combinada para killers, copia ahora su ruta independiente.</div>
+  <div class="nota">Después de aplicar cambios, refresca tus fuentes de navegador en OBS. Las vistas previas de la aplicación se actualizan automáticamente.</div>
   <div class="estado-app" id="estadoDesktop" role="status" aria-live="polite"></div>
 </section>
+<section data-vista="contenido" id="contenido">
+<div class="panel">
+  <h2>Mis personajes</h2>
+  <p class="nota">Activa todas las perks de un personaje de una vez. En asesinos también activa su entrada en la ruleta de killers. Una casilla parcial indica que elegiste solo parte de su contenido.</p>
+  <div class="toolbar"><input type="text" id="buscarPersonaje" placeholder="Buscar personaje..." aria-label="Buscar personaje"><select id="tipoPersonaje" aria-label="Tipo de personaje"><option value="">Todos</option><option value="survivor">Supervivientes</option><option value="killer">Asesinos</option><option value="vacio">Espacios vacíos</option></select></div>
+  <div id="personajes" class="personajes"></div>
+</div>
 <div class="banner">
   Ruleta Perks es gratuita. Todas las funciones están disponibles para todos.
   <a id="enlaceRepositorio" hidden target="_blank" rel="noopener noreferrer" style="color:inherit;margin-left:12px">Ver el proyecto en GitHub</a>
@@ -139,182 +175,21 @@
   <div class="encabezados"><span></span><span>Español ES</span><span>Español MX</span><span>English</span><span></span></div>
   <div id="listaAsesinos" class="lista"></div>
 </div>
+</section>
+<section data-vista="perfiles" hidden>
+  <div class="panel">
+    <h2>Perfiles guardados</h2>
+    <p class="nota">Guarda tu selección de perks y killers junto con la apariencia de ambos widgets. Al cargar un perfil se crea un respaldo de tu configuración actual.</p>
+    <div class="toolbar"><input type="text" id="nombrePerfil" maxlength="60" placeholder="Ej.: Mis perks o Desafío difícil" aria-label="Nombre del perfil"><button id="guardarPerfil">Guardar perfil nuevo</button></div>
+    <div class="toolbar"><select id="listaPerfiles" aria-label="Perfiles guardados"></select><button id="aplicarPerfil">Cargar perfil</button><button class="secondary" id="borrarPerfil">Eliminar perfil</button></div>
+  </div>
+  <div class="panel">
+    <h2>Respaldos y recuperación</h2>
+    <p class="nota">Recupera selecciones y apariencia de un respaldo. Antes de restaurar guardamos el estado actual, para que puedas volver atrás.</p>
+    <div class="toolbar"><button id="crearRespaldo">Crear respaldo ahora</button><select id="listaRespaldos" aria-label="Respaldos disponibles"></select><button class="secondary" id="restaurarRespaldo">Restaurar respaldo</button></div>
+  </div>
+</section>
 
-<script>
-  let habilidades = [];
-
-  async function load(){
-    const res = await fetch('/api/habilidades');
-    habilidades = await res.json();
-    render();
-  }
-
-  function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-  function sinTildes(s){ return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-
-  function nombresAsesino(personaje){
-    const a = asesinos.find(x => x.nombre_en === personaje);
-    return a ? [a.nombre_es, a.nombre_es_es, a.nombre_en] : [];
-  }
-
-  function render(){
-    const filtro = sinTildes(document.getElementById('buscador').value.trim().toLowerCase());
-    const cont = document.getElementById('lista');
-    cont.innerHTML = '';
-    const tipoFiltro = document.getElementById('filtroTipo').value;
-    const visibles = habilidades.filter(h=>{
-      if(tipoFiltro && !h.esVacio && h.tipo !== tipoFiltro) return false;
-      if(!filtro) return true;
-      if(sinTildes((h.nombre_es||'').toLowerCase()).includes(filtro)) return true;
-      if(sinTildes((h.nombre_es_es||'').toLowerCase()).includes(filtro)) return true;
-      if(sinTildes((h.nombre_en||'').toLowerCase()).includes(filtro)) return true;
-      if(sinTildes((h.personaje||'').toLowerCase()).includes(filtro)) return true;
-      if(h.general && sinTildes('general').includes(filtro)) return true;
-      return nombresAsesino(h.personaje).some(n => sinTildes((n||'').toLowerCase()).includes(filtro));
-    });
-    visibles.forEach(h=>{
-      const fila = document.createElement('div');
-      fila.className = 'fila';
-      const thumb = h.esVacio ? '<div class="vacio-tag">vacío</div>' :
-        (h.imagen ? '<img src="imagenes/perks/'+h.imagen+'">' : '<div class="vacio-tag">sin img</div>');
-      fila.innerHTML =
-        thumb +
-        '<div class="nombre"><span>'+esc(h.nombre_es_es || '—')+'</span><span>'+esc(h.nombre_es || (h.esVacio?'Vacío':'—'))+'</span><span>'+esc(h.nombre_en || '—')+'</span></div>'+
-        '<input type="checkbox" data-id="'+h.id+'" '+(h.activo!==false?'checked':'')+'>';
-      cont.appendChild(fila);
-    });
-    cont.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-      cb.addEventListener('change', ()=> toggleActivo(cb.dataset.id, cb.checked));
-    });
-    const activas = habilidades.filter(h=>h.activo!==false).length;
-    document.getElementById('contador').textContent = activas + ' activas de ' + habilidades.length + ' en total';
-  }
-
-  document.getElementById('buscador').addEventListener('input', render);
-  document.getElementById('filtroTipo').addEventListener('change', render);
-
-  async function toggleActivo(id, activo){
-    await fetch('/api/habilidades/'+id, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({activo})});
-    const h = habilidades.find(x=>x.id===id);
-    if(h) h.activo = activo;
-    document.getElementById('contador').textContent =
-      habilidades.filter(x=>x.activo!==false).length + ' activas de ' + habilidades.length + ' en total';
-  }
-
-  async function activarTodas(valor){
-    const visiblesIds = Array.from(document.querySelectorAll('#lista input[type=checkbox]')).map(cb=>cb.dataset.id);
-    await fetch('/api/habilidades-bulk-activo', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:visiblesIds, activo:valor})});
-    habilidades.forEach(h=>{ if(visiblesIds.includes(h.id)) h.activo = valor; });
-    render();
-  }
-  document.getElementById('activarTodas').addEventListener('click', ()=> activarTodas(true));
-  document.getElementById('desactivarTodas').addEventListener('click', ()=> activarTodas(false));
-
-  let asesinos = [];
-
-  async function loadAsesinos(){
-    const res = await fetch('/api/asesinos');
-    asesinos = await res.json();
-    renderAsesinos();
-  }
-
-  function renderAsesinos(){
-    const filtro = sinTildes(document.getElementById('buscadorAsesino').value.trim().toLowerCase());
-    const cont = document.getElementById('listaAsesinos');
-    cont.innerHTML = '';
-    const visibles = asesinos.filter(a=>{
-      if(!filtro) return true;
-      return sinTildes((a.nombre_es||'').toLowerCase()).includes(filtro) ||
-             sinTildes((a.nombre_es_es||'').toLowerCase()).includes(filtro) ||
-             sinTildes((a.nombre_en||'').toLowerCase()).includes(filtro);
-    });
-    visibles.forEach(a=>{
-      const fila = document.createElement('div');
-      fila.className = 'fila';
-      const thumb = a.imagen ? '<img src="imagenes/killers/'+a.imagen+'">' : '<div class="vacio-tag">sin img</div>';
-      fila.innerHTML =
-        thumb +
-        '<div class="nombre"><span>'+esc(a.nombre_es_es || '—')+'</span><span>'+esc(a.nombre_es || '—')+'</span><span>'+esc(a.nombre_en || '—')+'</span></div>'+
-        '<input type="checkbox" data-id="'+a.id+'" '+(a.activo!==false?'checked':'')+'>';
-      cont.appendChild(fila);
-    });
-    cont.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-      cb.addEventListener('change', ()=> toggleActivoAsesino(cb.dataset.id, cb.checked));
-    });
-    const activos = asesinos.filter(a=>a.activo!==false).length;
-    document.getElementById('contadorAsesino').textContent = activos + ' activos de ' + asesinos.length + ' en total';
-  }
-
-  document.getElementById('buscadorAsesino').addEventListener('input', renderAsesinos);
-
-  async function toggleActivoAsesino(id, activo){
-    await fetch('/api/asesinos/'+id, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({activo})});
-    const a = asesinos.find(x=>x.id===id);
-    if(a) a.activo = activo;
-    document.getElementById('contadorAsesino').textContent =
-      asesinos.filter(x=>x.activo!==false).length + ' activos de ' + asesinos.length + ' en total';
-  }
-
-  async function activarTodasAsesino(valor){
-    const visiblesIds = Array.from(document.querySelectorAll('#listaAsesinos input[type=checkbox]')).map(cb=>cb.dataset.id);
-    await fetch('/api/asesinos-bulk-activo', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:visiblesIds, activo:valor})});
-    asesinos.forEach(a=>{ if(visiblesIds.includes(a.id)) a.activo = valor; });
-    renderAsesinos();
-  }
-  document.getElementById('activarTodasAsesino').addEventListener('click', ()=> activarTodasAsesino(true));
-  document.getElementById('desactivarTodasAsesino').addEventListener('click', ()=> activarTodasAsesino(false));
-
-  async function loadProyecto(){
-    try {
-      const res = await fetch('/api/proyecto');
-      if(!res.ok) return;
-      const config = await res.json();
-      if(!config.repositorio) return;
-      const url = new URL(config.repositorio);
-      if(url.protocol !== 'https:') return;
-      const link = document.getElementById('enlaceRepositorio');
-      link.href = url.href;
-      link.hidden = false;
-    } catch(error) { console.warn('No se pudo cargar el enlace del proyecto.'); }
-  }
-  async function cargarListas(){ await load(); await loadAsesinos(); render(); }
-  async function iniciarDesktop(){
-    if(!window.ruletaDesktop) return;
-    const api = window.ruletaDesktop;
-    const status = document.getElementById('estadoDesktop');
-    const info = await api.informacion();
-    document.getElementById('inicioDesktop').hidden = false;
-    status.textContent = 'Versión ' + info.version + ' · Lista para configurar';
-    async function ejecutar(id, action, message){
-      const button = document.getElementById(id);
-      button.disabled = true;
-      try { const result = await action(); if(message) status.textContent = message; return result; }
-      catch(error) { status.textContent = 'No se pudo completar la acción. ' + error.message; }
-      finally { button.disabled = false; }
-    }
-    for(const [tipo,sufijo] of [['perks','Perks'],['killers','Killers']]){
-      const widget = info.widgets[tipo];
-      const lite = document.getElementById('lite' + sufijo);
-      const ruta = document.getElementById('rutaWidget' + sufijo);
-      ruta.value = widget.ruta;
-      document.getElementById('tamano' + sufijo).textContent = widget.ancho + ' × ' + widget.alto;
-      lite.addEventListener('change',()=>{ ruta.value = lite.checked ? widget.rutaLite : widget.ruta; });
-      const copiar = 'copiar' + sufijo, probar = 'probar' + sufijo;
-      document.getElementById(copiar).addEventListener('click',()=>ejecutar(copiar,()=>api.copiarRuta(tipo,lite.checked),'Ruta de ' + tipo + ' copiada. Pégala en su fuente de OBS.'));
-      document.getElementById(probar).addEventListener('click',()=>ejecutar(probar,()=>api.vistaPrevia(tipo,lite.checked),''));
-    }
-    document.getElementById('abrirCarpeta').addEventListener('click',()=>ejecutar('abrirCarpeta',()=>api.abrirCarpeta(),''));
-    document.getElementById('importarAnterior').addEventListener('click',()=>ejecutar('importarAnterior',async()=>{
-      const result = await api.importar();
-      if(!result.cancelado){ await cargarListas(); status.textContent = 'Ajustes importados. Guardamos un respaldo de la configuración anterior. Refresca la fuente en OBS.'; }
-    },''));
-  }
-  cargarListas().catch(()=>{
-    document.getElementById('contador').textContent = 'No se pudo cargar el editor. Comprueba que el programa siga abierto y recarga la pagina.';
-  });
-  iniciarDesktop().catch(error=>{ document.getElementById('contador').textContent = 'No se pudo preparar la aplicación: ' + error.message; });
-  loadProyecto();
-</script>
+<script src="/editor-ui.js"></script>
 </body>
 </html>

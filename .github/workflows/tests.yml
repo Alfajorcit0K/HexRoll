@@ -36,6 +36,8 @@ jobs:
         run: npm run test:desktop
       - name: Comprobar deteccion real de procesos del instalador
         run: npm run test:installer
+      - name: Probar instalacion y recuperacion en Windows limpio
+        run: node scripts/test-installation.js
       - name: Guardar instalador privado
         uses: actions/upload-artifact@v4
         with:

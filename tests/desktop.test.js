@@ -32,6 +32,10 @@ test('instalar y actualizar conserva selecciones y respalda antes de migrar', t 
   const actual = structuredClone(data);
   actual.habilidades[0].activo = false;
   actual.asesinos[0].activo = false;
+  actual.ajustes = require('../app-state').configuracionActual(actual);
+  actual.ajustes.perks.color = '#1256ab';
+  fs.writeFileSync(path.join(root, 'perfiles.json'), '[{"id":"propio","nombre":"Personal"}]');
+  fs.writeFileSync(path.join(root, 'editor-preferencias.json'), '{"tema":"claro"}');
   fs.writeFileSync(path.join(root, 'data.json'), JSON.stringify(actual));
   prepararInstalacion(source, root, '1');
   assert.ok(!fs.existsSync(path.join(root, 'backups')));
@@ -42,6 +46,9 @@ test('instalar y actualizar conserva selecciones y respalda antes de migrar', t 
   assert.equal(saved.habilidades[0].activo, false);
   assert.equal(saved.habilidades[1].activo, false);
   assert.equal(saved.asesinos[0].activo, false);
+  assert.deepEqual(saved.ajustes, actual.ajustes);
+  assert.equal(fs.readFileSync(path.join(root, 'perfiles.json'), 'utf8'), '[{"id":"propio","nombre":"Personal"}]');
+  assert.equal(fs.readFileSync(path.join(root, 'editor-preferencias.json'), 'utf8'), '{"tema":"claro"}');
   assert.equal(fs.readdirSync(path.join(root, 'backups')).length, 1);
   assert.equal(JSON.parse(sourceBefore).habilidades.length, 1);
   assert.equal(JSON.parse(fs.readFileSync(path.join(source, 'data.json'), 'utf8')).habilidades[0].activo, true);
@@ -75,13 +82,14 @@ test('datos dañados detienen la actualizacion sin sobrescribirlos', t => {
 test('servidor instalado escribe solo en la carpeta del usuario y sirve el editor empaquetado', async t => {
   const { source, root } = fixture(t);
   const repo = path.resolve(__dirname, '..');
-  for (const file of ['widget-template.html', 'widget-template-lite.html', 'personajes-habilidades.json', 'config-publica.json', 'editor-habilidades.html']) fs.copyFileSync(path.join(repo, file), path.join(source, file));
+  for (const file of ['widget-template.html', 'widget-template-lite.html', 'personajes-habilidades.json', 'config-publica.json', 'editor-habilidades.html', 'editor-ui.js']) fs.copyFileSync(path.join(repo, file), path.join(source, file));
   prepararInstalacion(source, root);
   const server = iniciarServidor({ root, source, port: 0 });
   await once(server, 'listening');
   t.after(() => new Promise(resolve => server.close(resolve)));
   const base = 'http://127.0.0.1:' + server.address().port;
   assert.equal((await fetch(base + '/editor')).status, 200);
+  assert.equal((await fetch(base + '/editor-ui.js')).status, 200);
   const blocked = await fetch(base + '/api/habilidades/uno', { method: 'PUT', headers: { Origin: 'https://otro-sitio.example', 'Content-Type': 'application/json' }, body: '{"activo":false}' });
   assert.equal(blocked.status, 403);
   const res = await fetch(base + '/api/habilidades/uno', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{"activo":false}' });

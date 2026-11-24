@@ -350,5 +350,13 @@
     "nombre_en": "The Judgment",
     "imagen": "K44_TheJudgment_Portrait.png",
     "activo": true
+  },
+  {
+    "id": "k_terrifier",
+    "nombre_es": "Terrifier",
+    "nombre_es_es": "Terrifier",
+    "nombre_en": "The Terrifier",
+    "imagen": "K45_TheTerrifier_Portrait.png",
+    "activo": true
   }
 ]

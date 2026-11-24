@@ -37,6 +37,8 @@
       width: fit-content;
     }
 
+    .top-controls[hidden] { display: none !important; }
+
     .top-controls {
       display: flex;
       justify-content: center;
@@ -358,7 +360,7 @@
         </div>
       </div>
     </div>
-    <div class="idioma-toggle" title="Idioma de las perks">
+    <div class="idioma-toggle" title="Idioma del widget">
       <button class="idioma-btn" data-idioma="es">ES-MX</button>
       <button class="idioma-btn" data-idioma="es-es">ES-ES</button>
       <button class="idioma-btn" data-idioma="en">EN</button>
@@ -436,6 +438,7 @@
     const ASESINOS = /*START_ASESINOS*/[]/*END_ASESINOS*/;
 
     const MODO_FIJO = /*START_MODO_FIJO*/null/*END_MODO_FIJO*/;
+    const CONFIG_WIDGET = /*START_CONFIG_WIDGET*/null/*END_CONFIG_WIDGET*/;
     const STORAGE_PREFIX = MODO_FIJO === 'asesino' ? 'ruleta_killers_' : MODO_FIJO === 'perks' ? 'ruleta_perks_' : 'perks_';
     function preferencia(clave, valorInicial) {
       const actual = localStorage.getItem(STORAGE_PREFIX + clave);
@@ -451,8 +454,8 @@
     const CARD_H_ASESINO = 302;
     const REEL_COUNT = 4;
     const LOOPS = 3;
-    const BASE_DURATION = 1200;
-    const DURATION_VARIANCE = 900; // rango de duración extra aleatoria por rodillo
+    const BASE_DURATION = CONFIG_WIDGET?.duracion || 1200;
+    const DURATION_VARIANCE = CONFIG_WIDGET ? 0 : 900; // rango de duración extra aleatoria por rodillo
 
     let spinning = false;
 
@@ -488,6 +491,13 @@
       hueThumb.style.left = (hue / 360 * 100) + '%';
     }
     applyColor(hueFromColorValue(preferencia('color', 'hsl(280,90%,55%)')));
+    if (CONFIG_WIDGET) {
+      document.querySelector('.top-controls').hidden = !CONFIG_WIDGET.mostrarControles;
+      if (CONFIG_WIDGET.administrado) {
+        document.documentElement.style.setProperty('--neon', CONFIG_WIDGET.color);
+        colorToggle.style.background = CONFIG_WIDGET.color;
+      }
+    }
 
     colorToggle.addEventListener('click', () => { colorPopup.hidden = !colorPopup.hidden; });
     let arrastrandoHue = false;
@@ -503,7 +513,7 @@
     hueSlider.addEventListener('touchmove', e => { applyColor(hueDesdeEvento(e.touches[0])); });
 
 
-    let currentIdioma = preferencia('idioma', 'es');
+    let currentIdioma = CONFIG_WIDGET?.administrado ? CONFIG_WIDGET.idioma : preferencia('idioma', 'es');
     const lastTargets = [null, null, null, null];
 
     function displayName(item, idioma) {
@@ -539,7 +549,7 @@
     });
     marcarIdiomaActivo();
 
-    let currentTipo = preferencia('tipo', 'survivor');
+    let currentTipo = CONFIG_WIDGET?.administrado ? (CONFIG_WIDGET.tipo || 'survivor') : preferencia('tipo', 'survivor');
     const tipoBtns = Array.from(document.querySelectorAll('.tipo-btn'));
     function marcarTipoActivo() {
       tipoBtns.forEach(b => b.classList.toggle('activo', b.dataset.tipo === currentTipo));

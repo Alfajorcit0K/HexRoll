@@ -6,6 +6,8 @@
 /.codex/
 /node_modules/
 /backups/
+/perfiles.json
+/editor-preferencias.json
 /ruleta-perks*.html
 /ruleta-killers*.html
 /ruleta-completa.html

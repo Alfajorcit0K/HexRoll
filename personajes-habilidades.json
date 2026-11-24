@@ -1282,5 +1282,29 @@
   "Whispers": {
     "personaje": "",
     "general": true
+  },
+  "Funny Business": {
+    "personaje": "The Terrifier",
+    "general": false
+  },
+  "Kill Spree": {
+    "personaje": "The Terrifier",
+    "general": false
+  },
+  "Laughingstock": {
+    "personaje": "The Terrifier",
+    "general": false
+  },
+  "Best Gift Ever": {
+    "personaje": "Sienna Shaw",
+    "general": false
+  },
+  "Shared Trauma": {
+    "personaje": "Sienna Shaw",
+    "general": false
+  },
+  "Valkyries Rage": {
+    "personaje": "Sienna Shaw",
+    "general": false
   }
 }

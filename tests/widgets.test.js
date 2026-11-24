@@ -8,8 +8,8 @@ const { construirWidget } = require('../ruleta-core');
 const root = path.resolve(__dirname, '..');
 const catalogo = JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8'));
 
-async function abrir(template, modo, saved) {
-  const html = construirWidget(fs.readFileSync(path.join(root, template), 'utf8'), catalogo, { modo });
+async function abrir(template, modo, saved, configuracion = null) {
+  const html = construirWidget(fs.readFileSync(path.join(root, template), 'utf8'), catalogo, { modo, configuracion });
   const elements = new Map();
   function element(id) {
     if (!elements.has(id)) elements.set(id, {
@@ -40,6 +40,16 @@ async function abrir(template, modo, saved) {
 }
 
 for (const template of ['widget-template.html', 'widget-template-lite.html']) {
+  test(template + ': configuracion de la app prevalece sobre preferencias antiguas de OBS', async () => {
+    const saved = new Map([['ruleta_perks_idioma', 'es-es'], ['ruleta_perks_tipo', 'survivor'], ['ruleta_perks_color', 'hsl(90,90%,55%)']]);
+    const app = await abrir(template, 'perks', saved, { color: '#aabb22', idioma: 'en', tipo: 'killer', duracion: 4000, mostrarControles: false, administrado: true });
+    assert.equal(vm.runInContext('currentIdioma', app.context), 'en');
+    assert.equal(vm.runInContext('currentTipo', app.context), 'killer');
+    assert.equal(vm.runInContext('BASE_DURATION', app.context), 4000);
+    assert.equal(app.elements.get('colorToggle').style.background, '#aabb22');
+    assert.equal(app.elements.get('.top-controls').hidden, true);
+    assert.ok(vm.runInContext('lastTargets.filter(Boolean).every(h => h.esVacio || h.tipo === "killer")', app.context));
+  });
   for (const modo of ['perks', 'asesino']) {
     test(template + ': widget fijo ' + modo + ' ignora el modo antiguo y sortea solo su contenido', async () => {
       const saved = new Map([['perks_modo', modo === 'perks' ? 'asesino' : 'perks']]);
