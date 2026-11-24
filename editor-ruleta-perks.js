@@ -37,7 +37,7 @@ function writeData(data) {
 }
 
 // Si este data.json es de antes de que existiera la ruleta de asesinos, le agrega
-// la lista por defecto UNA sola vez, sin tocar nada de lo que el cliente ya tenia.
+// la lista por defecto una sola vez, conservando la configuracion existente.
 function migrarDatosSiHaceFalta() {
   const data = readData();
   if (data.asesinos === undefined && fs.existsSync(ASESINOS_DEFAULT_FILE)) {

@@ -57,7 +57,7 @@ test('distribucion publica usa carpetas nuevas y excluye archivos historicos', t
     const dir = generar({ lite, zip: false });
     stages.push(path.dirname(dir));
     const files = fs.readdirSync(dir);
-    for (const excluded of ['clientes', 'Claude outputs', 'config-cliente.json', 'validador-licencias.gs.txt']) assert.ok(!files.includes(excluded));
+    for (const excluded of ['.git', '.build-cache', 'node_modules', 'backups', 'perfiles.json']) assert.ok(!files.includes(excluded));
     assert.ok(files.includes('LICENSE'));
     assert.ok(files.includes('ruleta-core.js'));
     assert.ok(files.includes('ruleta-killers.html'));

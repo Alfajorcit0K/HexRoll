@@ -19,7 +19,7 @@ function generar({ lite = false, zip = true } = {}) {
   const archivos = [
     'editor-ruleta-perks.js', 'ruleta-core.js', 'app-state.js', 'editor-habilidades.html',
     'editor-ui.js',
-    'ABRIR_EDITOR_PERKS.bat', 'MANUAL_CLIENTE.txt', 'README.md', 'LICENSE',
+    'ABRIR_EDITOR_PERKS.bat', 'GUIA_DE_USO.txt', 'README.md', 'LICENSE',
     'THIRD_PARTY_NOTICES.md', 'asesinos-default.json', 'personajes-habilidades.json', 'config-publica.json'
   ];
   for (const file of archivos) fs.copyFileSync(path.join(root, file), path.join(destino, file));
