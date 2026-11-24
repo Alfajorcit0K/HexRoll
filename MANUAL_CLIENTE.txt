@@ -1,0 +1,61 @@
+RULETA PERKS Y KILLERS - GUIA DE USO
+==================================
+
+La ruleta es gratuita. Todas las funciones estan disponibles para todos.
+
+PRIMER USO
+----------
+1. Extrae el ZIP completo a una carpeta permanente.
+2. Para el editor, instala Node.js desde https://nodejs.org si no lo tienes.
+3. Haz doble clic en ABRIR_EDITOR_PERKS.bat.
+4. El editor se abre en tu navegador. Manten el programa abierto al configurar.
+5. Busca perks o killers y marca lo que quieres incluir en los sorteos.
+   Los cambios se guardan automaticamente.
+
+CONFIGURACION DE OBS
+-------------------
+1. En Fuentes, pulsa + y elige Navegador.
+2. Marca "Archivo local" y selecciona ruleta-perks.html de esta carpeta.
+3. Como punto de partida, usa 1000 de ancho y 600 de alto; ajusta a tu escena.
+4. Para usar los controles, haz clic derecho en la fuente y elige Interactuar.
+5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
+   interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
+
+El editor puede cerrarse al terminar: el widget funciona desde el archivo local.
+La ruleta no necesita conexion para autorizar su uso. Las fuentes tipograficas
+externas pueden necesitar internet; se usa una fuente de respaldo sin conexion.
+
+CONTROLES
+---------
+- Color: cambia el borde de la ruleta.
+- ES-MX / ES-ES / EN: selecciona el idioma.
+- SURV / KILLER: selecciona el tipo de perks.
+- PERKS / ASESINO: sortea cuatro perks o un killer.
+Color, idioma y modo se conservan en el navegador de OBS.
+Para sortear perks, activa al menos cuatro entradas del tipo elegido, contando
+los espacios vacios. Para sortear un killer, activa al menos uno.
+
+ACTUALIZACIONES Y RESPALDOS
+-------------------------
+Esta version todavia no descarga actualizaciones automaticamente desde GitHub.
+Antes de reemplazar una instalacion, cierra el editor y guarda una copia de
+data.json: contiene tus selecciones. No lo reemplaces por el de otra descarga.
+Conserva tambien las imagenes propias si agregaste contenido personalizado.
+Despues de cambiar el widget, refresca la fuente en OBS.
+El importador del servidor conserva selecciones y crea un respaldo en backups/.
+Las nuevas entradas importadas quedan desactivadas para que puedas elegirlas.
+La interfaz de importacion y el actualizador se incorporaran despues.
+
+PROBLEMAS COMUNES
+----------------
+No abre el editor: comprueba que Node.js este instalado y revisa la ventana del
+programa. Si el puerto 4002 ya esta ocupado, cierra la otra instancia.
+No gira: revisa que haya suficientes entradas activas del tipo seleccionado.
+No refleja cambios: actualiza la cache de la fuente de navegador en OBS.
+Un data.json dañado detiene el arranque para evitar sobrescribir tus ajustes.
+Guarda el archivo dañado y recupera una copia desde tu respaldo.
+
+CODIGO Y RECURSOS DEL JUEGO
+-------------------------
+El codigo propio se ofrece bajo MIT. Los recursos del juego tienen titulares y
+condiciones diferentes. Consulta LICENSE y THIRD_PARTY_NOTICES.md.

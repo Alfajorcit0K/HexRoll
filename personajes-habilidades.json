@@ -1,0 +1,1286 @@
+{
+  "Bond": {
+    "personaje": "Dwight Fairfield",
+    "general": false
+  },
+  "Leader": {
+    "personaje": "Dwight Fairfield",
+    "general": false
+  },
+  "Prove Thyself": {
+    "personaje": "Dwight Fairfield",
+    "general": false
+  },
+  "Adrenaline": {
+    "personaje": "Meg Thomas",
+    "general": false
+  },
+  "Quick & Quiet": {
+    "personaje": "Meg Thomas",
+    "general": false
+  },
+  "Sprint Burst": {
+    "personaje": "Meg Thomas",
+    "general": false
+  },
+  "Botany Knowledge": {
+    "personaje": "Claudette Morel",
+    "general": false
+  },
+  "Empathy": {
+    "personaje": "Claudette Morel",
+    "general": false
+  },
+  "Self-Care": {
+    "personaje": "Claudette Morel",
+    "general": false
+  },
+  "Calm Spirit": {
+    "personaje": "Jake Park",
+    "general": false
+  },
+  "Iron Will": {
+    "personaje": "Jake Park",
+    "general": false
+  },
+  "Saboteur": {
+    "personaje": "Jake Park",
+    "general": false
+  },
+  "Balanced Landing": {
+    "personaje": "Nea Karlsson",
+    "general": false
+  },
+  "Streetwise": {
+    "personaje": "Nea Karlsson",
+    "general": false
+  },
+  "Urban Evasion": {
+    "personaje": "Nea Karlsson",
+    "general": false
+  },
+  "Decisive Strike": {
+    "personaje": "Laurie Strode",
+    "general": false
+  },
+  "Object of Obsession": {
+    "personaje": "Laurie Strode",
+    "general": false
+  },
+  "Sole Survivor": {
+    "personaje": "Laurie Strode",
+    "general": false
+  },
+  "Ace in the hole": {
+    "personaje": "Ace Visconti",
+    "general": false
+  },
+  "Open-Handed": {
+    "personaje": "Ace Visconti",
+    "general": false
+  },
+  "Up the Ante": {
+    "personaje": "Ace Visconti",
+    "general": false
+  },
+  "Borrowed Time": {
+    "personaje": "Bill Overbeck",
+    "general": false
+  },
+  "Left Behind": {
+    "personaje": "Bill Overbeck",
+    "general": false
+  },
+  "Unbreakable": {
+    "personaje": "Bill Overbeck",
+    "general": false
+  },
+  "Alert": {
+    "personaje": "Feng Min",
+    "general": false
+  },
+  "Lithe": {
+    "personaje": "Feng Min",
+    "general": false
+  },
+  "Technician": {
+    "personaje": "Feng Min",
+    "general": false
+  },
+  "Dead Hard": {
+    "personaje": "David King",
+    "general": false
+  },
+  "No Mither": {
+    "personaje": "David King",
+    "general": false
+  },
+  "We're Gonna Live Forever": {
+    "personaje": "David King",
+    "general": false
+  },
+  "Pharmacy": {
+    "personaje": "Quentin Smith",
+    "general": false
+  },
+  "Vigil": {
+    "personaje": "Quentin Smith",
+    "general": false
+  },
+  "Wake Up!": {
+    "personaje": "Quentin Smith",
+    "general": false
+  },
+  "Detective's Hunch": {
+    "personaje": "David Tapp",
+    "general": false
+  },
+  "Stake Out": {
+    "personaje": "David Tapp",
+    "general": false
+  },
+  "Tenacity": {
+    "personaje": "David Tapp",
+    "general": false
+  },
+  "Boil Over": {
+    "personaje": "Kate Denson",
+    "general": false
+  },
+  "Dance With Me": {
+    "personaje": "Kate Denson",
+    "general": false
+  },
+  "Windows of Opportunity": {
+    "personaje": "Kate Denson",
+    "general": false
+  },
+  "Autodidact": {
+    "personaje": "Adam Francis",
+    "general": false
+  },
+  "Deliverance": {
+    "personaje": "Adam Francis",
+    "general": false
+  },
+  "Diversion": {
+    "personaje": "Adam Francis",
+    "general": false
+  },
+  "Aftercare": {
+    "personaje": "Jeff Johansen",
+    "general": false
+  },
+  "Breakdown": {
+    "personaje": "Jeff Johansen",
+    "general": false
+  },
+  "Distortion": {
+    "personaje": "Jeff Johansen",
+    "general": false
+  },
+  "Head On": {
+    "personaje": "Jane Romero",
+    "general": false
+  },
+  "Poised": {
+    "personaje": "Jane Romero",
+    "general": false
+  },
+  "Solidarity": {
+    "personaje": "Jane Romero",
+    "general": false
+  },
+  "Buckle Up": {
+    "personaje": "Ash Williams",
+    "general": false
+  },
+  "Flip-Flop": {
+    "personaje": "Ash Williams",
+    "general": false
+  },
+  "Mettle of Man": {
+    "personaje": "Ash Williams",
+    "general": false
+  },
+  "Better Together": {
+    "personaje": "Nancy Wheeler",
+    "general": false
+  },
+  "Fixated": {
+    "personaje": "Nancy Wheeler",
+    "general": false
+  },
+  "Inner Strength": {
+    "personaje": "Nancy Wheeler",
+    "general": false
+  },
+  "Babysitter": {
+    "personaje": "Steve Harrington",
+    "general": false
+  },
+  "Camaraderie": {
+    "personaje": "Steve Harrington",
+    "general": false
+  },
+  "Second Wind": {
+    "personaje": "Steve Harrington",
+    "general": false
+  },
+  "Any Means Necessary": {
+    "personaje": "Yui Kimura",
+    "general": false
+  },
+  "Breakout": {
+    "personaje": "Yui Kimura",
+    "general": false
+  },
+  "Lucky Break": {
+    "personaje": "Yui Kimura",
+    "general": false
+  },
+  "For the People": {
+    "personaje": "Zarina Kassir",
+    "general": false
+  },
+  "Off the Record": {
+    "personaje": "Zarina Kassir",
+    "general": false
+  },
+  "Red Herring": {
+    "personaje": "Zarina Kassir",
+    "general": false
+  },
+  "Blood Pact": {
+    "personaje": "Cheryl Mason",
+    "general": false
+  },
+  "Repressed Alliance": {
+    "personaje": "Cheryl Mason",
+    "general": false
+  },
+  "Soul Guard": {
+    "personaje": "Cheryl Mason",
+    "general": false
+  },
+  "Built to Last": {
+    "personaje": "Felix Richter",
+    "general": false
+  },
+  "Desperate Measures": {
+    "personaje": "Felix Richter",
+    "general": false
+  },
+  "Visionary": {
+    "personaje": "Felix Richter",
+    "general": false
+  },
+  "Appraisal": {
+    "personaje": "Elodie Rakoto",
+    "general": false
+  },
+  "Deception": {
+    "personaje": "Elodie Rakoto",
+    "general": false
+  },
+  "Power Struggle": {
+    "personaje": "Elodie Rakoto",
+    "general": false
+  },
+  "Fast Track": {
+    "personaje": "Lee Yun-jin",
+    "general": false
+  },
+  "Self-Preservation": {
+    "personaje": "Lee Yun-jin",
+    "general": false
+  },
+  "Smash Hit": {
+    "personaje": "Lee Yun-jin",
+    "general": false
+  },
+  "Blast Mine": {
+    "personaje": "Jill Valentine",
+    "general": false
+  },
+  "Counterforce": {
+    "personaje": "Jill Valentine",
+    "general": false
+  },
+  "Resurgence": {
+    "personaje": "Jill Valentine",
+    "general": false
+  },
+  "Bite the Bullet": {
+    "personaje": "Leon Scott Kennedy",
+    "general": false
+  },
+  "Flashbang": {
+    "personaje": "Leon Scott Kennedy",
+    "general": false
+  },
+  "Rookie Spirit": {
+    "personaje": "Leon Scott Kennedy",
+    "general": false
+  },
+  "Boon: Circle of Healing": {
+    "personaje": "Mikaela Reid",
+    "general": false
+  },
+  "Boon: Shadow Step": {
+    "personaje": "Mikaela Reid",
+    "general": false
+  },
+  "Clairvoyance": {
+    "personaje": "Mikaela Reid",
+    "general": false
+  },
+  "Boon: Exponential": {
+    "personaje": "Jonah Vasquez",
+    "general": false
+  },
+  "Corrective Action": {
+    "personaje": "Jonah Vasquez",
+    "general": false
+  },
+  "Overcome": {
+    "personaje": "Jonah Vasquez",
+    "general": false
+  },
+  "Boon: Dark Theory": {
+    "personaje": "Yoichi Asakawa",
+    "general": false
+  },
+  "Empathic Connection": {
+    "personaje": "Yoichi Asakawa",
+    "general": false
+  },
+  "Parental Guidance": {
+    "personaje": "Yoichi Asakawa",
+    "general": false
+  },
+  "Inner Focus": {
+    "personaje": "Haddie Kaur",
+    "general": false
+  },
+  "Overzealous": {
+    "personaje": "Haddie Kaur",
+    "general": false
+  },
+  "Residual Manifest": {
+    "personaje": "Haddie Kaur",
+    "general": false
+  },
+  "Low Profile": {
+    "personaje": "Ada Wong",
+    "general": false
+  },
+  "Reactive Healing": {
+    "personaje": "Ada Wong",
+    "general": false
+  },
+  "Wiretap": {
+    "personaje": "Ada Wong",
+    "general": false
+  },
+  "Better Than New": {
+    "personaje": "Rebecca Chambers",
+    "general": false
+  },
+  "Hyperfocus": {
+    "personaje": "Rebecca Chambers",
+    "general": false
+  },
+  "Reassurance": {
+    "personaje": "Rebecca Chambers",
+    "general": false
+  },
+  "Fogwise": {
+    "personaje": "Vittorio Toscano",
+    "general": false
+  },
+  "Potential Energy": {
+    "personaje": "Vittorio Toscano",
+    "general": false
+  },
+  "Quick Gambit": {
+    "personaje": "Vittorio Toscano",
+    "general": false
+  },
+  "Cut Loose": {
+    "personaje": "Thalita Lyra",
+    "general": false
+  },
+  "Friendly Competition": {
+    "personaje": "Thalita Lyra",
+    "general": false
+  },
+  "Teamwork: Power of Two": {
+    "personaje": "Thalita Lyra",
+    "general": false
+  },
+  "Background Player": {
+    "personaje": "Renato Lyra",
+    "general": false
+  },
+  "Blood Rush": {
+    "personaje": "Renato Lyra",
+    "general": false
+  },
+  "Teamwork: Collective Stealth": {
+    "personaje": "Renato Lyra",
+    "general": false
+  },
+  "Made for This": {
+    "personaje": "Gabriel Soma",
+    "general": false
+  },
+  "Scavenger": {
+    "personaje": "Gabriel Soma",
+    "general": false
+  },
+  "Troubleshooter": {
+    "personaje": "Gabriel Soma",
+    "general": false
+  },
+  "Dramaturgy": {
+    "personaje": "Nicolas Cage",
+    "general": false
+  },
+  "Plot Twist": {
+    "personaje": "Nicolas Cage",
+    "general": false
+  },
+  "Scene Partner": {
+    "personaje": "Nicolas Cage",
+    "general": false
+  },
+  "Chemical Trap": {
+    "personaje": "Ellen Ripley",
+    "general": false
+  },
+  "Light-footed": {
+    "personaje": "Ellen Ripley",
+    "general": false
+  },
+  "Lucky Star": {
+    "personaje": "Ellen Ripley",
+    "general": false
+  },
+  "Boon: Illumination": {
+    "personaje": "Alan Wake",
+    "general": false
+  },
+  "Champion of Light": {
+    "personaje": "Alan Wake",
+    "general": false
+  },
+  "Deadline": {
+    "personaje": "Alan Wake",
+    "general": false
+  },
+  "Invocation: Weaving Spiders": {
+    "personaje": "Sable Ward",
+    "general": false
+  },
+  "Strength in Shadows": {
+    "personaje": "Sable Ward",
+    "general": false
+  },
+  "Wicked": {
+    "personaje": "Sable Ward",
+    "general": false
+  },
+  "Bardic Inspiration": {
+    "personaje": "Aestri Yazar & Baermar Uraz",
+    "general": false
+  },
+  "Mirrored Illusion": {
+    "personaje": "Aestri Yazar & Baermar Uraz",
+    "general": false
+  },
+  "Still Sight": {
+    "personaje": "Aestri Yazar & Baermar Uraz",
+    "general": false
+  },
+  "Finesse": {
+    "personaje": "Lara Croft",
+    "general": false
+  },
+  "Hardened": {
+    "personaje": "Lara Croft",
+    "general": false
+  },
+  "Specialist": {
+    "personaje": "Lara Croft",
+    "general": false
+  },
+  "Exultation": {
+    "personaje": "Trevor Belmont",
+    "general": false
+  },
+  "Eyes of Belmont": {
+    "personaje": "Trevor Belmont",
+    "general": false
+  },
+  "Moment of Glory": {
+    "personaje": "Trevor Belmont",
+    "general": false
+  },
+  "Clean Break": {
+    "personaje": "Taurie Cain",
+    "general": false
+  },
+  "Invocation: Treacherous Crows": {
+    "personaje": "Taurie Cain",
+    "general": false
+  },
+  "Shoulder the Burden": {
+    "personaje": "Taurie Cain",
+    "general": false
+  },
+  "Do No Harm": {
+    "personaje": "Orela Rose",
+    "general": false
+  },
+  "Duty of Care": {
+    "personaje": "Orela Rose",
+    "general": false
+  },
+  "Rapid Response": {
+    "personaje": "Orela Rose",
+    "general": false
+  },
+  "Apocalyptic Ingenuity": {
+    "personaje": "Rick Grimes",
+    "general": false
+  },
+  "Come and Get Me!": {
+    "personaje": "Rick Grimes",
+    "general": false
+  },
+  "Teamwork: Toughen Up": {
+    "personaje": "Rick Grimes",
+    "general": false
+  },
+  "Conviction": {
+    "personaje": "Michonne Grimes",
+    "general": false
+  },
+  "Last Stand": {
+    "personaje": "Michonne Grimes",
+    "general": false
+  },
+  "Teamwork: Throw Down": {
+    "personaje": "Michonne Grimes",
+    "general": false
+  },
+  "Ghost Notes": {
+    "personaje": "Vee Boonyasak",
+    "general": false
+  },
+  "ONE-TWO-THREE-FOUR!": {
+    "personaje": "Vee Boonyasak",
+    "general": false
+  },
+  "Road Life": {
+    "personaje": "Vee Boonyasak",
+    "general": false
+  },
+  "Bada Bada Boom": {
+    "personaje": "Dustin Henderson",
+    "general": false
+  },
+  "Change of Plan": {
+    "personaje": "Dustin Henderson",
+    "general": false
+  },
+  "Teamwork: Full Circuit": {
+    "personaje": "Dustin Henderson",
+    "general": false
+  },
+  "Extrasensory Perception": {
+    "personaje": "Eleven",
+    "general": false
+  },
+  "Teamwork: Soft-Spoken": {
+    "personaje": "Eleven",
+    "general": false
+  },
+  "We See You": {
+    "personaje": "Eleven",
+    "general": false
+  },
+  "A Place For Us": {
+    "personaje": "Kwon Tae-young",
+    "general": false
+  },
+  "Five Moves Ahead": {
+    "personaje": "Kwon Tae-young",
+    "general": false
+  },
+  "Flow State": {
+    "personaje": "Kwon Tae-young",
+    "general": false
+  },
+  "Cross-Examination": {
+    "personaje": "Shane Wiigwaas",
+    "general": false
+  },
+  "Lend a Hand": {
+    "personaje": "Shane Wiigwaas",
+    "general": false
+  },
+  "Wide Open Throttle": {
+    "personaje": "Shane Wiigwaas",
+    "general": false
+  },
+  "Boon: Steadfast": {
+    "personaje": "Aurora Stardotter",
+    "general": false
+  },
+  "Fruits of Your Labor": {
+    "personaje": "Aurora Stardotter",
+    "general": false
+  },
+  "Salvation's Cry": {
+    "personaje": "Aurora Stardotter",
+    "general": false
+  },
+  "Dark Sense": {
+    "personaje": "",
+    "general": true
+  },
+  "Deja Vu": {
+    "personaje": "",
+    "general": true
+  },
+  "Hope": {
+    "personaje": "",
+    "general": true
+  },
+  "Kindred": {
+    "personaje": "",
+    "general": true
+  },
+  "Lightweight": {
+    "personaje": "",
+    "general": true
+  },
+  "No One Left Behind": {
+    "personaje": "",
+    "general": true
+  },
+  "Plunderer's Instinct": {
+    "personaje": "",
+    "general": true
+  },
+  "Premonition": {
+    "personaje": "",
+    "general": true
+  },
+  "Resilience": {
+    "personaje": "",
+    "general": true
+  },
+  "Slippery Meat": {
+    "personaje": "",
+    "general": true
+  },
+  "Small Game": {
+    "personaje": "",
+    "general": true
+  },
+  "Spine Chill": {
+    "personaje": "",
+    "general": true
+  },
+  "This Is Not Happening": {
+    "personaje": "",
+    "general": true
+  },
+  "We'll Make It": {
+    "personaje": "",
+    "general": true
+  },
+  "Agitation": {
+    "personaje": "The Trapper",
+    "general": false
+  },
+  "Brutal Strength": {
+    "personaje": "The Trapper",
+    "general": false
+  },
+  "Unnerving Presence": {
+    "personaje": "The Trapper",
+    "general": false
+  },
+  "Bloodhound": {
+    "personaje": "The Wraith",
+    "general": false
+  },
+  "Predator": {
+    "personaje": "The Wraith",
+    "general": false
+  },
+  "Shadowborn": {
+    "personaje": "The Wraith",
+    "general": false
+  },
+  "Enduring": {
+    "personaje": "The Hillbilly",
+    "general": false
+  },
+  "Lightborn": {
+    "personaje": "The Hillbilly",
+    "general": false
+  },
+  "Tinkerer": {
+    "personaje": "The Hillbilly",
+    "general": false
+  },
+  "A Nurse's Calling": {
+    "personaje": "The Nurse",
+    "general": false
+  },
+  "Stridor": {
+    "personaje": "The Nurse",
+    "general": false
+  },
+  "Thanatophobia": {
+    "personaje": "The Nurse",
+    "general": false
+  },
+  "Dying Light": {
+    "personaje": "The Shape",
+    "general": true
+  },
+  "Play With Your Food": {
+    "personaje": "The Shape",
+    "general": true
+  },
+  "Save the Best for Last": {
+    "personaje": "The Shape",
+    "general": true
+  },
+  "Hex: Devour Hope": {
+    "personaje": "The Hag",
+    "general": false
+  },
+  "Hex: Ruin": {
+    "personaje": "The Hag",
+    "general": false
+  },
+  "Hex: The Third Seal": {
+    "personaje": "The Hag",
+    "general": false
+  },
+  "Monitor & Abuse": {
+    "personaje": "The Doctor",
+    "general": false
+  },
+  "Overcharge": {
+    "personaje": "The Doctor",
+    "general": false
+  },
+  "Overwhelming Presence": {
+    "personaje": "The Doctor",
+    "general": false
+  },
+  "Beast of Prey": {
+    "personaje": "The Huntress",
+    "general": false
+  },
+  "Hex: Huntress Lullaby": {
+    "personaje": "The Huntress",
+    "general": false
+  },
+  "Territorial Imperative": {
+    "personaje": "The Huntress",
+    "general": false
+  },
+  "Barbecue & Chili": {
+    "personaje": "The Cannibal",
+    "general": false
+  },
+  "Franklin's Demise": {
+    "personaje": "The Cannibal",
+    "general": false
+  },
+  "Knock Out": {
+    "personaje": "The Cannibal",
+    "general": false
+  },
+  "Blood Warden": {
+    "personaje": "The Nightmare",
+    "general": false
+  },
+  "Fire Up": {
+    "personaje": "The Nightmare",
+    "general": false
+  },
+  "Remember Me": {
+    "personaje": "The Nightmare",
+    "general": false
+  },
+  "Make Your Choice": {
+    "personaje": "The Pig",
+    "general": false
+  },
+  "Scourge Hook: Hangman's Trick": {
+    "personaje": "The Pig",
+    "general": false
+  },
+  "Surveillance": {
+    "personaje": "The Pig",
+    "general": false
+  },
+  "Bamboozle": {
+    "personaje": "The Clown",
+    "general": false
+  },
+  "Coulrophobia": {
+    "personaje": "The Clown",
+    "general": false
+  },
+  "Pop Goes the Weasel": {
+    "personaje": "The Clown",
+    "general": false
+  },
+  "Hex: Haunted Ground": {
+    "personaje": "The Spirit",
+    "general": false
+  },
+  "Rancor": {
+    "personaje": "The Spirit",
+    "general": false
+  },
+  "Spirit Fury": {
+    "personaje": "The Spirit",
+    "general": false
+  },
+  "Discordance": {
+    "personaje": "The Legion",
+    "general": false
+  },
+  "Iron Maiden": {
+    "personaje": "The Legion",
+    "general": false
+  },
+  "Mad Grit": {
+    "personaje": "The Legion",
+    "general": false
+  },
+  "Corrupt Intervention": {
+    "personaje": "The Plague",
+    "general": false
+  },
+  "Dark Devotion": {
+    "personaje": "The Plague",
+    "general": false
+  },
+  "Infectious Fright": {
+    "personaje": "The Plague",
+    "general": false
+  },
+  "Furtive Chase": {
+    "personaje": "The Ghost Face",
+    "general": false
+  },
+  "I'm All Ears": {
+    "personaje": "The Ghost Face",
+    "general": false
+  },
+  "Thrilling Tremors": {
+    "personaje": "The Ghost Face",
+    "general": false
+  },
+  "Cruel Limits": {
+    "personaje": "The Demogorgon",
+    "general": false
+  },
+  "Mindbreaker": {
+    "personaje": "The Demogorgon",
+    "general": false
+  },
+  "Surge": {
+    "personaje": "The Demogorgon",
+    "general": false
+  },
+  "Blood Echo": {
+    "personaje": "The Oni",
+    "general": false
+  },
+  "Nemesis": {
+    "personaje": "The Oni",
+    "general": false
+  },
+  "Zanshin Tactics": {
+    "personaje": "The Oni",
+    "general": false
+  },
+  "Dead Man's Switch": {
+    "personaje": "The Deathslinger",
+    "general": false
+  },
+  "Gearhead": {
+    "personaje": "The Deathslinger",
+    "general": false
+  },
+  "Hex: Retribution": {
+    "personaje": "The Deathslinger",
+    "general": false
+  },
+  "Deathbound": {
+    "personaje": "The Executioner",
+    "general": false
+  },
+  "Forced Penance": {
+    "personaje": "The Executioner",
+    "general": false
+  },
+  "Trail of Torment": {
+    "personaje": "The Executioner",
+    "general": false
+  },
+  "Dragon's Grip": {
+    "personaje": "The Blight",
+    "general": false
+  },
+  "Hex: Blood Favor": {
+    "personaje": "The Blight",
+    "general": false
+  },
+  "Hex: Undying": {
+    "personaje": "The Blight",
+    "general": false
+  },
+  "Coup de Grâce": {
+    "personaje": "The Twins",
+    "general": false
+  },
+  "Hoarder": {
+    "personaje": "The Twins",
+    "general": false
+  },
+  "Oppression": {
+    "personaje": "The Twins",
+    "general": false
+  },
+  "Hex: Crowd Control": {
+    "personaje": "The Trickster",
+    "general": false
+  },
+  "No Way Out": {
+    "personaje": "The Trickster",
+    "general": false
+  },
+  "Starstruck": {
+    "personaje": "The Trickster",
+    "general": false
+  },
+  "Eruption": {
+    "personaje": "The Nemesis",
+    "general": false
+  },
+  "Hysteria": {
+    "personaje": "The Nemesis",
+    "general": false
+  },
+  "Lethal Pursuer": {
+    "personaje": "The Nemesis",
+    "general": false
+  },
+  "Deadlock (No Holds Barred)": {
+    "personaje": "The Cenobite",
+    "general": true
+  },
+  "Hex: Plaything (Hex: Fortune's Fool)": {
+    "personaje": "The Cenobite",
+    "general": true
+  },
+  "Scourge Hook: Gift of Pain (Scourge Hook: Weeping Wounds)": {
+    "personaje": "The Cenobite",
+    "general": true
+  },
+  "Grim Embrace": {
+    "personaje": "The Artist",
+    "general": false
+  },
+  "Hex: Pentimento": {
+    "personaje": "The Artist",
+    "general": false
+  },
+  "Scourge Hook: Pain Resonance": {
+    "personaje": "The Artist",
+    "general": false
+  },
+  "Call of Brine": {
+    "personaje": "The Onryō",
+    "general": false
+  },
+  "Merciless Storm": {
+    "personaje": "The Onryō",
+    "general": false
+  },
+  "Scourge Hook: Floods of Rage": {
+    "personaje": "The Onryō",
+    "general": false
+  },
+  "Darkness Revealed": {
+    "personaje": "The Dredge",
+    "general": false
+  },
+  "Dissolution": {
+    "personaje": "The Dredge",
+    "general": false
+  },
+  "Septic Touch": {
+    "personaje": "The Dredge",
+    "general": false
+  },
+  "Awakened Awareness": {
+    "personaje": "The Mastermind",
+    "general": false
+  },
+  "Superior Anatomy": {
+    "personaje": "The Mastermind",
+    "general": false
+  },
+  "Terminus": {
+    "personaje": "The Mastermind",
+    "general": false
+  },
+  "Hex: Face the Darkness": {
+    "personaje": "The Knight",
+    "general": false
+  },
+  "Hubris": {
+    "personaje": "The Knight",
+    "general": false
+  },
+  "Nowhere to Hide": {
+    "personaje": "The Knight",
+    "general": false
+  },
+  "Game Afoot": {
+    "personaje": "The Skull Merchant",
+    "general": false
+  },
+  "Leverage": {
+    "personaje": "The Skull Merchant",
+    "general": false
+  },
+  "THWACK!": {
+    "personaje": "The Skull Merchant",
+    "general": false
+  },
+  "Forced Hesitation": {
+    "personaje": "The Singularity",
+    "general": false
+  },
+  "Genetic Limits": {
+    "personaje": "The Singularity",
+    "general": false
+  },
+  "Machine Learning": {
+    "personaje": "The Singularity",
+    "general": false
+  },
+  "Alien Instinct": {
+    "personaje": "The Xenomorph",
+    "general": false
+  },
+  "Rapid Brutality": {
+    "personaje": "The Xenomorph",
+    "general": false
+  },
+  "Ultimate Weapon": {
+    "personaje": "The Xenomorph",
+    "general": false
+  },
+  "Batteries Included": {
+    "personaje": "The Good Guy",
+    "general": false
+  },
+  "Friends 'Til the End": {
+    "personaje": "The Good Guy",
+    "general": false
+  },
+  "Hex: Two Can Play": {
+    "personaje": "The Good Guy",
+    "general": false
+  },
+  "Unbound": {
+    "personaje": "The Unknown",
+    "general": false
+  },
+  "Undone": {
+    "personaje": "The Unknown",
+    "general": false
+  },
+  "Unforeseen": {
+    "personaje": "The Unknown",
+    "general": false
+  },
+  "Dark Arrogance": {
+    "personaje": "The Lich",
+    "general": false
+  },
+  "Languid Touch": {
+    "personaje": "The Lich",
+    "general": false
+  },
+  "Weave Attunement": {
+    "personaje": "The Lich",
+    "general": false
+  },
+  "Dominance": {
+    "personaje": "The Dark Lord",
+    "general": false
+  },
+  "Hex: Wretched Fate": {
+    "personaje": "The Dark Lord",
+    "general": false
+  },
+  "Human Greed": {
+    "personaje": "The Dark Lord",
+    "general": false
+  },
+  "All-Shaking Thunder": {
+    "personaje": "The Houndmaster",
+    "general": false
+  },
+  "No Quarter": {
+    "personaje": "The Houndmaster",
+    "general": false
+  },
+  "Scourge Hook: Jagged Compass": {
+    "personaje": "The Houndmaster",
+    "general": false
+  },
+  "Forever Entwined": {
+    "personaje": "The Ghoul",
+    "general": false
+  },
+  "Hex: Nothing But Misery": {
+    "personaje": "The Ghoul",
+    "general": false
+  },
+  "None Are Free": {
+    "personaje": "The Ghoul",
+    "general": false
+  },
+  "Haywire": {
+    "personaje": "The Animatronic",
+    "general": false
+  },
+  "Help Wanted": {
+    "personaje": "The Animatronic",
+    "general": false
+  },
+  "Phantom Fear": {
+    "personaje": "The Animatronic",
+    "general": false
+  },
+  "Hex: Overture of Doom": {
+    "personaje": "The Krasue",
+    "general": false
+  },
+  "Ravenous": {
+    "personaje": "The Krasue",
+    "general": false
+  },
+  "Wandering Eye": {
+    "personaje": "The Krasue",
+    "general": false
+  },
+  "Hex: Hive Mind": {
+    "personaje": "The First",
+    "general": false
+  },
+  "Secret Project": {
+    "personaje": "The First",
+    "general": false
+  },
+  "Turn Back The Clock": {
+    "personaje": "The First",
+    "general": false
+  },
+  "Hex: Scared to Death": {
+    "personaje": "The Slasher",
+    "general": false
+  },
+  "Rampage": {
+    "personaje": "The Slasher",
+    "general": false
+  },
+  "Silent Shadow": {
+    "personaje": "The Slasher",
+    "general": false
+  },
+  "Celestial Witness": {
+    "personaje": "The Judgment",
+    "general": false
+  },
+  "Hex: Under Your Thumb": {
+    "personaje": "The Judgment",
+    "general": false
+  },
+  "Lay Waste": {
+    "personaje": "The Judgment",
+    "general": false
+  },
+  "Bitter Murmur": {
+    "personaje": "",
+    "general": true
+  },
+  "Deerstalker": {
+    "personaje": "",
+    "general": true
+  },
+  "Distressing": {
+    "personaje": "",
+    "general": true
+  },
+  "Hex: No One Escapes Death": {
+    "personaje": "",
+    "general": true
+  },
+  "Hex: Thrill of the Hunt": {
+    "personaje": "",
+    "general": true
+  },
+  "Insidious": {
+    "personaje": "",
+    "general": true
+  },
+  "Iron Grasp": {
+    "personaje": "",
+    "general": true
+  },
+  "Scourge Hook: Monstrous Shrine": {
+    "personaje": "",
+    "general": true
+  },
+  "Shattered Hope": {
+    "personaje": "",
+    "general": true
+  },
+  "Sloppy Butcher": {
+    "personaje": "",
+    "general": true
+  },
+  "Spies from the Shadows": {
+    "personaje": "",
+    "general": true
+  },
+  "Unrelenting": {
+    "personaje": "",
+    "general": true
+  },
+  "Whispers": {
+    "personaje": "",
+    "general": true
+  }
+}

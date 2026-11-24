@@ -1,0 +1,11 @@
+/clientes/
+/Claude outputs/
+/dist/
+/.codex/
+/node_modules/
+/backups/
+/ruleta-perks*.html
+/widget-template-libre.html
+/widget-template-lite-libre.html
+*.tmp
+*.log

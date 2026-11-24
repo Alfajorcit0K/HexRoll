@@ -1,0 +1,354 @@
+[
+  {
+    "id": "k_trapper",
+    "nombre_es": "El Trampero",
+    "nombre_es_es": "El Trampero",
+    "nombre_en": "The Trapper",
+    "imagen": "K01_TheTrapper_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_wraith",
+    "nombre_es": "El Espectro",
+    "nombre_es_es": "El Espectro",
+    "nombre_en": "The Wraith",
+    "imagen": "K02_TheWraith_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_hillbilly",
+    "nombre_es": "El Pueblerino",
+    "nombre_es_es": "El Pueblerino",
+    "nombre_en": "The Hillbilly",
+    "imagen": "K03_TheHillbilly_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_nurse",
+    "nombre_es": "La Enfermera",
+    "nombre_es_es": "La Enfermera",
+    "nombre_en": "The Nurse",
+    "imagen": "K04_TheNurse_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_hag",
+    "nombre_es": "La Bruja",
+    "nombre_es_es": "La Bruja",
+    "nombre_en": "The Hag",
+    "imagen": "K05_TheHag_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_shape",
+    "nombre_es": "La Forma",
+    "nombre_es_es": "La Forma",
+    "nombre_en": "The Shape",
+    "imagen": "K06_TheShape_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_doctor",
+    "nombre_es": "El Doctor",
+    "nombre_es_es": "El Doctor",
+    "nombre_en": "The Doctor",
+    "imagen": "K07_TheDoctor_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_huntress",
+    "nombre_es": "La Cazadora",
+    "nombre_es_es": "La Cazadora",
+    "nombre_en": "The Huntress",
+    "imagen": "K08_TheHuntress_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_cannibal",
+    "nombre_es": "El Caníbal",
+    "nombre_es_es": "El Caníbal",
+    "nombre_en": "The Cannibal",
+    "imagen": "K09_TheCannibal_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_nightmare",
+    "nombre_es": "La Pesadilla",
+    "nombre_es_es": "La Pesadilla",
+    "nombre_en": "The Nightmare",
+    "imagen": "K10_TheNightmare_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_pig",
+    "nombre_es": "La Cerda",
+    "nombre_es_es": "La Cerda",
+    "nombre_en": "The Pig",
+    "imagen": "K11_ThePig_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_clown",
+    "nombre_es": "El Payaso",
+    "nombre_es_es": "El Payaso",
+    "nombre_en": "The Clown",
+    "imagen": "K12_TheClown_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_spirit",
+    "nombre_es": "El Espíritu",
+    "nombre_es_es": "El Espíritu",
+    "nombre_en": "The Spirit",
+    "imagen": "K13_TheSpirit_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_legion",
+    "nombre_es": "La Legión",
+    "nombre_es_es": "La Legión",
+    "nombre_en": "The Legion",
+    "imagen": "K14_TheLegion_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_plague",
+    "nombre_es": "La Plaga",
+    "nombre_es_es": "La Plaga",
+    "nombre_en": "The Plague",
+    "imagen": "K15_ThePlague_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_ghostface",
+    "nombre_es": "Ghost Face",
+    "nombre_es_es": "Ghost Face",
+    "nombre_en": "The Ghost Face",
+    "imagen": "K16_TheGhostface_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_demogorgon",
+    "nombre_es": "El Demogorgon",
+    "nombre_es_es": "El Demogorgon",
+    "nombre_en": "The Demogorgon",
+    "imagen": "K17_TheDemogorgon_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_oni",
+    "nombre_es": "El Oni",
+    "nombre_es_es": "El Oni",
+    "nombre_en": "The Oni",
+    "imagen": "K18_TheOni_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_deathslinger",
+    "nombre_es": "El Arponero de la Muerte",
+    "nombre_es_es": "El Arponero",
+    "nombre_en": "The Deathslinger",
+    "imagen": "K19_TheDeathslinger_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_executioner",
+    "nombre_es": "El Ejecutor",
+    "nombre_es_es": "El Verdugo",
+    "nombre_en": "The Executioner",
+    "imagen": "K20_TheExecutioner_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_blight",
+    "nombre_es": "El Deterioro",
+    "nombre_es_es": "El Deterioro",
+    "nombre_en": "The Blight",
+    "imagen": "K21_TheBlight_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_twins",
+    "nombre_es": "Los Gemelos",
+    "nombre_es_es": "Los Mellizos",
+    "nombre_en": "The Twins",
+    "imagen": "K22_TheTwins_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_trickster",
+    "nombre_es": "El Embaucador",
+    "nombre_es_es": "El Traicionero",
+    "nombre_en": "The Trickster",
+    "imagen": "K23_TheTrickster_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_nemesis",
+    "nombre_es": "Némesis",
+    "nombre_es_es": "Némesis",
+    "nombre_en": "The Nemesis",
+    "imagen": "K24_TheNemesis_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_cenobite",
+    "nombre_es": "El Cenobita",
+    "nombre_es_es": "El Cenobita",
+    "nombre_en": "The Cenobite",
+    "imagen": "K25_TheCenobite_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_artist",
+    "nombre_es": "La Artista",
+    "nombre_es_es": "La Artista",
+    "nombre_en": "The Artist",
+    "imagen": "K26_TheArtist_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_onryo",
+    "nombre_es": "La Onryō",
+    "nombre_es_es": "La Onryō",
+    "nombre_en": "The Onryo",
+    "imagen": "K27_TheOnryo_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_dredge",
+    "nombre_es": "La Draga",
+    "nombre_es_es": "La Draga",
+    "nombre_en": "The Dredge",
+    "imagen": "K28_TheDredge_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_mastermind",
+    "nombre_es": "La Mente Maestra",
+    "nombre_es_es": "El Cerebro",
+    "nombre_en": "The Mastermind",
+    "imagen": "K29_TheMasterMind_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_knight",
+    "nombre_es": "El Caballero",
+    "nombre_es_es": "El Caballero",
+    "nombre_en": "The Knight",
+    "imagen": "K30_TheKnight_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_skullmerchant",
+    "nombre_es": "La Comerciante de Calaveras",
+    "nombre_es_es": "La Comerciante de Calaveras",
+    "nombre_en": "The Skull Merchant",
+    "imagen": "K31_TheSkullMerchant_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_singularity",
+    "nombre_es": "La Singularidad",
+    "nombre_es_es": "La Singularidad",
+    "nombre_en": "The Singularity",
+    "imagen": "K32_TheSingularity_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_xenomorph",
+    "nombre_es": "El Xenomorfo",
+    "nombre_es_es": "El Xenomorfo",
+    "nombre_en": "The Xenomorph",
+    "imagen": "K33_TheXenomorph_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_goodguy",
+    "nombre_es": "El Chico Bueno",
+    "nombre_es_es": "Good Guy",
+    "nombre_en": "The Good Guy",
+    "imagen": "K34_TheYerkes_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_unknown",
+    "nombre_es": "Lo Desconocido",
+    "nombre_es_es": "Lo Desconocido",
+    "nombre_en": "The Unknown",
+    "imagen": "K35_TheUnknown_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_lich",
+    "nombre_es": "El Liche",
+    "nombre_es_es": "El Liche",
+    "nombre_en": "The Lich",
+    "imagen": "K36_TheLich_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_darklord",
+    "nombre_es": "El Señor Oscuro",
+    "nombre_es_es": "El Señor Oscuro",
+    "nombre_en": "The Dark Lord",
+    "imagen": "K37_TheDracula_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_houndmaster",
+    "nombre_es": "La Señora de los Sabuesos",
+    "nombre_es_es": "La Adiestradora Canina",
+    "nombre_en": "The Houndmaster",
+    "imagen": "K38_TheHoundmaster_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_ghoul",
+    "nombre_es": "El Ghoul",
+    "nombre_es_es": "El Ghoul",
+    "nombre_en": "The Ghoul",
+    "imagen": "K39_TheGhoul_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_animatronic",
+    "nombre_es": "El Animatrónico",
+    "nombre_es_es": "El Animatrónico",
+    "nombre_en": "The Animatronic",
+    "imagen": "K40_TheAnimatronic_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_krasue",
+    "nombre_es": "La Krasue",
+    "nombre_es_es": "La Krasue",
+    "nombre_en": "The Krasue",
+    "imagen": "K41_TheKrasue_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_first",
+    "nombre_es": "Uno",
+    "nombre_es_es": "El Primero",
+    "nombre_en": "The First",
+    "imagen": "K42_TheFirst_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_slasher",
+    "nombre_es": "El Acuchillador",
+    "nombre_es_es": "El Rajador",
+    "nombre_en": "The Slasher",
+    "imagen": "K43_TheSlasher_Portrait.png",
+    "activo": true
+  },
+  {
+    "id": "k_judgment",
+    "nombre_es": "El Juicio",
+    "nombre_es_es": "La Sentencia",
+    "nombre_en": "The Judgment",
+    "imagen": "K44_TheJudgment_Portrait.png",
+    "activo": true
+  }
+]

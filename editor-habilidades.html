@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Editor - Ruleta Perks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --neon:#C83CFF; --bg:#1a1a1f; --panel:#242329; --panel2:#2d2c33; --text:#eeeef2; --dim:#9a9aa4; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:28px;}
+  h1{font-family:'Chakra Petch',sans-serif;font-size:24px;margin:0 0 6px;}
+  .sub{color:var(--dim);margin:0 0 26px;font-size:14px;}
+  .panel{background:var(--panel);border:1px solid #38373f;border-radius:12px;padding:20px;margin-bottom:22px;}
+  .panel h2{font-family:'Chakra Petch',sans-serif;font-size:16px;margin:0 0 16px;letter-spacing:.5px;}
+  input[type=text],input[type=file]{
+    width:100%;padding:9px 10px;border-radius:7px;border:1px solid #45444c;
+    background:var(--panel2);color:var(--text);font-family:inherit;font-size:15px;
+  }
+  button{
+    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;
+    background:var(--neon);color:#161217;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;
+  }
+  button:hover{filter:brightness(1.1);}
+  button.secondary{background:#3a3944;color:var(--text);padding:8px 14px;font-size:13px;}
+  select{
+    padding:9px 10px;border-radius:7px;border:1px solid #45444c;
+    background:var(--panel2);color:var(--text);font-family:inherit;font-size:14px;
+  }
+  .status{font-size:13px;color:var(--dim);margin-left:10px;}
+  .banner{background:#20262b;border:1px solid #3a4650;border-radius:8px;padding:12px 16px;margin-bottom:22px;font-size:13px;color:#9fd4ea;}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .toolbar input[type=text]{flex:1;min-width:180px;}
+  .lista{display:flex;flex-direction:column;gap:6px;max-height:520px;overflow-y:auto;}
+  .fila{display:flex;align-items:center;gap:12px;background:var(--panel2);border-radius:8px;padding:8px 12px;}
+  .fila img{width:36px;height:36px;border-radius:6px;background:#161217;object-fit:contain;flex:none;}
+  .fila .vacio-tag{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;flex:none;}
+  .fila .nombre{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:14px;}
+  .fila .nombre span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .encabezados{display:grid;grid-template-columns:36px 1fr 1fr 1fr 20px;gap:10px;padding:0 12px;margin-bottom:6px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;}
+  .fila input[type=checkbox]{width:20px;height:20px;cursor:pointer;}
+  .contador{font-size:13px;color:var(--dim);margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<h1>Ruleta Perks — Editor</h1>
+<p class="sub">Desde aquí solo puedes activar o desactivar perks, y cargar una lista actualizada cuando te la entreguen.</p>
+<div class="banner">
+  Ruleta Perks es gratuita. Todas las funciones están disponibles para todos.
+  <a id="enlaceRepositorio" hidden target="_blank" rel="noopener noreferrer" style="color:inherit;margin-left:12px">Ver el proyecto en GitHub</a>
+</div>
+
+<div class="banner">
+  Los cambios se guardan al instante y se aplican al widget que ves en OBS.
+  Si el widget ya estaba cargado en OBS, actualízalo con el botón de refrescar de la fuente.
+</div>
+
+<div class="panel">
+  <h2>Perks activas</h2>
+  <div class="toolbar">
+    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+    <select id="filtroTipo">
+      <option value="">Todas</option>
+      <option value="survivor">Supervivientes</option>
+      <option value="killer">Asesinos</option>
+    </select>
+    <button class="secondary" id="activarTodas">Activar todas</button>
+    <button class="secondary" id="desactivarTodas">Desactivar todas</button>
+  </div>
+  <div class="contador" id="contador"></div>
+  <div class="encabezados"><span></span><span>Español ES</span><span>Español MX</span><span>English</span><span></span></div>
+  <div id="lista" class="lista"></div>
+</div>
+
+<div class="panel">
+  <h2>Asesinos activos</h2>
+  <div class="toolbar">
+    <input type="text" id="buscadorAsesino" placeholder="Buscar por nombre...">
+    <button class="secondary" id="activarTodasAsesino">Activar todos</button>
+    <button class="secondary" id="desactivarTodasAsesino">Desactivar todos</button>
+  </div>
+  <div class="contador" id="contadorAsesino"></div>
+  <div class="encabezados"><span></span><span>Español ES</span><span>Español MX</span><span>English</span><span></span></div>
+  <div id="listaAsesinos" class="lista"></div>
+</div>
+
+<script>
+  let habilidades = [];
+
+  async function load(){
+    const res = await fetch('/api/habilidades');
+    habilidades = await res.json();
+    render();
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function sinTildes(s){ return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+
+  function nombresAsesino(personaje){
+    const a = asesinos.find(x => x.nombre_en === personaje);
+    return a ? [a.nombre_es, a.nombre_es_es, a.nombre_en] : [];
+  }
+
+  function render(){
+    const filtro = sinTildes(document.getElementById('buscador').value.trim().toLowerCase());
+    const cont = document.getElementById('lista');
+    cont.innerHTML = '';
+    const tipoFiltro = document.getElementById('filtroTipo').value;
+    const visibles = habilidades.filter(h=>{
+      if(tipoFiltro && !h.esVacio && h.tipo !== tipoFiltro) return false;
+      if(!filtro) return true;
+      if(sinTildes((h.nombre_es||'').toLowerCase()).includes(filtro)) return true;
+      if(sinTildes((h.nombre_es_es||'').toLowerCase()).includes(filtro)) return true;
+      if(sinTildes((h.nombre_en||'').toLowerCase()).includes(filtro)) return true;
+      if(sinTildes((h.personaje||'').toLowerCase()).includes(filtro)) return true;
+      if(h.general && sinTildes('general').includes(filtro)) return true;
+      return nombresAsesino(h.personaje).some(n => sinTildes((n||'').toLowerCase()).includes(filtro));
+    });
+    visibles.forEach(h=>{
+      const fila = document.createElement('div');
+      fila.className = 'fila';
+      const thumb = h.esVacio ? '<div class="vacio-tag">vacío</div>' :
+        (h.imagen ? '<img src="imagenes/perks/'+h.imagen+'">' : '<div class="vacio-tag">sin img</div>');
+      fila.innerHTML =
+        thumb +
+        '<div class="nombre"><span>'+esc(h.nombre_es_es || '—')+'</span><span>'+esc(h.nombre_es || (h.esVacio?'Vacío':'—'))+'</span><span>'+esc(h.nombre_en || '—')+'</span></div>'+
+        '<input type="checkbox" data-id="'+h.id+'" '+(h.activo!==false?'checked':'')+'>';
+      cont.appendChild(fila);
+    });
+    cont.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+      cb.addEventListener('change', ()=> toggleActivo(cb.dataset.id, cb.checked));
+    });
+    const activas = habilidades.filter(h=>h.activo!==false).length;
+    document.getElementById('contador').textContent = activas + ' activas de ' + habilidades.length + ' en total';
+  }
+
+  document.getElementById('buscador').addEventListener('input', render);
+  document.getElementById('filtroTipo').addEventListener('change', render);
+
+  async function toggleActivo(id, activo){
+    await fetch('/api/habilidades/'+id, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({activo})});
+    const h = habilidades.find(x=>x.id===id);
+    if(h) h.activo = activo;
+    document.getElementById('contador').textContent =
+      habilidades.filter(x=>x.activo!==false).length + ' activas de ' + habilidades.length + ' en total';
+  }
+
+  async function activarTodas(valor){
+    const visiblesIds = Array.from(document.querySelectorAll('#lista input[type=checkbox]')).map(cb=>cb.dataset.id);
+    await fetch('/api/habilidades-bulk-activo', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:visiblesIds, activo:valor})});
+    habilidades.forEach(h=>{ if(visiblesIds.includes(h.id)) h.activo = valor; });
+    render();
+  }
+  document.getElementById('activarTodas').addEventListener('click', ()=> activarTodas(true));
+  document.getElementById('desactivarTodas').addEventListener('click', ()=> activarTodas(false));
+
+  let asesinos = [];
+
+  async function loadAsesinos(){
+    const res = await fetch('/api/asesinos');
+    asesinos = await res.json();
+    renderAsesinos();
+  }
+
+  function renderAsesinos(){
+    const filtro = sinTildes(document.getElementById('buscadorAsesino').value.trim().toLowerCase());
+    const cont = document.getElementById('listaAsesinos');
+    cont.innerHTML = '';
+    const visibles = asesinos.filter(a=>{
+      if(!filtro) return true;
+      return sinTildes((a.nombre_es||'').toLowerCase()).includes(filtro) ||
+             sinTildes((a.nombre_es_es||'').toLowerCase()).includes(filtro) ||
+             sinTildes((a.nombre_en||'').toLowerCase()).includes(filtro);
+    });
+    visibles.forEach(a=>{
+      const fila = document.createElement('div');
+      fila.className = 'fila';
+      const thumb = a.imagen ? '<img src="imagenes/killers/'+a.imagen+'">' : '<div class="vacio-tag">sin img</div>';
+      fila.innerHTML =
+        thumb +
+        '<div class="nombre"><span>'+esc(a.nombre_es_es || '—')+'</span><span>'+esc(a.nombre_es || '—')+'</span><span>'+esc(a.nombre_en || '—')+'</span></div>'+
+        '<input type="checkbox" data-id="'+a.id+'" '+(a.activo!==false?'checked':'')+'>';
+      cont.appendChild(fila);
+    });
+    cont.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+      cb.addEventListener('change', ()=> toggleActivoAsesino(cb.dataset.id, cb.checked));
+    });
+    const activos = asesinos.filter(a=>a.activo!==false).length;
+    document.getElementById('contadorAsesino').textContent = activos + ' activos de ' + asesinos.length + ' en total';
+  }
+
+  document.getElementById('buscadorAsesino').addEventListener('input', renderAsesinos);
+
+  async function toggleActivoAsesino(id, activo){
+    await fetch('/api/asesinos/'+id, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({activo})});
+    const a = asesinos.find(x=>x.id===id);
+    if(a) a.activo = activo;
+    document.getElementById('contadorAsesino').textContent =
+      asesinos.filter(x=>x.activo!==false).length + ' activos de ' + asesinos.length + ' en total';
+  }
+
+  async function activarTodasAsesino(valor){
+    const visiblesIds = Array.from(document.querySelectorAll('#listaAsesinos input[type=checkbox]')).map(cb=>cb.dataset.id);
+    await fetch('/api/asesinos-bulk-activo', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:visiblesIds, activo:valor})});
+    asesinos.forEach(a=>{ if(visiblesIds.includes(a.id)) a.activo = valor; });
+    renderAsesinos();
+  }
+  document.getElementById('activarTodasAsesino').addEventListener('click', ()=> activarTodasAsesino(true));
+  document.getElementById('desactivarTodasAsesino').addEventListener('click', ()=> activarTodasAsesino(false));
+
+  async function loadProyecto(){
+    try {
+      const res = await fetch('/api/proyecto');
+      if(!res.ok) return;
+      const config = await res.json();
+      if(!config.repositorio) return;
+      const url = new URL(config.repositorio);
+      if(url.protocol !== 'https:') return;
+      const link = document.getElementById('enlaceRepositorio');
+      link.href = url.href;
+      link.hidden = false;
+    } catch(error) { console.warn('No se pudo cargar el enlace del proyecto.'); }
+  }
+  load().then(loadAsesinos).then(render).catch(()=>{
+    document.getElementById('contador').textContent = 'No se pudo cargar el editor. Comprueba que el programa siga abierto y recarga la pagina.';
+  });
+  loadProyecto();
+</script>
+</body>
+</html>
