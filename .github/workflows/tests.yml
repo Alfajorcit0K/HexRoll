@@ -34,6 +34,8 @@ jobs:
         run: npm run dist:windows
       - name: Probar aplicacion empaquetada sin Node en PATH
         run: npm run test:desktop
+      - name: Comprobar deteccion real de procesos del instalador
+        run: npm run test:installer
       - name: Guardar instalador privado
         uses: actions/upload-artifact@v4
         with:

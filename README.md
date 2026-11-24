@@ -8,7 +8,7 @@ El repositorio de desarrollo [Perks-Killer-Roulette](https://github.com/Alfajorc
 
 La aplicación instalable para Windows incluye todo lo necesario. El cliente **no necesita instalar Node.js**.
 
-1. Ejecuta `Ruleta-Perks-Killers-1.2.0-Setup.exe` y completa el asistente.
+1. Ejecuta `Ruleta-Perks-Killers-1.2.1-Setup.exe` y completa el asistente.
 2. Abre **Ruleta Perks y Killers** desde el escritorio o el menú Inicio.
 3. Elige tus perks y killers. Para migrar una instalación antigua, pulsa **Importar ajustes anteriores** y selecciona su `data.json`.
 4. En la tarjeta **Ruleta de perks**, pulsa **Copiar ruta de perks**. En OBS agrega una fuente de Navegador, marca **Archivo local** y pega la ruta.
@@ -36,6 +36,7 @@ El paquete ZIP anterior se mantiene como alternativa de desarrollo y sigue neces
 - `npm start`: abrir la aplicación de escritorio en desarrollo.
 - `npm run start:server`: abrir únicamente el servidor en `http://127.0.0.1:4002/editor`.
 - `npm test`: ejecutar las pruebas de datos y distribución.
+- `npm run test:installer`: comprobar el detector nativo de procesos en un instalador de prueba aislado (Windows).
 - `npm run dist:windows`: generar el instalador x64 en `release/`.
 - `npm run build`: generar carpeta y ZIP de la versión normal en `dist/`.
 - `npm run build:lite`: generar la variante de menor carga visual.
@@ -44,6 +45,8 @@ El paquete ZIP anterior se mantiene como alternativa de desarrollo y sigue neces
 Los paquetes locales incluyen el catálogo y las imágenes existentes para probar el funcionamiento. Su publicación requiere resolver los permisos indicados en los avisos de terceros.
 
 GitHub Actions ejecuta las pruebas y genera el instalador como artefacto privado después de cada push. No publica releases automáticamente. Para obtenerlo, abre la ejecución de **Pruebas** y descarga el artefacto **instalador-windows**.
+
+El instalador comprueba el nombre exacto del ejecutable de la aplicación. Si está abierto, pide cerrarlo y permite reintentar; no busca procesos por carpeta ni cierra programas automáticamente. Esta comprobación evita los falsos avisos de cierre de la versión 1.2.0.
 
 La distribución usa una lista explícita de archivos. Los paquetes son comunes para todos; `clientes/` y `Claude outputs/` están excluidos del paquete y de Git. `generar_cliente.js` se conserva como acceso compatible al nuevo generador; sus argumentos antiguos ya no se usan.
 

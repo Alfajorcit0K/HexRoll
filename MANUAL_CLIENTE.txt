@@ -5,7 +5,7 @@ La ruleta es gratuita. Todas las funciones estan disponibles para todos.
 
 PRIMER USO
 ----------
-1. Ejecuta el instalador Ruleta-Perks-Killers-1.2.0-Setup.exe.
+1. Ejecuta el instalador Ruleta-Perks-Killers-1.2.1-Setup.exe.
 2. Sigue el asistente y abre Ruleta Perks y Killers desde su acceso directo.
 3. No necesitas instalar Node.js ni abrir una consola.
 4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
@@ -61,6 +61,10 @@ Las nuevas entradas importadas quedan desactivadas para que puedas elegirlas.
 
 PROBLEMAS COMUNES
 ----------------
+El instalador 1.2.0 pide cerrar una ruleta que no esta abierta: cancela y cierra
+ese instalador y utiliza la version 1.2.1 o posterior. Se corrigio la deteccion.
+El nuevo instalador solo bloquea la instalacion si encuentra el ejecutable
+exacto de la aplicacion; no cierra otros programas ni borra tus ajustes.
 No abre la aplicacion: comprueba que usas Windows de 64 bits e intenta reinstalar.
 Los datos se conservan separados del programa. Un mensaje de arranque indica
 su ubicacion si hay que recuperar un respaldo.
