@@ -5,7 +5,7 @@ const crypto = require('node:crypto');
 
 async function publish() {
   const version = require('../package.json').version;
-  const repository = 'Alfajorcit0K/Perks-Killer-Roulette';
+  const repository = 'Alfajorcit0K/HexRoll';
   const tag = 'v' + version;
   if (process.env.GITHUB_ACTIONS !== 'true' || process.env.GITHUB_REPOSITORY !== repository || process.env.GITHUB_REF_NAME !== tag) throw new Error('Publica desde la etiqueta de version en GitHub Actions.');
   const token = process.env.GITHUB_TOKEN;

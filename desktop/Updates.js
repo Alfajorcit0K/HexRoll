@@ -1,5 +1,5 @@
 'use strict';
-const CHANNEL = Object.freeze({ provider: 'github', owner: 'Alfajorcit0K', repo: 'Perks-Killer-Roulette', private: false });
+const CHANNEL = Object.freeze({ provider: 'github', owner: 'Alfajorcit0K', repo: 'HexRoll', private: false });
 
 function errorReason(error) {
   const code = error?.code || error?.cause?.code;

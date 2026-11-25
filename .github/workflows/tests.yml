@@ -40,7 +40,7 @@ jobs:
         run: npm run test:installer
       - name: Probar instalacion y recuperacion en Windows limpio
         run: node scripts/InstallSmoke.js
-      - name: Guardar instalador privado
+      - name: Guardar instalador
         uses: actions/upload-artifact@v4
         with:
           name: HexRollInstaller

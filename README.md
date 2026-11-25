@@ -4,7 +4,7 @@ Una ruleta de Dead by Daylight para elegir cuatro perks o un killer al azar y mo
 
 ## Para empezar
 
-HexRoll es para Windows de 64 bits. Descarga el instalador de [Releases](https://github.com/Alfajorcit0K/Perks-Killer-Roulette/releases/latest), instala la aplicación y ábrela desde el escritorio o el menú Inicio; no hace falta instalar Node.js ni usar la consola.
+HexRoll es para Windows de 64 bits. Descarga el instalador de [Releases](https://github.com/Alfajorcit0K/HexRoll/releases/latest), instala la aplicación y ábrela desde el escritorio o el menú Inicio; no hace falta instalar Node.js ni usar la consola.
 
 La barra superior reúne las secciones, el cambio de tema y los botones para minimizar, maximizar y cerrar. Puedes arrastrarla para mover la ventana.
 

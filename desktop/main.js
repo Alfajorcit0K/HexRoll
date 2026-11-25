@@ -34,7 +34,8 @@ function protegerVentana(win, allowedURL) {
   win.webContents.setWindowOpenHandler(({ url }) => {
     try {
       const external = new URL(url);
-      if (external.protocol === 'https:' && ['www.twitch.tv', 'discord.gg'].includes(external.hostname)) shell.openExternal(url).catch(() => {});
+      const projectLink = external.hostname === 'github.com' && /^\/Alfajorcit0K\/HexRoll(?:\/|$)/.test(external.pathname);
+      if (external.protocol === 'https:' && (projectLink || ['www.twitch.tv', 'discord.gg'].includes(external.hostname))) shell.openExternal(url).catch(() => {});
     } catch (_) {}
     return { action: 'deny' };
   });

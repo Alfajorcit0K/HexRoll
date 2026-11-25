@@ -68,7 +68,7 @@
     "publish": {
       "provider": "github",
       "owner": "Alfajorcit0K",
-      "repo": "Perks-Killer-Roulette",
+      "repo": "HexRoll",
       "private": false,
       "releaseType": "release"
     }

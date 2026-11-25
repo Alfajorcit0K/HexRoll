@@ -25,7 +25,8 @@ test('errores de actualizacion distinguen canal inexistente, permisos, red y ver
 test('canal publico funciona sin tokens y no instala ni retrocede automaticamente', async () => {
   const { updater, updates } = fixture();
   assert.equal(updater.feed.private, false);
-  assert.equal(updater.feed.repo, 'Perks-Killer-Roulette');
+  assert.equal(updater.feed.repo, 'HexRoll');
+  assert.equal(updater.feed.repo, require('../package.json').build.publish.repo);
   assert.ok(!Object.hasOwn(updater.feed, 'token'));
   assert.equal(updater.autoDownload, true);
   assert.equal(updater.autoInstallOnAppQuit, false);
