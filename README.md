@@ -40,6 +40,7 @@ En **Mis widgets** puedes cambiar el color, el idioma y la duración del giro. C
 - Los controles están ocultos por defecto. Si los activas, usa 520 de alto en OBS.
 - El interruptor de modo claro y oscuro cambia el tema del editor y recuerda tu elección.
 - Puedes elegir el color del editor desde la paleta o el selector de color. Los fondos y el texto se adaptan al modo claro u oscuro; el switch lleva un sol y una luna. Tu elección se conserva al reiniciar y actualizar.
+- El logo y el icono de la ventana siguen el color elegido. El instalador y los accesos directos usan el logo blanco.
 - En **Perfiles y respaldos** puedes guardar distintas selecciones y apariencias para recuperarlas después.
 
 El catálogo incluye a **Terrifier**, sus tres perks y las tres de **Sienna Shaw**. Las perks de The Cenobite, The Shape, Laurie Strode y The Good Guy muestran también sus nombres generales entre paréntesis. Las traducciones de esos alias se comprobaron en los archivos del juego; están anotadas en [este registro](docs/PerkNames.json).

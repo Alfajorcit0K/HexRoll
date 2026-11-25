@@ -1,5 +1,6 @@
 'use strict';
-const { app, BrowserWindow, Menu, dialog, shell, clipboard, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, dialog, shell, clipboard, ipcMain, nativeImage } = require('electron');
+const { tintPixels } = require('../Theme');
 const { NsisUpdater } = require('electron-updater');
 const { createUpdates } = require('./Updates');
 const path = require('path');
@@ -15,6 +16,17 @@ let mainWindow, server, origin, instalacion;
 const previewWindows = new Map();
 const source = path.resolve(__dirname, '..');
 const appIcon = path.join(source, 'images', 'brand', 'HexRoll.png');
+let activeIcon = appIcon, iconColor = '', iconData = '', logoTemplate;
+function colorearIcono(color) {
+  if (typeof color !== 'string' || !/^#[a-f0-9]{6}$/i.test(color)) throw new Error('Color de icono invalido.');
+  if (color === iconColor) return iconData;
+  if (!logoTemplate) logoTemplate = nativeImage.createFromPath(path.join(source, 'images', 'brand', 'HexRollTint.png')).resize({ width: 256, height: 256, quality: 'best' });
+  const pixels = tintPixels(logoTemplate.toBitmap(), color, 'bgra');
+  activeIcon = nativeImage.createFromBitmap(pixels, { width: 256, height: 256 });
+  mainWindow.setIcon(activeIcon);
+  for (const win of previewWindows.values()) if (!win.isDestroyed()) win.setIcon(activeIcon);
+  iconColor = color; iconData = activeIcon.toDataURL(); return iconData;
+}
 const smoke = process.argv.includes('--smoke-test');
 const lock = app.requestSingleInstanceLock();
 
@@ -56,7 +68,7 @@ async function abrirVistaPrevia(tipo, lite = false, mostrar = true) {
   const anterior = previewWindows.get(key);
   if (anterior && !anterior.isDestroyed()) { if (mostrar) anterior.focus(); return anterior; }
   const url = origin + '/' + path.basename(elegido.ruta);
-  const win = new BrowserWindow({ icon: appIcon, width: elegido.ancho + 40, height: elegido.alto + 70, show: mostrar, parent: mainWindow,
+  const win = new BrowserWindow({ icon: activeIcon, width: elegido.ancho + 40, height: elegido.alto + 70, show: mostrar, parent: mainWindow,
     title: 'Vista previa · ' + ({ perksSurvivor: 'Perks de survivor', perksKiller: 'Perks de killer', killers: 'Personaje killer', perks: 'Perks (anterior)' }[tipo]) + (lite ? ' · Ligera' : ''),
     backgroundColor: '#1b1417', webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true } });
   previewWindows.set(key, win);
@@ -83,6 +95,7 @@ async function iniciar() {
     if (!mainWindow.webContents.isDestroyed()) mainWindow.webContents.send('ruleta:estado-ventana', estadoVentana());
   });
   manejar('ruleta:estado-ventana', estadoVentana);
+  manejar('ruleta:color-logo', color => colorearIcono(color));
   manejar('ruleta:controlar-ventana', accion => {
     if (!['minimizar', 'maximizar', 'cerrar'].includes(accion)) throw new Error('Accion de ventana invalida.');
     if (accion === 'minimizar') mainWindow.minimize();
@@ -257,6 +270,21 @@ async function iniciar() {
     estado.temaPersistente = true;
     if (temaRecuperado.colorEditor !== '#2478cc' || temaRecuperado.acento !== '#2478cc' || temaRecuperado.iconos !== 2) throw new Error('El color del editor o los iconos del tema no se conservaron.');
     estado.colorEditorPersistente = true;
+    const marcaCorrecta = await mainWindow.webContents.executeJavaScript(`(async () => {
+      await actualizarMarca('#2478cc');
+      const logo = document.querySelector('.barra-marca img'); await logo.decode();
+      const canvas = document.createElement('canvas'); canvas.width = canvas.height = 256;
+      const context = canvas.getContext('2d'); context.drawImage(logo, 0, 0, 256, 256);
+      const pixels = context.getImageData(0, 0, 256, 256).data;
+      let red = 0, blue = 0;
+      for (let i = 0; i < pixels.length; i += 4) { red += pixels[i] * pixels[i + 3]; blue += pixels[i + 2] * pixels[i + 3]; }
+      let invalidRejected = false;
+      try { await window.ruletaDesktop.colorearLogo('invalid'); } catch (_) { invalidRejected = true; }
+      return invalidRejected && logo.src.startsWith('data:image/png') && blue > red * 1.2 && pixels[3] === 0 &&
+        document.querySelector('.marca').src === logo.src && document.querySelector('link[rel="icon"]').href === logo.src;
+    })()`);
+    if (!marcaCorrecta || iconColor !== '#2478cc' || activeIcon.isEmpty()) throw new Error('El logo o el icono de ventana no siguen el color del editor.');
+    estado.marcaSegunTema = true;
     if (temaRecuperado.idiomaPersonajes !== 'es-es') throw new Error('El idioma de personajes no se conserva al cambiar el tema y recargar.');
     estado.idiomaPersonajesPersistente = true;
     await mainWindow.webContents.executeJavaScript(`(async () => {

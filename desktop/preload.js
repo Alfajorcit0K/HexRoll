@@ -2,6 +2,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('ruletaDesktop', {
   informacion: () => ipcRenderer.invoke('ruleta:informacion'),
+  colorearLogo: color => ipcRenderer.invoke('ruleta:color-logo', color),
   actualizaciones: () => ipcRenderer.invoke('ruleta:actualizaciones'),
   buscarActualizacion: () => ipcRenderer.invoke('ruleta:buscar-actualizacion'),
   instalarActualizacion: () => ipcRenderer.invoke('ruleta:instalar-actualizacion'),

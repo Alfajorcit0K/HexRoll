@@ -7,12 +7,36 @@ const WIDGETS = [
 ];
 let habilidades = [], asesinos = [], estado;
 let colorEditor = '#d52b40';
+let marcaSolicitud = 0, marcaBase;
+async function actualizarMarca(color) {
+  const solicitud = ++marcaSolicitud;
+  try {
+    let imagen;
+    if (window.ruletaDesktop?.colorearLogo) imagen = await window.ruletaDesktop.colorearLogo(color);
+    else {
+      if (!marcaBase) marcaBase = new Promise((resolve, reject) => {
+        const logo = new Image(); logo.onload = () => resolve(logo); logo.onerror = reject;
+        logo.src = 'images/brand/HexRollTint.png';
+      });
+      const logo = await marcaBase, canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 256;
+      const context = canvas.getContext('2d'); context.drawImage(logo, 0, 0, 256, 256);
+      const pixels = context.getImageData(0, 0, 256, 256);
+      HexRollTheme.tintPixels(pixels.data, color); context.putImageData(pixels, 0, 0);
+      imagen = canvas.toDataURL('image/png');
+    }
+    if (solicitud !== marcaSolicitud) return;
+    document.querySelectorAll('.marca, .barra-marca img').forEach(logo => { logo.src = imagen; });
+    document.querySelector('link[rel="icon"]').href = imagen;
+  } catch (_) { /* El logo blanco sigue disponible si no se puede generar el color. */ }
+}
 function aplicarColorEditor(color) {
   colorEditor = color;
   const values = HexRollTheme.palette(color, document.documentElement.dataset.tema || 'oscuro');
   for (const [key, value] of Object.entries(values)) document.documentElement.style.setProperty('--' + key, value);
   $('colorEditor').value = color;
   document.querySelectorAll('[data-editor-color]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.editorColor === color)));
+  void actualizarMarca(color);
 }
 function aplicarTema(tema) {
   document.documentElement.dataset.tema = tema;

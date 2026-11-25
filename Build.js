@@ -55,6 +55,7 @@ function generar({ lite = false, zip = true } = {}) {
   const marcaDir = path.join(destino, 'images', 'brand');
   fs.mkdirSync(marcaDir, { recursive: true });
   fs.copyFileSync(path.join(root, 'images', 'brand', 'HexRoll.png'), path.join(marcaDir, 'HexRoll.png'));
+  fs.copyFileSync(path.join(root, 'images', 'brand', 'HexRollTint.png'), path.join(marcaDir, 'HexRollTint.png'));
   console.log('Paquete local listo: ' + destino);
   if (zip) {
     if (process.platform !== 'win32') {

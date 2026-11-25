@@ -21,7 +21,19 @@
     values['sobre-acento'] = contrast(color, '#ffffff') >= contrast(color, '#000000') ? '#ffffff' : '#000000';
     return values;
   }
-  const api = { palette, contrast };
+  function tintPixels(bytes, color, order = 'rgba') {
+    if (!/^#[a-f0-9]{6}$/i.test(color)) throw new Error('Invalid theme color.');
+    const target = rgb(color), peak = Math.max(...target);
+    const strength = peak ? target.map(value => value / peak) : [1, 1, 1];
+    const channels = order === 'bgra' ? [2, 1, 0] : [0, 1, 2];
+    for (let i = 0; i < bytes.length; i += 4) {
+      const r = bytes[i + channels[0]], g = bytes[i + channels[1]], b = bytes[i + channels[2]];
+      const floor = Math.min(r, g, b), energy = Math.max(r, g, b) - floor;
+      for (let channel = 0; channel < 3; channel++) bytes[i + channels[channel]] = Math.round(floor + energy * strength[channel]);
+    }
+    return bytes;
+  }
+  const api = { palette, contrast, tintPixels };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HexRollTheme = api;
 })(globalThis);
