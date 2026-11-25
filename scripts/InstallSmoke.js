@@ -46,8 +46,11 @@ async function probar() {
     for (const file of ['SPerksRoulette.html', 'KPerksRoulette.html', 'KRoulette.html']) assert.ok(fs.existsSync(path.join(install, file)), 'El instalador debe incluir ' + file + ' antes de abrir la app.');
     fs.mkdirSync(path.dirname(dataFile), { recursive: true });
     const data = JSON.parse(fs.readFileSync(path.resolve('data.json'), 'utf8'));
-    data.habilidades[0].activo = false;
-    data.asesinos[0].activo = false;
+    const perkId = data.habilidades.find(h => !h.esVacio).id;
+    const emptyId = data.habilidades.find(h => h.esVacio).id;
+    const killerId = data.asesinos[0].id;
+    for (const id of [perkId, emptyId]) data.habilidades.find(h => h.id === id).activo = false;
+    data.asesinos.find(k => k.id === killerId).activo = false;
     data.ajustes = configuracionActual(data);
     fs.writeFileSync(dataFile, JSON.stringify(data));
     const env = { ...process.env, RULETA_DESKTOP_DATA: userRoot, RULETA_SMOKE_WIDGETS: install };
@@ -59,8 +62,8 @@ async function probar() {
     const profiles = fs.readFileSync(path.join(userRoot, 'widget', 'Profiles.json'), 'utf8');
     const themeFile = path.join(userRoot, 'widget', 'EditorSettings.json');
     const theme = fs.readFileSync(themeFile, 'utf8');
-    assert.equal(JSON.parse(before).habilidades[0].activo, false);
-    assert.equal(JSON.parse(before).asesinos[0].activo, false);
+    for (const id of [perkId, emptyId]) assert.equal(JSON.parse(before).habilidades.find(h => h.id === id)?.activo, false, 'Debe conservar la seleccion de ' + id + ' aunque cambie el orden.');
+    assert.equal(JSON.parse(before).asesinos.find(k => k.id === killerId)?.activo, false);
     await run(setup, ['/S', '/currentuser', '/D=' + install]);
     assert.equal(fs.readFileSync(dataFile, 'utf8'), before, 'Reinstalar altero los ajustes.');
     assert.ok(fs.existsSync(executable));
