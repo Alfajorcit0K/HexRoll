@@ -4,7 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const retratosSurvivors = require('./SurvivorPortraits.json');
 
-const BASE = { color: '#c14a59', idioma: 'es', duracion: 2200, mostrarControles: false };
+const BASE = { color: '#c14a59', idioma: 'en', duracion: 2200, mostrarControles: false };
 function configuracionActual(data) {
   const anterior = { ...BASE, tipo: 'survivor', ...data.ajustes?.perks };
   return {
@@ -59,8 +59,8 @@ function personajes(data) {
   return [...groups.values()].map(g => {
     const items = [...g.habilidades, ...g.asesinos];
     const activos = items.filter(x => x.activo !== false).length;
-    return { ...g, habilidades: g.habilidades.map(x => x.id), asesinos: g.asesinos.map(x => x.id), total: items.length, activos, activo: activos === items.length, parcial: activos > 0 && activos < items.length };
-  }).sort((a, b) => a.tipo.localeCompare(b.tipo) || a.nombre.localeCompare(b.nombre));
+    return { ...g, general: g.nombre === 'Perks generales', habilidades: g.habilidades.map(x => x.id), asesinos: g.asesinos.map(x => x.id), total: items.length, activos, activo: activos === items.length, parcial: activos > 0 && activos < items.length };
+  }).sort((a, b) => a.tipo.localeCompare(b.tipo) || Number(b.general) - Number(a.general) || a.nombre.localeCompare(b.nombre));
 }
 
 function crearEstado(root, catalogo, readData, writeData, regenerar) {
@@ -109,6 +109,14 @@ function crearEstado(root, catalogo, readData, writeData, regenerar) {
       guardarJSON(editorFile, preferencias); return preferencias;
     },
     configurar(config) { const data = readData(); data.ajustes = validarConfiguracion(config); guardar(data); return data.ajustes; },
+    espaciosVacios(cantidad) {
+      if (!Number.isInteger(cantidad) || cantidad < 0 || cantidad > 1000) throw new Error('Elige entre 0 y 1000 espacios vacios.');
+      const data = readData(), vacios = data.habilidades.filter(h => h.esVacio).slice(0, cantidad);
+      while (vacios.length < cantidad) vacios.push({ id: 'empty' + crypto.randomUUID().replaceAll('-', ''), nombre_en: 'Empty Slot', nombre_es: 'Espacio Vacío', nombre_es_es: 'Espacio Vacío', imagen: null, esVacio: true, activo: true });
+      data.habilidades = [...data.habilidades.filter(h => !h.esVacio), ...vacios];
+      data.vaciosPersonalizados = true;
+      guardar(data); return { cantidad: vacios.length };
+    },
     personaje(id, activo) {
       if (typeof activo !== 'boolean') throw new Error('Seleccion de personaje invalida.');
       const data = readData(), g = personajes(data).find(x => x.id === id);
@@ -124,7 +132,7 @@ function crearEstado(root, catalogo, readData, writeData, regenerar) {
       if (list.some(x => x.nombre.toLocaleLowerCase() === nombre.trim().toLocaleLowerCase())) throw new Error('Ya existe un perfil con ese nombre.');
       const data = readData(), seleccion = {};
       for (const key of ['habilidades', 'asesinos']) seleccion[key] = Object.fromEntries((data[key] || []).map(x => [x.id, x.activo !== false]));
-      const perfil = { id: crypto.randomUUID(), nombre: nombre.trim(), fecha: new Date().toISOString(), ajustes: configuracionActual(data), seleccion };
+      const perfil = { id: crypto.randomUUID(), nombre: nombre.trim(), fecha: new Date().toISOString(), ajustes: configuracionActual(data), seleccion, espaciosVacios: data.habilidades.filter(h => h.esVacio) };
       guardarJSON(profilesFile, [...list, perfil]); return { id: perfil.id };
     },
     aplicarPerfil(id) {
@@ -132,6 +140,12 @@ function crearEstado(root, catalogo, readData, writeData, regenerar) {
       if (!perfil) throw new Error('Perfil no encontrado.');
       const data = readData();
       data.ajustes = validarConfiguracion(perfil.ajustes);
+      if (Array.isArray(perfil.espaciosVacios)) {
+        validarDatos({ habilidades: perfil.espaciosVacios });
+        if (perfil.espaciosVacios.some(h => !h.esVacio)) throw new Error('Espacios vacios del perfil invalidos.');
+        data.habilidades = [...data.habilidades.filter(h => !h.esVacio), ...perfil.espaciosVacios];
+        data.vaciosPersonalizados = true;
+      }
       for (const key of ['habilidades', 'asesinos']) for (const item of data[key] || []) item.activo = perfil.seleccion?.[key]?.[item.id] === true;
       const backup = respaldar(); guardar(data); return { backup };
     },

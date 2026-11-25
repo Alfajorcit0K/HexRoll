@@ -79,8 +79,9 @@ async function abrirVistaPrevia(tipo, lite = false, mostrar = true) {
 
 async function iniciar() {
   app.setAppUserModelId('com.alfajorcit0k.ruletaperkskillers');
-  instalacion = prepararInstalacion(source, path.join(app.getPath('userData'), 'widget'), app.getVersion());
-  server = iniciarServidor({ root: instalacion.root, source, port: 0 });
+  const widgetRoot = smoke ? process.env.RULETA_SMOKE_WIDGETS || path.join(app.getPath('userData'), 'exports') : app.isPackaged ? path.dirname(app.getPath('exe')) : path.join(app.getPath('userData'), 'widget');
+  instalacion = prepararInstalacion(source, path.join(app.getPath('userData'), 'widget'), app.getVersion(), widgetRoot);
+  server = iniciarServidor({ root: instalacion.root, source, exportRoot: widgetRoot, port: 0 });
   await once(server, 'listening');
   origin = 'http://127.0.0.1:' + server.address().port;
   Menu.setApplicationMenu(null);
@@ -113,7 +114,7 @@ async function iniciar() {
     widgets: Object.fromEntries(['perksSurvivor', 'perksKiller', 'killers'].map(tipo => [tipo, { ...widgetElegido(tipo), rutaLite: widgetElegido(tipo, true).ruta }])) }));
   manejar('ruleta:copiar-ruta', (tipo, lite) => { clipboard.writeText(widgetElegido(tipo, lite === true).ruta); return true; });
   manejar('ruleta:abrir-carpeta', async () => {
-    const error = await shell.openPath(instalacion.root);
+    const error = await shell.openPath(instalacion.widgetRoot);
     if (error) throw new Error(error);
     return true;
   });
@@ -146,8 +147,7 @@ async function iniciar() {
   manejar('ruleta:instalar-actualizacion', () => updates.install());
   if (!smoke) {
     const initialCheck = setTimeout(() => { void updates.check(); }, 15000); initialCheck.unref();
-    const checks = setInterval(() => { void updates.check(); }, 6 * 60 * 60 * 1000); checks.unref();
-    app.once('before-quit', () => { clearTimeout(initialCheck); clearInterval(checks); });
+    app.once('before-quit', () => clearTimeout(initialCheck));
   }
   await mainWindow.loadURL(origin + '/editor');
   if (smoke) {
@@ -177,6 +177,9 @@ async function iniciar() {
     })()`);
     if (!barraCorrecta) throw new Error('La barra de navegacion de HexRoll no se preparo correctamente.');
     estado.barraPropia = true;
+    const inicioCorrecto = await mainWindow.webContents.executeJavaScript(`document.getElementById('updatePanel').hidden && !document.getElementById('checkUpdate').hidden && ['idiomaSurvivor','idiomaPerksKiller','idiomaKillers','idiomaPersonajes'].every(id => document.getElementById(id).value === 'en') && !document.querySelector('[id^="guardarSurvivor"]')`);
+    if (!inicioCorrecto) throw new Error('La interfaz inicial no muestra los idiomas o las actualizaciones correctamente.');
+    estado.idiomaInicialIngles = true;
     await mainWindow.webContents.executeJavaScript("localStorage.setItem('perks_modo', 'asesino')");
     const perks = await abrirVistaPrevia('perksSurvivor', false, false);
     const perksKiller = await abrirVistaPrevia('perksKiller', false, false);
@@ -184,7 +187,7 @@ async function iniciar() {
     const perksCorrectas = await perks.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'survivor' && currentTipo === 'survivor' && activePool().every(h => h.esVacio || h.tipo === 'survivor') && ASESINOS.length === 0 && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
     await perks.webContents.executeJavaScript("document.querySelector('[data-idioma=\"en\"]').click(); applyColor(120)");
     await killers.loadURL(origin + '/KRoulette.html');
-    const killersCorrectos = await killers.webContents.executeJavaScript("currentModo === 'asesino' && HABILIDADES.length === 0 && currentIdioma === 'es' && hueFromColorValue(localStorage.getItem(STORAGE_PREFIX + 'color')) !== 120 && document.querySelectorAll('.modo-btn').length === 0");
+    const killersCorrectos = await killers.webContents.executeJavaScript("currentModo === 'asesino' && HABILIDADES.length === 0 && currentIdioma === 'en' && hueFromColorValue(localStorage.getItem(STORAGE_PREFIX + 'color')) !== 120 && document.querySelectorAll('.modo-btn').length === 0");
     const perksKillerCorrectas = await perksKiller.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'killer' && currentTipo === 'killer' && activePool().every(h => h.esVacio || h.tipo === 'killer') && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
     if (!perksCorrectas || !perksKillerCorrectas || !killersCorrectos) throw new Error('Los widgets no son independientes.');
     estado.widgetsIndependientes = true;
@@ -193,8 +196,8 @@ async function iniciar() {
       document.getElementById('colorSurvivor').value = '#22bb88';
       document.getElementById('idiomaSurvivor').value = 'en';
       document.getElementById('duracionSurvivor').value = '1000';
-      document.getElementById('ajustesSurvivor').requestSubmit();
-      while (document.getElementById('guardarSurvivor').disabled) await new Promise(r => setTimeout(r, 30));
+      document.getElementById('duracionSurvivor').dispatchEvent(new Event('change', { bubbles: true }));
+      await guardadoApariencia;
     })()`);
     const ajustesCorrectos = await perks.webContents.executeJavaScript("currentIdioma === 'en' && currentTipo === 'survivor' && BASE_DURATION === 1000 && document.querySelector('.top-controls').hidden && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'");
     if (!ajustesCorrectos) throw new Error('La apariencia del formulario no se aplico al widget.');
@@ -202,12 +205,43 @@ async function iniciar() {
       document.getElementById('colorPerksKiller').value = '#ffaa44';
       document.getElementById('idiomaPerksKiller').value = 'es-es';
       document.getElementById('duracionPerksKiller').value = '4000';
-      document.getElementById('ajustesPerksKiller').requestSubmit();
-      while (document.getElementById('guardarPerksKiller').disabled) await new Promise(r => setTimeout(r, 30));
+      document.getElementById('duracionPerksKiller').dispatchEvent(new Event('change', { bubbles: true }));
+      await guardadoApariencia;
     })()`);
     if (!await perksKiller.webContents.executeJavaScript("currentTipo === 'killer' && currentIdioma === 'es-es' && BASE_DURATION === 4000 && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#ffaa44'") ||
         !await perks.webContents.executeJavaScript("currentTipo === 'survivor' && currentIdioma === 'en' && BASE_DURATION === 1000 && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'")) throw new Error('Los ajustes de survivor y killer se mezclaron.');
     estado.perksSeparadas = true;
+    const controlesCorrectos = await mainWindow.webContents.executeJavaScript(`(async () => {
+      const controles = document.getElementById('controlesSurvivor'); controles.checked = true;
+      controles.dispatchEvent(new Event('change', { bubbles: true })); await guardadoApariencia;
+      return document.getElementById('tamanoSurvivor').textContent === '1120 × 520';
+    })()`);
+    if (!controlesCorrectos || !await perks.webContents.executeJavaScript("!document.querySelector('.top-controls').hidden && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0")) throw new Error('Los controles del widget no se muestran correctamente.');
+    await mainWindow.webContents.executeJavaScript(`(async () => { const control = document.getElementById('controlesSurvivor'); control.checked = false; control.dispatchEvent(new Event('change', { bubbles: true })); await guardadoApariencia; })()`);
+    if (fs.readFileSync(instalacion.perksSurvivor, 'utf8') !== fs.readFileSync(path.join(instalacion.root, 'SPerksRoulette.html'), 'utf8') || !fs.existsSync(path.join(instalacion.widgetRoot, 'images', 'perks', 'BestGiftEver.png'))) throw new Error('Los HTML exportados no se sincronizan con los ajustes.');
+    estado.aparienciaAutomatica = true;
+    const localWidget = new BrowserWindow({ show: false, webPreferences: { partition: 'HexRollLocalSmoke', nodeIntegration: false, contextIsolation: true, sandbox: true } });
+    localWidget.webContents.session.webRequest.onBeforeRequest((details, callback) => callback({ cancel: !['file:', 'data:'].includes(new URL(details.url).protocol) }));
+    await localWidget.loadFile(instalacion.perksSurvivor);
+    const localCorrecto = await localWidget.webContents.executeJavaScript(`(async () => {
+      const images = [...document.images];
+      return location.protocol === 'file:' && currentIdioma === 'en' && images.length > 0 && (await Promise.all(images.map(img => img.decode().then(() => img.naturalWidth > 0, () => false)))).every(Boolean);
+    })()`);
+    localWidget.destroy();
+    if (!localCorrecto) throw new Error('La ruleta exportada no carga sus imagenes desde el archivo local.');
+    estado.htmlLocalConImagenes = true;
+    const espaciosCorrectos = await mainWindow.webContents.executeJavaScript(`(async () => {
+      const inicial = Number(document.getElementById('cantidadVacios').value);
+      document.getElementById('agregarVacio').click();
+      while (document.getElementById('cantidadVacios').disabled) await new Promise(r => setTimeout(r, 30));
+      if (Number(document.getElementById('cantidadVacios').value) !== inicial + 1) return false;
+      document.getElementById('quitarVacio').click();
+      while (document.getElementById('cantidadVacios').disabled) await new Promise(r => setTimeout(r, 30));
+      return Number(document.getElementById('cantidadVacios').value) === inicial && document.getElementById('probabilidadVacios').textContent.includes('por casilla') &&
+        ['personajesKillers', 'personajesSurvivors'].every(id => document.getElementById(id).querySelector('.personaje-retrato').textContent === 'G') && document.querySelector('#personajesVacios .personaje-retrato').textContent === '—';
+    })()`);
+    if (!espaciosCorrectos) throw new Error('Los grupos generales o la cantidad de espacios vacios no funcionan.');
+    estado.espaciosConfigurables = true;
     const perfilCorrecto = await mainWindow.webContents.executeJavaScript(`(async () => {
       document.getElementById('nombrePerfil').value = 'Prueba de escritorio';
       document.getElementById('guardarPerfil').click();

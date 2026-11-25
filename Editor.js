@@ -1,5 +1,13 @@
 'use strict';
 const $ = id => document.getElementById(id);
+let scrollTimeout;
+window.addEventListener('scroll', () => {
+  document.documentElement.classList.add('scrolling');
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => document.documentElement.classList.remove('scrolling'), 900);
+}, { passive: true, capture: true });
+window.addEventListener('pointermove', event => document.documentElement.classList.toggle('scroll-hover', event.clientX >= document.documentElement.clientWidth - 8), { passive: true });
+document.addEventListener('mouseleave', () => document.documentElement.classList.remove('scroll-hover'));
 const WIDGETS = [
   ['perksSurvivor', 'Survivor', 1120, 'SPerksRoulette'],
   ['perksKiller', 'PerksKiller', 1120, 'KPerksRoulette'],
@@ -103,7 +111,7 @@ function renderLista(items, container, carpeta, endpoint) {
   for (const item of items) {
     const row = document.createElement('label'); row.className = 'fila';
     if (item.imagen) { const img = document.createElement('img'); img.src = 'images/' + carpeta + '/' + encodeURIComponent(item.imagen); img.alt = ''; img.loading = 'lazy'; row.append(img); }
-    else { const tag = document.createElement('span'); tag.className = 'vacio-tag'; tag.textContent = item.esVacio ? 'vacío' : 'sin img'; row.append(tag); }
+    else { const tag = document.createElement('span'); tag.className = 'vacio-tag'; tag.textContent = item.esVacio ? '—' : 'sin img'; row.append(tag); }
     const nombres = document.createElement('span'); nombres.className = 'nombre';
     for (const key of ['nombre_es_es', 'nombre_es', 'nombre_en']) { const span = document.createElement('span'); span.textContent = item[key] || '—'; nombres.append(span); }
     const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.dataset.id = item.id; checkbox.checked = item.activo !== false;
@@ -130,12 +138,13 @@ function renderContenido() {
   const nombrePersonaje = g => g.tipo === 'killer' ? (g[{ en: 'nombre_en', es: 'nombre_es', 'es-es': 'nombre_es_es' }[estado.idiomaPersonajes]] || g.nombre) : g.nombre;
   const locale = { en: 'en', es: 'es-MX', 'es-es': 'es-ES' }[estado.idiomaPersonajes];
   const visibles = estado.personajes.filter(g => coincide([g.nombre, g.nombre_en, g.nombre_es, g.nombre_es_es], $('buscarPersonaje').value))
-    .sort((a, b) => a.tipo.localeCompare(b.tipo) || nombrePersonaje(a).localeCompare(nombrePersonaje(b), locale));
+    .sort((a, b) => a.tipo.localeCompare(b.tipo) || Number(b.general) - Number(a.general) || nombrePersonaje(a).localeCompare(nombrePersonaje(b), locale));
   for (const g of visibles) {
     const row = document.createElement('label'); row.className = 'personaje';
     const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = g.activo; checkbox.indeterminate = g.parcial;
     const retrato = document.createElement('span'); retrato.className = 'personaje-retrato'; retrato.setAttribute('aria-hidden', 'true');
-    const iniciales = nombrePersonaje(g).split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('');
+    const iniciales = g.general ? 'G' : g.tipo === 'vacio' ? '—' : nombrePersonaje(g).split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('');
+    retrato.classList.toggle('simbolo', g.general || g.tipo === 'vacio');
     if (g.imagen) {
       const img = document.createElement('img'); img.src = 'images/' + g.imagen.split('/').map(encodeURIComponent).join('/'); img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
       img.addEventListener('error', () => { retrato.replaceChildren(iniciales); });
@@ -155,8 +164,29 @@ function renderContenido() {
   $('personajesVacios').replaceChildren(groups.vacio);
   $('sinPersonajesKillers').hidden = cantidades.killer > 0;
   $('sinPersonajesSurvivors').hidden = cantidades.survivor > 0;
-  $('bloqueEspaciosVacios').hidden = cantidades.vacio === 0;
+  const vacios = habilidades.filter(h => h.esVacio), activosVacios = vacios.filter(h => h.activo !== false).length;
+  $('cantidadVacios').value = vacios.length;
+  $('quitarVacio').disabled = vacios.length === 0; $('agregarVacio').disabled = vacios.length >= 1000;
+  const probabilidades = ['survivor', 'killer'].map(tipo => {
+    const perks = activos(tipo), total = perks + activosVacios;
+    if (total < 4) return tipo + ': activa al menos 4 opciones para sortear';
+    let ningunaVacia = 1;
+    for (let i = 0; i < 4; i++) ningunaVacia *= Math.max(0, perks - i) / (total - i);
+    const percent = value => (value * 100).toLocaleString('es', { maximumFractionDigits: 1 }) + '%';
+    return tipo + ': ' + percent(activosVacios / total) + ' por casilla; ' + percent(1 - ningunaVacia) + ' de al menos un vacío en las cuatro';
+  });
+  $('probabilidadVacios').textContent = activosVacios + ' de ' + vacios.length + ' espacios activos. ' + probabilidades.join(' · ') + '. Cada espacio cuenta como una opción del sorteo.';
 }
+async function cambiarVacios(cantidad) {
+  const controles = ['quitarVacio', 'agregarVacio', 'cantidadVacios'].map($);
+  controles.forEach(control => { control.disabled = true; });
+  try { await request('/api/espacios-vacios', 'PUT', { cantidad }); await cargarContenido(); await refrescarVistas(); }
+  catch (error) { aviso(error.message); await cargarContenido(); }
+  finally { $('cantidadVacios').disabled = false; $('quitarVacio').disabled = Number($('cantidadVacios').value) === 0; $('agregarVacio').disabled = Number($('cantidadVacios').value) >= 1000; }
+}
+$('cantidadVacios').addEventListener('change', () => { void cambiarVacios(Number($('cantidadVacios').value)); });
+$('quitarVacio').addEventListener('click', () => { void cambiarVacios(Number($('cantidadVacios').value) - 1); });
+$('agregarVacio').addEventListener('click', () => { void cambiarVacios(Number($('cantidadVacios').value) + 1); });
 async function cargarContenido() {
   [habilidades, asesinos, estado] = await Promise.all([request('/api/habilidades'), request('/api/asesinos'), request('/api/estado')]);
   renderContenido();
@@ -187,16 +217,27 @@ function renderAjustes() {
     $('tamano' + sufijo).textContent = ancho + ' × ' + (config.mostrarControles ? 520 : 440);
   }
 }
-for (const [tipo, sufijo] of WIDGETS) {
-  $('ajustes' + sufijo).addEventListener('submit', event => {
-    event.preventDefault();
-    accion($('guardar' + sufijo), async () => {
-      const config = structuredClone(estado.configuracion);
-      config[tipo] = { color: $('color' + sufijo).value, idioma: $('idioma' + sufijo).value, duracion: Number($('duracion' + sufijo).value), mostrarControles: $('controles' + sufijo).checked };
-      estado.configuracion = await request('/api/configuracion', 'PUT', config);
-      renderAjustes(); await refrescarVistas();
-    }, 'Apariencia guardada y vista previa actualizada. Refresca la fuente en OBS.');
+let guardadoApariencia = Promise.resolve(), aparienciaSolicitud = 0;
+function guardarApariencia() {
+  const solicitud = ++aparienciaSolicitud, config = structuredClone(estado.configuracion);
+  for (const [tipo, sufijo, ancho] of WIDGETS) {
+    config[tipo] = { color: $('color' + sufijo).value, idioma: $('idioma' + sufijo).value, duracion: Number($('duracion' + sufijo).value), mostrarControles: $('controles' + sufijo).checked };
+    $('tamano' + sufijo).textContent = ancho + ' × ' + (config[tipo].mostrarControles ? 520 : 440);
+  }
+  $('estadoApariencia').textContent = 'Guardando apariencia…';
+  guardadoApariencia = guardadoApariencia.catch(() => {}).then(async () => {
+    estado.configuracion = await request('/api/configuracion', 'PUT', config);
+    await refrescarVistas();
+    if (solicitud === aparienciaSolicitud) $('estadoApariencia').textContent = 'Apariencia guardada. Refresca las fuentes en OBS para verla.';
   });
+  void guardadoApariencia.catch(error => {
+    if (solicitud === aparienciaSolicitud) $('estadoApariencia').textContent = 'No se pudo guardar la apariencia: ' + error.message;
+  });
+  return guardadoApariencia;
+}
+for (const [, sufijo] of WIDGETS) {
+  $('ajustes' + sufijo).addEventListener('change', () => { void guardarApariencia(); });
+  $('ajustes' + sufijo).addEventListener('submit', event => { event.preventDefault(); void guardarApariencia(); });
 }
 function opciones(id, items, value, label, empty) {
   const selected = $(id).value;
@@ -211,9 +252,11 @@ function renderPerfiles() {
   $('restaurarRespaldo').disabled = !estado.respaldos.length;
 }
 $('guardarPerfil').addEventListener('click', () => accion($('guardarPerfil'), async () => {
+  await guardadoApariencia;
   await request('/api/perfiles', 'POST', { nombre: $('nombrePerfil').value }); $('nombrePerfil').value = ''; await cargarTodo();
 }, 'Perfil guardado con tu selección y apariencia actuales.'));
 $('aplicarPerfil').addEventListener('click', () => accion($('aplicarPerfil'), async () => {
+  await guardadoApariencia;
   await request('/api/perfiles/' + $('listaPerfiles').value + '/aplicar', 'POST'); await cargarTodo(); await refrescarVistas();
 }, 'Perfil cargado. Guardamos un respaldo del estado anterior. Refresca las fuentes en OBS.'));
 $('borrarPerfil').addEventListener('click', () => {
@@ -230,20 +273,26 @@ $('restaurarRespaldo').addEventListener('click', () => {
   }, 'Respaldo restaurado. Refresca las fuentes en OBS.');
 });
 async function iniciarActualizaciones(api) {
-  $('updatePanel').hidden = false;
+  $('checkUpdate').hidden = false;
+  let mostrarConsulta = false, faseActual = 'idle', faseOculta = null;
   function render(update) {
     const messages = {
-      idle: 'Buscaré nuevas versiones al abrir HexRoll y cada seis horas.',
+      idle: 'HexRoll busca nuevas versiones al abrirse. También puedes consultarlas desde este botón.',
       checking: 'Buscando una nueva versión…',
       downloading: 'Descargando HexRoll ' + (update.nextVersion || '') + ' · ' + update.percent + '%',
       ready: 'HexRoll ' + update.nextVersion + ' está lista. Reinicia cuando te venga bien para instalarla.',
       current: 'Tienes la última versión disponible: ' + update.version + '.',
-      error: 'No se pudo completar la actualización. Revisa tu conexión e inténtalo de nuevo.',
+      error: ({ network: 'No se pudo establecer conexión con GitHub. Vuelve a intentarlo más tarde.', unavailable: 'El canal de actualizaciones todavía no está disponible.', access: 'GitHub no permitió consultar las actualizaciones. Vuelve a intentarlo más tarde.', integrity: 'La descarga no pasó la verificación. Inténtalo de nuevo.', unknown: 'No se pudo completar la consulta o descarga de la actualización. Inténtalo de nuevo más tarde.' })[update.reason || 'unknown'],
       development: 'Las actualizaciones se habilitan en la aplicación instalada.'
     };
+    faseActual = update.phase;
+    $('updatePanel').hidden = !mostrarConsulta && (!['downloading', 'ready'].includes(update.phase) || faseOculta === update.phase);
     $('updateStatus').textContent = messages[update.phase] || '';
-    const busy = ['checking', 'downloading'].includes(update.phase), development = update.phase === 'development';
-    $('checkUpdate').disabled = busy || development || update.phase === 'ready';
+    const development = update.phase === 'development';
+    $('checkUpdate').disabled = update.phase === 'checking' || development;
+    const label = ['downloading', 'ready'].includes(update.phase) ? 'Ver actualización' : 'Buscar actualizaciones';
+    $('checkUpdate').querySelector('span').textContent = label;
+    $('checkUpdate').setAttribute('aria-label', label); $('checkUpdate').title = label;
     $('installUpdate').hidden = update.phase !== 'ready';
     $('updateProgress').hidden = update.phase !== 'downloading'; $('updateProgress').value = update.percent;
   }
@@ -255,7 +304,8 @@ async function iniciarActualizaciones(api) {
   const unsubscribe = api.alCambiarActualizaciones(render);
   window.addEventListener('unload', unsubscribe, { once: true });
   render(await api.actualizaciones());
-  $('checkUpdate').addEventListener('click', () => { void act($('checkUpdate'), () => api.buscarActualizacion()); });
+  $('checkUpdate').addEventListener('click', () => { mostrarConsulta = true; faseOculta = null; void act($('checkUpdate'), () => api.buscarActualizacion()); });
+  $('dismissUpdate').addEventListener('click', () => { mostrarConsulta = false; faseOculta = faseActual; $('updatePanel').hidden = true; });
   $('installUpdate').addEventListener('click', () => { void act($('installUpdate'), () => api.instalarActualizacion()); });
 }
 async function iniciarDesktop() {
@@ -285,7 +335,10 @@ async function iniciarDesktop() {
   const dejarDeEscuchar = api.alCambiarVentana(actualizarVentana);
   window.addEventListener('unload', dejarDeEscuchar, { once: true });
   for (const [id, accionVentana] of [['minimizarVentana', 'minimizar'], ['maximizarVentana', 'maximizar'], ['cerrarVentana', 'cerrar']]) {
-    $(id).addEventListener('click', () => accion($(id), async () => actualizarVentana(await api.controlarVentana(accionVentana))));
+    $(id).addEventListener('click', () => accion($(id), async () => {
+      if (accionVentana === 'cerrar') await guardadoApariencia;
+      actualizarVentana(await api.controlarVentana(accionVentana));
+    }));
   }
   $('estadoDesktop').textContent = 'Versión ' + info.version + ' · Lista para configurar';
   for (const [tipo, sufijo] of WIDGETS) {

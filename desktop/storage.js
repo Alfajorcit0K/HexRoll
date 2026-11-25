@@ -28,7 +28,7 @@ function copiarImagenes(source, root, overwrite) {
   }
 }
 
-function prepararInstalacion(source, root, version = 'desarrollo') {
+function prepararInstalacion(source, root, version = 'desarrollo', widgetRoot = root) {
   const catalogoText = fs.readFileSync(path.join(source, 'data.json'), 'utf8');
   const catalogo = validarDatos(JSON.parse(catalogoText));
   const hash = crypto.createHash('sha256').update(catalogoText).update(version).digest('hex');
@@ -52,11 +52,11 @@ function prepararInstalacion(source, root, version = 'desarrollo') {
   copiarImagenes(source, root, hashPrevio !== hash);
   fs.writeFileSync(estadoFile, JSON.stringify({ hash }, null, 2));
   return {
-    root,
-    perksSurvivor: path.join(root, 'SPerksRoulette.html'), perksSurvivorLite: path.join(root, 'SPerksRouletteLite.html'),
-    perksKiller: path.join(root, 'KPerksRoulette.html'), perksKillerLite: path.join(root, 'KPerksRouletteLite.html'),
-    widget: path.join(root, 'PerksRoulette.html'), widgetLite: path.join(root, 'PerksRouletteLite.html'),
-    killer: path.join(root, 'KRoulette.html'), killerLite: path.join(root, 'KRouletteLite.html')
+    root, widgetRoot,
+    perksSurvivor: path.join(widgetRoot, 'SPerksRoulette.html'), perksSurvivorLite: path.join(widgetRoot, 'SPerksRouletteLite.html'),
+    perksKiller: path.join(widgetRoot, 'KPerksRoulette.html'), perksKillerLite: path.join(widgetRoot, 'KPerksRouletteLite.html'),
+    widget: path.join(widgetRoot, 'PerksRoulette.html'), widgetLite: path.join(widgetRoot, 'PerksRouletteLite.html'),
+    killer: path.join(widgetRoot, 'KRoulette.html'), killerLite: path.join(widgetRoot, 'KRouletteLite.html')
   };
 }
 

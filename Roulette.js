@@ -26,6 +26,7 @@ function validarDatos(data) {
     }
   }
   if (data.ajustes !== undefined) require('./State').validarConfiguracion(data.ajustes);
+  if (data.vaciosPersonalizados !== undefined && typeof data.vaciosPersonalizados !== 'boolean') throw new Error('Preferencia de espacios vacios invalida.');
   return data;
 }
 
@@ -43,6 +44,7 @@ function fusionarDatos(actual, catalogo) {
       ? { ...item, ...nuevos.get(item.id), activo: item.activo !== false }
       : { ...item });
     for (const item of nuevos.values()) {
+      if (key === 'habilidades' && item.esVacio && actual.vaciosPersonalizados) continue;
       if (!porId.has(item.id)) resultado[key].push({ ...item, activo: false });
     }
   }

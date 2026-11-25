@@ -11,6 +11,34 @@ const { configuracionActual, validarConfiguracion, personajes } = require('../St
 const repo = path.resolve(__dirname, '..');
 const catalogo = JSON.parse(fs.readFileSync(path.join(repo, 'data.json'), 'utf8'));
 
+test('idiomas nuevos empiezan en ingles y los grupos generales encabezan ambos roles', () => {
+  for (const config of Object.values(configuracionActual({}))) assert.equal(config.idioma, 'en');
+  const groups = personajes(catalogo);
+  for (const tipo of ['survivor', 'killer']) assert.equal(groups.filter(g => g.tipo === tipo)[0].general, true);
+});
+
+test('espacios vacios se añaden y quitan, persisten al actualizar y se recuperan con perfiles y respaldos', async t => {
+  const { api, read } = await fixture(t);
+  await api('espacios-vacios', 'PUT', { cantidad: 14 });
+  const vacios = read().habilidades.filter(h => h.esVacio);
+  assert.equal(vacios.length, 14);
+  assert.equal(new Set(vacios.map(h => h.id)).size, 14);
+  const perfil = await api('perfiles', 'POST', { nombre: 'Con vacios' });
+  const { backup } = await api('respaldos', 'POST');
+  await api('espacios-vacios', 'PUT', { cantidad: 0 });
+  assert.equal(read().habilidades.filter(h => h.esVacio).length, 0);
+  assert.equal(require('../Roulette').fusionarDatos(read(), catalogo).habilidades.filter(h => h.esVacio).length, 0);
+  await api('espacios-vacios', 'PUT', { cantidad: -1 }, 400);
+  await api('espacios-vacios', 'PUT', { cantidad: 1.5 }, 400);
+  await api('espacios-vacios', 'PUT', { cantidad: 1001 }, 400);
+  assert.equal(read().habilidades.filter(h => h.esVacio).length, 0);
+  await api('perfiles/' + perfil.id + '/aplicar', 'POST');
+  assert.deepEqual(read().habilidades.filter(h => h.esVacio), vacios);
+  await api('espacios-vacios', 'PUT', { cantidad: 3 });
+  await api('respaldos/' + backup + '/restaurar', 'POST');
+  assert.deepEqual(read().habilidades.filter(h => h.esVacio), vacios);
+});
+
 test('Terrifier y Sienna Shaw tienen sus tres perks, nombres e imagenes correctos', () => {
   const killer = catalogo.asesinos.find(x => x.id === 'k_terrifier');
   assert.deepEqual([killer.nombre_en, killer.nombre_es, killer.nombre_es_es], ['The Terrifier', 'Terrifier', 'Terrifier']);

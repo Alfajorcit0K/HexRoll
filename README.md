@@ -29,15 +29,18 @@ En **Mis personajes**, el selector **Idioma de killers** cambia los nombres entr
 
 Puedes probar cada widget desde la aplicación antes de añadirlo a OBS. Una vez configurados, puedes cerrar el editor: las fuentes siguen funcionando con sus archivos locales.
 
+El instalador deja los HTML junto a `HexRoll.exe`, con las imágenes que necesitan. **Abrir carpeta de widgets** te lleva allí. Al editar se actualizan esos archivos y también las fuentes de versiones anteriores que tengas en OBS.
+
 Deja cada fuente en su escena de survivor o killer. El tipo de perks es fijo en cada una: para cambiar de rol basta con cambiar de escena o mostrar la otra fuente, sin editar la configuración ni refrescarla.
 
 ## Dejarla a tu gusto
 
-En **Mis widgets** puedes cambiar el color, el idioma y la duración del giro. Cada widget tiene sus propios ajustes. Pulsa **Aplicar apariencia** y refresca las fuentes en OBS para ver los cambios de apariencia.
+En **Mis widgets** puedes cambiar el color, el idioma y la duración del giro. Cada widget tiene sus propios ajustes y los cambios se guardan automáticamente. Las vistas previas se actualizan solas; refresca las fuentes en OBS para verlos allí. El idioma inicial es inglés y se respetan las preferencias que ya hayas guardado.
 
 - Hay nombres en inglés, español de España y español de México.
 - Cada widget tiene una versión ligera por si necesitas reducir los efectos.
-- Los controles están ocultos por defecto. Si los activas, usa 520 de alto en OBS.
+- Los controles están ocultos por defecto. Si los activas, aparecen el selector de color y los botones de idioma dentro de la transmisión. Puedes pulsarlos desde **Interactuar** en OBS; usa 520 de alto para que quepan.
+- Las perks generales aparecen primero en cada cuadro de personajes, con una **G**. Los espacios vacíos llevan un **—**; puedes añadirlos y quitarlos con los botones **+** y **−**, o escribir una cantidad. La aplicación muestra su probabilidad según las perks activas de cada rol. Esa cantidad también se guarda en los perfiles.
 - El interruptor de modo claro y oscuro cambia el tema del editor y recuerda tu elección.
 - Puedes elegir el color del editor desde la paleta o el selector de color. Los fondos y el texto se adaptan al modo claro u oscuro; el switch lleva un sol y una luna. Tu elección se conserva al reiniciar y actualizar.
 - El logo y el icono de la ventana siguen el color elegido. El instalador y los accesos directos usan el logo blanco.
@@ -47,9 +50,9 @@ El catálogo incluye a **Terrifier**, sus tres perks y las tres de **Sienna Shaw
 
 ## Actualizar y conservar tus ajustes
 
-La versión 1.0.0 se instala una vez. Después, HexRoll busca actualizaciones al abrirse y cada seis horas, descarga las versiones nuevas y muestra **Reiniciar e instalar** cuando están listas. Tú eliges cuándo reiniciar; cerrar la aplicación por tu cuenta no instala nada. No necesitas cuenta de GitHub ni tokens. Tus selecciones, perfiles y apariencia se guardan aparte del programa y se conservan al actualizar. El contenido nuevo queda desactivado para que elijas si quieres añadirlo a tus sorteos.
+La versión 1.0.0 se instala una vez. Después, HexRoll busca actualizaciones al abrirse, descarga las versiones nuevas y muestra **Reiniciar e instalar** cuando están listas. También puedes usar **Buscar actualizaciones** en la esquina superior izquierda. El aviso aparece al consultar manualmente o cuando hay una descarga disponible. Tú eliges cuándo reiniciar; cerrar la aplicación por tu cuenta no instala nada. No necesitas cuenta de GitHub ni tokens. Tus selecciones, perfiles y apariencia se guardan aparte del programa y se conservan al actualizar. El contenido nuevo queda desactivado para que elijas si quieres añadirlo a tus sorteos.
 
-Los datos y las imágenes están en `%APPDATA%\RuletaPerksKillers\widget`. Puedes llegar desde **Abrir carpeta de widgets**. Para hacer una copia completa, guarda esa carpeta, incluidas tus imágenes propias y los perfiles.
+Los ajustes, perfiles, respaldos e imágenes originales se conservan en `%APPDATA%\RuletaPerksKillers\widget`. Para hacer una copia completa, guarda esa carpeta, incluidas tus imágenes propias y los perfiles. Los HTML de la carpeta de instalación se regeneran con esos datos al abrir la aplicación o editar los ajustes.
 
 La aplicación crea un respaldo antes de actualizar el catálogo, cargar un perfil o restaurar datos. Los respaldos se pueden recuperar desde **Perfiles y respaldos**.
 

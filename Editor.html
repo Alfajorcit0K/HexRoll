@@ -9,6 +9,10 @@
   :root{color-scheme:dark;--bg:#1b1417;--panel:#271c21;--panel2:#322127;--text:#f7e9ed;--dim:#ceb1ba;--borde:#71303e;--acento:#d52b40;--sobre-acento:#fff7f5;--suave:#4c1d28;--destacado:#ff9ca6;--imagen:#190d12;--sombra:0 4px 18px #12060a33;}
   :root[data-tema=claro]{color-scheme:light;--bg:#fff3f1;--panel:#fffdfc;--panel2:#fff0ef;--text:#382127;--dim:#77515a;--borde:#e5afb8;--acento:#bd1531;--sobre-acento:#ffffff;--suave:#ffe0e3;--destacado:#a91d34;--imagen:#f1d8dc;--sombra:0 4px 18px #6b13220c;}
   *{box-sizing:border-box;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:transparent;border-radius:8px;}
+  :root.scrolling ::-webkit-scrollbar-thumb,:root.scroll-hover ::-webkit-scrollbar-thumb,:root.scrolling::-webkit-scrollbar-thumb,:root.scroll-hover::-webkit-scrollbar-thumb,::-webkit-scrollbar-thumb:hover{background:var(--borde);}
   body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;padding:28px;}
   h1{font-size:24px;line-height:1.25;margin:0 0 8px;font-weight:650;letter-spacing:-.4px;}
   .cabecera{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px;}
@@ -70,6 +74,7 @@
   .personaje small{color:var(--dim);display:block;font-size:11px;}
   .personaje-retrato{width:40px;height:48px;flex:0 0 40px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--imagen);color:var(--dim);font-size:12px;overflow:hidden;}
   .personaje-retrato img{width:100%;height:100%;object-fit:contain;}
+  .personaje-retrato.simbolo{font-size:28px;font-weight:700;color:var(--destacado);}
   .personajes-otros{grid-column:1/-1;}
   .personajes-otros h3{margin-bottom:12px;}
   .tabs{position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;}
@@ -91,6 +96,9 @@
   .barra-app[hidden]{display:none;}
   .barra-marca{display:flex;align-items:center;gap:9px;flex:none;font-size:17px;font-weight:700;letter-spacing:-.3px;}
   .barra-marca img{width:30px;height:30px;object-fit:contain;}
+  .barra-app #checkUpdate{display:flex;align-items:center;gap:6px;font-size:12px;padding:7px 9px;white-space:nowrap;}
+  #checkUpdate svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;flex:none;}
+  @media(max-width:1000px){#checkUpdate span{display:none;}}
   .barra-navegacion{flex:1;min-width:0;display:flex;justify-content:center;}
   .barra-app .tabs{position:static;padding:0;margin:0;gap:6px;flex-wrap:nowrap;background:transparent;}
   .barra-app .tabs button{font-size:12px;padding:7px 10px;white-space:nowrap;}
@@ -111,6 +119,7 @@
 <body>
 <header id="barraApp" class="barra-app" hidden>
   <div class="barra-marca"><img src="images/brand/HexRoll.png" alt=""><span>HexRoll</span></div>
+  <button id="checkUpdate" class="secondary" type="button" hidden title="Buscar actualizaciones" aria-label="Buscar actualizaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7"/></svg><span>Buscar actualizaciones</span></button>
   <div id="navegacionApp" class="barra-navegacion"></div>
   <div id="temaApp" class="barra-tema"></div>
   <div class="controles-ventana" aria-label="Controles de ventana">
@@ -130,14 +139,14 @@
   <button class="secondary" data-pestana="perfiles">Perfiles y respaldos</button>
 </nav>
 <div id="estadoGlobal" class="banner" role="status" aria-live="polite" hidden></div>
-<section class="panel inicio" id="inicioDesktop" data-vista="widgets" hidden aria-labelledby="tituloInicio">
   <section id="updatePanel" class="banner" hidden aria-labelledby="updateTitle">
     <h3 id="updateTitle" style="margin:0 0 8px">Actualizaciones</h3>
     <p id="updateStatus" role="status" aria-live="polite"></p>
     <progress id="updateProgress" max="100" value="0" hidden style="width:100%;accent-color:var(--acento)"></progress>
-    <div class="toolbar"><button id="checkUpdate" type="button">Buscar actualizaciones</button><button id="installUpdate" type="button" hidden>Reiniciar e instalar</button></div>
+    <div class="toolbar"><button id="installUpdate" type="button" hidden>Reiniciar e instalar</button><button id="dismissUpdate" class="secondary" type="button">Cerrar aviso</button></div>
 
   </section>
+<section class="panel inicio" id="inicioDesktop" data-vista="widgets" hidden aria-labelledby="tituloInicio">
   <h2 id="tituloInicio">Tres ruletas, tu propia escena</h2>
   <div class="editor-palette" role="group" aria-label="Color del editor">
     <label for="colorEditor">Color del editor <input id="colorEditor" type="color" value="#d52b40"></label>
@@ -159,10 +168,9 @@
       <p>Cuatro perks de survivor por sorteo, con su propia fuente en OBS.</p>
       <form id="ajustesSurvivor" class="ajustes">
         <label>Color <input type="color" id="colorSurvivor" value="#c14a59"></label>
-        <label>Idioma <select id="idiomaSurvivor"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Idioma <select id="idiomaSurvivor"><option value="en">English</option><option value="es-es">Español ES</option><option value="es">Español MX</option></select></label>
         <label>Duración <select id="duracionSurvivor"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
         <label class="ancho"><input type="checkbox" id="controlesSurvivor"> Mostrar controles dentro del widget</label>
-        <button type="submit" id="guardarSurvivor">Aplicar apariencia</button>
       </form>
       <label for="rutaWidgetSurvivor">Archivo de perks de survivor para OBS</label>
       <input class="ruta" id="rutaWidgetSurvivor" type="text" readonly>
@@ -175,10 +183,9 @@
       <p>Cuatro perks de killer por sorteo, con su propia fuente en OBS.</p>
       <form id="ajustesPerksKiller" class="ajustes">
         <label>Color <input type="color" id="colorPerksKiller" value="#c14a59"></label>
-        <label>Idioma <select id="idiomaPerksKiller"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Idioma <select id="idiomaPerksKiller"><option value="en">English</option><option value="es-es">Español ES</option><option value="es">Español MX</option></select></label>
         <label>Duración <select id="duracionPerksKiller"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
         <label class="ancho"><input type="checkbox" id="controlesPerksKiller"> Mostrar controles dentro del widget</label>
-        <button type="submit" id="guardarPerksKiller">Aplicar apariencia</button>
       </form>
       <label for="rutaWidgetPerksKiller">Archivo de perks de killer para OBS</label>
       <input class="ruta" id="rutaWidgetPerksKiller" type="text" readonly>
@@ -191,10 +198,9 @@
       <p>Un killer por sorteo. Ubícala donde quieras, con su propio tamaño y apariencia.</p>
       <form id="ajustesKillers" class="ajustes">
         <label>Color <input type="color" id="colorKillers" value="#c14a59"></label>
-        <label>Idioma <select id="idiomaKillers"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Idioma <select id="idiomaKillers"><option value="en">English</option><option value="es-es">Español ES</option><option value="es">Español MX</option></select></label>
         <label>Duración <select id="duracionKillers"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
         <label class="ancho"><input type="checkbox" id="controlesKillers"> Mostrar controles dentro del widget</label>
-        <button type="submit" id="guardarKillers">Aplicar apariencia</button>
       </form>
       <label for="rutaWidgetKillers">Archivo de killers para OBS</label>
       <input class="ruta" id="rutaWidgetKillers" type="text" readonly>
@@ -207,7 +213,7 @@
     <button class="secondary" id="abrirCarpeta">Abrir carpeta de widgets</button>
     <button class="secondary" id="importarAnterior">Importar ajustes anteriores</button>
   </div>
-  <div class="nota">Después de aplicar cambios, refresca tus fuentes de navegador en OBS. Las vistas previas de la aplicación se actualizan automáticamente.</div>
+  <p class="nota" id="estadoApariencia" role="status" aria-live="polite">La apariencia se guarda automáticamente. Las vistas previas se actualizan al cambiar los ajustes; refresca las fuentes en OBS para verlos allí.</p>
   <div class="estado-app" id="estadoDesktop" role="status" aria-live="polite"></div>
 </section>
 <section data-vista="contenido" id="contenido">
@@ -228,6 +234,8 @@
     </section>
     <section id="bloqueEspaciosVacios" class="personajes-bloque personajes-otros" aria-labelledby="tituloEspaciosVacios">
       <h3 id="tituloEspaciosVacios">Espacios vacíos</h3><div id="personajesVacios" class="personajes"></div>
+      <div class="toolbar"><label for="cantidadVacios">Espacios en la lista</label><button type="button" id="quitarVacio" class="secondary" aria-label="Quitar un espacio vacío">−</button><input id="cantidadVacios" type="number" min="0" max="1000" step="1" value="0" style="width:90px"><button type="button" id="agregarVacio" class="secondary" aria-label="Añadir un espacio vacío">+</button></div>
+      <p class="nota" id="probabilidadVacios" aria-live="polite"></p>
     </section>
   </div>
 </div>

@@ -116,7 +116,7 @@ test('API publica importa con respaldo y conserva killers y selecciones', async 
     assert.ok(path.basename(resolved).startsWith('ruleta-test-'));
     fs.rmSync(resolved, { recursive: true, force: true });
   });
-  for (const file of ['Server.js', 'Roulette.js', 'State.js', 'RouletteTemplate.html', 'Killers.json', 'Characters.json', 'SurvivorPortraits.json', 'AppLinks.json']) fs.copyFileSync(path.join(root, file), path.join(dir, file));
+  for (const file of ['Server.js', 'Roulette.js', 'State.js', 'WidgetFiles.js', 'RouletteTemplate.html', 'Killers.json', 'Characters.json', 'SurvivorPortraits.json', 'AppLinks.json']) fs.copyFileSync(path.join(root, file), path.join(dir, file));
   const data = structuredClone(catalogo);
   data.habilidades[0].activo = false;
   data.asesinos[0].activo = false;

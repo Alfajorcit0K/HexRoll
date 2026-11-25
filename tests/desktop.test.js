@@ -101,13 +101,16 @@ test('datos dañados detienen la actualizacion sin sobrescribirlos', t => {
   assert.equal(fs.readFileSync(path.join(root, 'data.json'), 'utf8'), '{');
 });
 
-test('servidor instalado escribe solo en la carpeta del usuario y sirve el editor empaquetado', async t => {
+test('servidor conserva datos de usuario y exporta HTML e imagenes a la carpeta de instalacion', async t => {
   const { source, root } = fixture(t);
   const repo = path.resolve(__dirname, '..');
   for (const file of ['RouletteTemplate.html', 'RouletteLiteTemplate.html', 'Characters.json', 'AppLinks.json', 'Editor.html', 'Editor.js', 'Theme.js']) fs.copyFileSync(path.join(repo, file), path.join(source, file));
   prepararInstalacion(source, root);
   fs.writeFileSync(path.join(root, 'ruleta-perks-survivor.html'), 'fuente anterior de OBS');
-  const server = iniciarServidor({ root, source, port: 0 });
+  const exportRoot = path.join(source, 'exports');
+  const info = prepararInstalacion(source, root, 'desarrollo', exportRoot);
+  assert.equal(info.perksSurvivor, path.join(exportRoot, 'SPerksRoulette.html'));
+  const server = iniciarServidor({ root, source, exportRoot, port: 0 });
   await once(server, 'listening');
   t.after(() => new Promise(resolve => server.close(resolve)));
   const base = 'http://127.0.0.1:' + server.address().port;
@@ -120,6 +123,9 @@ test('servidor instalado escribe solo en la carpeta del usuario y sirve el edito
   assert.equal(blocked.status, 403);
   const res = await fetch(base + '/api/habilidades/uno', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{"activo":false}' });
   assert.equal(res.status, 200);
+  assert.equal(fs.readFileSync(path.join(exportRoot, 'SPerksRoulette.html'), 'utf8'), fs.readFileSync(path.join(root, 'SPerksRoulette.html'), 'utf8'));
+  assert.equal(fs.readFileSync(path.join(exportRoot, 'images', 'perks', 'uno.png'), 'utf8'), 'imagen de prueba');
+  assert.ok(!fs.existsSync(path.join(exportRoot, 'data.json')));
   assert.equal(JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8')).habilidades[0].activo, false);
   assert.equal(fs.readFileSync(path.join(root, 'ruleta-perks-survivor.html'), 'utf8'), fs.readFileSync(path.join(root, 'SPerksRoulette.html'), 'utf8'));
   assert.equal(JSON.parse(fs.readFileSync(path.join(source, 'data.json'), 'utf8')).habilidades[0].activo, true);

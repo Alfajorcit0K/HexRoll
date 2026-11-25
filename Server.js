@@ -13,8 +13,9 @@ const fs = require('fs');
 const path = require('path');
 const { validarDatos, fusionarDatos, construirWidgets, VARIANTES_WIDGET, WIDGET_ALIASES, guardarDatos } = require('./Roulette');
 const { crearEstado } = require('./State');
+const { writeWidgetFiles } = require('./WidgetFiles');
 
-function iniciarServidor({ root = __dirname, source = __dirname, port = Number(process.env.RULETA_PORT || 4002) } = {}) {
+function iniciarServidor({ root = __dirname, source = __dirname, exportRoot = null, port = Number(process.env.RULETA_PORT || 4002) } = {}) {
 const PORT = port;
 const ROOT = root;
 const SOURCE = source;
@@ -104,6 +105,7 @@ function regenerateWidget() {
   for (const [archivo, html] of Object.entries(widgets)) {
     fs.writeFileSync(path.join(ROOT, archivo), html);
   }
+  if (exportRoot && path.resolve(exportRoot) !== path.resolve(ROOT)) writeWidgetFiles(exportRoot, widgets, ROOT);
   for (const [anterior, actual] of Object.entries(WIDGET_ALIASES)) {
     const file = path.join(ROOT, anterior);
     if (fs.existsSync(file)) fs.writeFileSync(file, widgets[actual]);
@@ -171,6 +173,10 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/estado' && req.method === 'GET') return sendJSON(res, 200, estado.obtener());
     if (pathname === '/api/preferencias-editor' && req.method === 'PUT') {
       try { return sendJSON(res, 200, estado.preferenciasEditor(await readBodyJSON(req))); }
+      catch (error) { return sendJSON(res, 400, { error: error.message }); }
+    }
+    if (pathname === '/api/espacios-vacios' && req.method === 'PUT') {
+      try { return sendJSON(res, 200, estado.espaciosVacios((await readBodyJSON(req)).cantidad)); }
       catch (error) { return sendJSON(res, 400, { error: error.message }); }
     }
     if (pathname === '/api/configuracion' && req.method === 'PUT') {

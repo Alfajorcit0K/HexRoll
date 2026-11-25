@@ -26,6 +26,8 @@
       "output": "release"
     },
     "asar": true,
+    "beforePack": "scripts/PrepareWidgets.js",
+    "extraFiles": [{ "from": ".build-cache/InstallerWidgets", "to": ".", "filter": ["**/*"] }],
     "files": [
       "desktop/**",
       "Server.js",
@@ -34,6 +36,7 @@
       "Editor.html",
       "Editor.js",
       "Theme.js",
+      "WidgetFiles.js",
       "RouletteTemplate.html",
       "RouletteLiteTemplate.html",
       "data.json",

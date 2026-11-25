@@ -12,6 +12,16 @@ function fixture(options = {}) {
   return { updater, updates: createUpdates({ version: '1.0.0', updater, ...options }) };
 }
 
+test('errores de actualizacion distinguen canal inexistente, permisos, red y verificacion sin mostrar detalles internos', async () => {
+  for (const [error, reason] of [[{ statusCode: 404 }, 'unavailable'], [{ code: 'ERR_UPDATER_LATEST_VERSION_NOT_FOUND', message: 'HttpError: 404 Not Found' }, 'unavailable'], [{ code: 'ERR_UPDATER_LATEST_VERSION_NOT_FOUND', message: 'net::ERR_INTERNET_DISCONNECTED' }, 'network'], [{ code: 'ERR_UPDATER_LATEST_VERSION_NOT_FOUND' }, 'unknown'], [{ statusCode: 403 }, 'access'], [{ code: 'ENOTFOUND' }, 'network'], [{ code: 'ERR_UPDATER_CHECKSUM_MISMATCH' }, 'integrity'], [new Error('offline token=private'), 'unknown']]) {
+    const { updater, updates } = fixture();
+    updater.checkForUpdates = async () => { throw error; };
+    await updates.check();
+    assert.equal(updates.state().reason, reason);
+    assert.ok(!JSON.stringify(updates.state()).includes('private'));
+  }
+});
+
 test('canal publico funciona sin tokens y no instala ni retrocede automaticamente', async () => {
   const { updater, updates } = fixture();
   assert.equal(updater.feed.private, false);

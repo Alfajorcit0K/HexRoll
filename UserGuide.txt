@@ -39,7 +39,7 @@ CONFIGURACION DE OBS
    Para sortear el personaje, usa "Copiar ruta de killers" de "Personaje killer".
    Tamanos recomendados: ambos widgets de perks 1120 x 440; personaje 460 x 440.
 4. En "Mis widgets", ajusta el color, idioma y duracion de cada fuente.
-   Pulsa "Aplicar apariencia" y refresca la fuente de OBS.
+   Los cambios se guardan solos; refresca la fuente de OBS para verlos.
 5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
    interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
 
@@ -72,7 +72,7 @@ La version combinada anterior sigue disponible como CombinedRoulette.html.
 
 ACTUALIZACIONES Y RESPALDOS
 -------------------------
-HexRoll busca actualizaciones al abrirse y cada seis horas. Las descarga
+HexRoll busca actualizaciones al abrirse. Puedes consultarlas desde el boton superior izquierdo. Las descarga
 automaticamente y muestra "Reiniciar e instalar" cuando estan listas. No necesitas
 cuenta de GitHub ni tokens. La version 1.0.0 se instala una vez para incorporar
 este actualizador. Los ajustes
@@ -82,7 +82,8 @@ El contenido nuevo queda desactivado para que puedas elegir si quieres usarlo.
 En "Perfiles y respaldos", guarda selecciones y apariencia con nombres para
 recuperarlas despues. Tambien puedes crear y restaurar respaldos. Antes de cargar
 un perfil o restaurar se respalda tu configuracion actual.
-Puedes abrir la carpeta de tus datos con "Abrir carpeta de widgets" y copiarla
+Los HTML estan junto a HexRoll.exe; "Abrir carpeta de widgets" abre esa ubicacion.
+Para respaldar ajustes, copia la carpeta %APPDATA%\RuletaPerksKillers\widget
 completa para incluir Profiles.json, backups/ y tus imagenes propias.
 Conserva tambien las imagenes propias si agregaste contenido personalizado.
 Despues de cambiar el widget, refresca la fuente en OBS.

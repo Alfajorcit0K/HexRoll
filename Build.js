@@ -18,7 +18,7 @@ function generar({ lite = false, zip = true } = {}) {
   // Lista explicita: excluye archivos personales y carpetas historicas.
   const archivos = [
     'Server.js', 'Roulette.js', 'State.js', 'Editor.html',
-    'Editor.js', 'Theme.js',
+    'Editor.js', 'Theme.js', 'WidgetFiles.js',
     'OpenEditor.bat', 'UserGuide.txt', 'README.md', 'LICENSE',
     'Credits.md', 'Killers.json', 'Characters.json', 'SurvivorPortraits.json', 'AppLinks.json'
   ];

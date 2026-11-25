@@ -518,7 +518,7 @@
     hueSlider.addEventListener('touchmove', e => { applyColor(hueDesdeEvento(e.touches[0])); });
 
 
-    let currentIdioma = CONFIG_WIDGET?.administrado ? CONFIG_WIDGET.idioma : preferencia('idioma', 'es');
+    let currentIdioma = CONFIG_WIDGET?.administrado ? CONFIG_WIDGET.idioma : preferencia('idioma', 'en');
     const lastTargets = [null, null, null, null];
 
     function displayName(item, idioma) {
