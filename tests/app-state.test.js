@@ -133,6 +133,18 @@ test('respaldos restauran ajustes y seleccion; datos invalidos nunca sobrescribe
   const widgetAntes = fs.readFileSync(path.join(root, 'ruleta-perks.html'), 'utf8');
   await api('preferencias-editor', 'PUT', { tema: 'claro' });
   assert.equal((await api('estado')).temaEditor, 'claro');
+  assert.equal((await api('estado')).idiomaPersonajes, 'en');
+  const datosAntesIdioma = fs.readFileSync(path.join(root, 'data.json'), 'utf8');
+  await api('preferencias-editor', 'PUT', { idiomaPersonajes: 'es-es' });
+  assert.equal((await api('estado')).temaEditor, 'claro');
+  await api('preferencias-editor', 'PUT', { tema: 'oscuro' });
+  assert.equal((await api('estado')).idiomaPersonajes, 'es-es', 'Cambiar el tema conserva el idioma de los nombres.');
+  await api('preferencias-editor', 'PUT', { tema: 'claro' });
+  await api('preferencias-editor', 'PUT', { tema: 'oscuro', idiomaPersonajes: 'xx' }, 400);
+  assert.equal((await api('estado')).temaEditor, 'claro', 'Un cambio invalido no guarda parcialmente las preferencias.');
+  const executioner = (await api('estado')).personajes.find(g => g.id === 'killer:The Executioner');
+  assert.deepEqual([executioner.nombre_en, executioner.nombre_es_es, executioner.nombre_es], ['The Executioner', 'El Verdugo', 'El Ejecutor']);
+  assert.equal(fs.readFileSync(path.join(root, 'data.json'), 'utf8'), datosAntesIdioma, 'El idioma de los nombres no altera la seleccion ni la apariencia de los widgets.');
   assert.equal(fs.readFileSync(path.join(root, 'ruleta-perks.html'), 'utf8'), widgetAntes, 'El tema del editor no modifica los widgets.');
   const saved = await api('respaldos', 'POST');
   await api('personajes/' + encodeURIComponent('killer:The Terrifier'), 'PUT', { activo: false });
@@ -140,6 +152,7 @@ test('respaldos restauran ajustes y seleccion; datos invalidos nunca sobrescribe
   assert.equal(read().asesinos.find(x => x.id === 'k_terrifier').activo, true);
   assert.equal(read().ajustes.killers.idioma, 'en');
   assert.equal((await api('estado')).temaEditor, 'claro', 'Restaurar un sorteo no altera el tema del editor.');
+  assert.equal((await api('estado')).idiomaPersonajes, 'es-es', 'Restaurar un sorteo conserva el idioma del editor.');
   await api('preferencias-editor', 'PUT', { tema: 'invalido' }, 400);
   assert.equal((await api('estado')).temaEditor, 'claro');
   const previous = JSON.parse(fs.readFileSync(path.join(root, 'backups', result.backup), 'utf8'));

@@ -48,6 +48,8 @@ function personajes(data) {
     const g = group('killer', killer.nombre_en);
     g.asesinos.push(killer);
     g.nombre = killer.nombre_es || killer.nombre_en;
+    g.nombre_es = killer.nombre_es || killer.nombre_en;
+    g.nombre_es_es = killer.nombre_es_es || killer.nombre_es || killer.nombre_en;
     g.nombre_en = killer.nombre_en;
   }
   return [...groups.values()].map(g => {
@@ -62,6 +64,7 @@ function crearEstado(root, catalogo, readData, writeData, regenerar) {
   const profilesFile = path.join(root, 'perfiles.json');
   const editorFile = path.join(root, 'editor-preferencias.json');
   const backupDir = path.join(root, 'backups');
+  function leerPreferenciasEditor() { return fs.existsSync(editorFile) ? JSON.parse(fs.readFileSync(editorFile, 'utf8')) : {}; }
   function guardarJSON(file, value) { fs.writeFileSync(file + '.tmp', JSON.stringify(value, null, 2)); fs.renameSync(file + '.tmp', file); }
   function perfiles() {
     if (!fs.existsSync(profilesFile)) return [];
@@ -82,12 +85,18 @@ function crearEstado(root, catalogo, readData, writeData, regenerar) {
   function guardar(data) { writeData(data); regenerar(); }
   return {
     obtener() {
-      const preferencias = fs.existsSync(editorFile) ? JSON.parse(fs.readFileSync(editorFile, 'utf8')) : {};
-      return { temaEditor: ['oscuro', 'claro'].includes(preferencias.tema) ? preferencias.tema : null, configuracion: configuracionActual(readData()), personajes: personajes(readData()), perfiles: perfiles().map(({ id, nombre, fecha }) => ({ id, nombre, fecha })), respaldos: respaldos() };
+      const preferencias = leerPreferenciasEditor();
+      return { temaEditor: ['oscuro', 'claro'].includes(preferencias.tema) ? preferencias.tema : null,
+        idiomaPersonajes: ['en', 'es', 'es-es'].includes(preferencias.idiomaPersonajes) ? preferencias.idiomaPersonajes : 'en',
+        configuracion: configuracionActual(readData()), personajes: personajes(readData()), perfiles: perfiles().map(({ id, nombre, fecha }) => ({ id, nombre, fecha })), respaldos: respaldos() };
     },
-    temaEditor(tema) {
-      if (!['oscuro', 'claro'].includes(tema)) throw new Error('Selecciona un tema claro u oscuro.');
-      guardarJSON(editorFile, { tema }); return { tema };
+    preferenciasEditor(cambios) {
+      if (!cambios || typeof cambios !== 'object' || Array.isArray(cambios) || !Object.keys(cambios).length ||
+          Object.keys(cambios).some(key => !['tema', 'idiomaPersonajes'].includes(key))) throw new Error('Preferencias invalidas.');
+      if ('tema' in cambios && !['oscuro', 'claro'].includes(cambios.tema)) throw new Error('Selecciona un tema claro u oscuro.');
+      if ('idiomaPersonajes' in cambios && !['en', 'es', 'es-es'].includes(cambios.idiomaPersonajes)) throw new Error('Selecciona un idioma valido.');
+      const preferencias = { ...leerPreferenciasEditor(), ...cambios };
+      guardarJSON(editorFile, preferencias); return preferencias;
     },
     configurar(config) { const data = readData(); data.ajustes = validarConfiguracion(config); guardar(data); return data.ajustes; },
     personaje(id, activo) {

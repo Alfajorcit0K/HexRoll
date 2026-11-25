@@ -165,7 +165,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (pathname === '/api/estado' && req.method === 'GET') return sendJSON(res, 200, estado.obtener());
     if (pathname === '/api/preferencias-editor' && req.method === 'PUT') {
-      try { return sendJSON(res, 200, estado.temaEditor((await readBodyJSON(req)).tema)); }
+      try { return sendJSON(res, 200, estado.preferenciasEditor(await readBodyJSON(req))); }
       catch (error) { return sendJSON(res, 400, { error: error.message }); }
     }
     if (pathname === '/api/configuracion' && req.method === 'PUT') {

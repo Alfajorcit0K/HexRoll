@@ -159,6 +159,24 @@ async function iniciar() {
     })()`);
     if (!perfilCorrecto) throw new Error('No se pudo guardar el perfil desde la aplicacion.');
     estado.configuracionYPerfiles = true;
+    const datosAntesIdioma = fs.readFileSync(path.join(instalacion.root, 'data.json'), 'utf8');
+    const idiomaCorrecto = await mainWindow.webContents.executeJavaScript(`(async () => {
+      pestana('contenido');
+      const selector = document.getElementById('idiomaPersonajes');
+      const nombres = () => [...document.querySelectorAll('#personajes .personaje > span')].map(n => n.firstChild.textContent);
+      for (const [idioma, esperado] of [['en', 'The Executioner'], ['es', 'El Ejecutor'], ['es-es', 'El Verdugo']]) {
+        selector.value = idioma;
+        selector.dispatchEvent(new Event('change'));
+        while (selector.disabled) await new Promise(r => setTimeout(r, 30));
+        if (!nombres().includes(esperado)) return false;
+      }
+      const buscador = document.getElementById('buscarPersonaje');
+      buscador.value = 'El Ejecutor'; buscador.dispatchEvent(new Event('input'));
+      const encuentraOtroIdioma = nombres().includes('El Verdugo');
+      buscador.value = ''; buscador.dispatchEvent(new Event('input'));
+      return encuentraOtroIdioma && !document.body.textContent.includes('Ruleta Perks es gratuita.');
+    })()`);
+    if (!idiomaCorrecto || fs.readFileSync(path.join(instalacion.root, 'data.json'), 'utf8') !== datosAntesIdioma) throw new Error('El idioma de personajes no se aplico correctamente.');
     const temaAnterior = await mainWindow.webContents.executeJavaScript('document.documentElement.dataset.tema');
     await mainWindow.webContents.executeJavaScript(`(async () => {
       document.getElementById('cambiarTema').click();
@@ -168,10 +186,17 @@ async function iniciar() {
     const temaRecuperado = await mainWindow.webContents.executeJavaScript(`(async () => {
       await window.ruletaLista;
       return { tema: document.documentElement.dataset.tema, guardado: (await (await fetch('/api/estado')).json()).temaEditor,
-        checked: document.getElementById('cambiarTema').getAttribute('aria-checked') };
+        checked: document.getElementById('cambiarTema').getAttribute('aria-checked'), idiomaPersonajes: document.getElementById('idiomaPersonajes').value };
     })()`);
     if (temaRecuperado.tema === temaAnterior || temaRecuperado.tema !== temaRecuperado.guardado || temaRecuperado.checked !== String(temaRecuperado.tema === 'oscuro')) throw new Error('El tema del editor no se conserva.');
     estado.temaPersistente = true;
+    if (temaRecuperado.idiomaPersonajes !== 'es-es') throw new Error('El idioma de personajes no se conserva al cambiar el tema y recargar.');
+    estado.idiomaPersonajesPersistente = true;
+    await mainWindow.webContents.executeJavaScript(`(async () => {
+      const selector = document.getElementById('idiomaPersonajes');
+      selector.value = 'en'; selector.dispatchEvent(new Event('change'));
+      while (selector.disabled) await new Promise(r => setTimeout(r, 30));
+    })()`);
     if (process.env.RULETA_SMOKE_SCREENSHOTS) {
       const dir = process.env.RULETA_SMOKE_SCREENSHOTS;
       fs.mkdirSync(dir, { recursive: true });

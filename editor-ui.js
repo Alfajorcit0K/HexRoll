@@ -71,6 +71,7 @@ function renderLista(items, container, carpeta, endpoint) {
   $(container).replaceChildren(fragment);
 }
 function renderContenido() {
+  $('idiomaPersonajes').value = estado.idiomaPersonajes;
   const filtro = $('buscador').value, tipo = $('filtroTipo').value;
   const perks = habilidades.filter(h => (!tipo || h.esVacio || h.tipo === tipo) && coincide([h.nombre_es, h.nombre_es_es, h.nombre_en, h.personaje, h.general ? 'general' : '', ...asesinos.filter(a => texto(a.nombre_en) === texto(h.personaje)).flatMap(a => [a.nombre_es, a.nombre_es_es])], filtro));
   renderLista(perks, 'lista', 'perks', '/api/habilidades');
@@ -79,10 +80,14 @@ function renderContenido() {
   $('contador').textContent = activos('survivor') + ' perks de superviviente y ' + activos('killer') + ' de asesino activas · ' + habilidades.filter(h => h.esVacio && h.activo !== false).length + ' espacios vacíos. Se necesitan al menos 4 opciones del tipo elegido.';
   $('contadorAsesino').textContent = asesinos.filter(a => a.activo !== false).length + ' activos de ' + asesinos.length;
   const groups = document.createDocumentFragment();
-  for (const g of estado.personajes.filter(g => (!$('tipoPersonaje').value || g.tipo === $('tipoPersonaje').value) && coincide([g.nombre, g.nombre_en], $('buscarPersonaje').value))) {
+  const nombrePersonaje = g => g.tipo === 'killer' ? (g[{ en: 'nombre_en', es: 'nombre_es', 'es-es': 'nombre_es_es' }[estado.idiomaPersonajes]] || g.nombre) : g.nombre;
+  const locale = { en: 'en', es: 'es-MX', 'es-es': 'es-ES' }[estado.idiomaPersonajes];
+  const visibles = estado.personajes.filter(g => (!$('tipoPersonaje').value || g.tipo === $('tipoPersonaje').value) && coincide([g.nombre, g.nombre_en, g.nombre_es, g.nombre_es_es], $('buscarPersonaje').value))
+    .sort((a, b) => a.tipo.localeCompare(b.tipo) || nombrePersonaje(a).localeCompare(nombrePersonaje(b), locale));
+  for (const g of visibles) {
     const row = document.createElement('label'); row.className = 'personaje';
     const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = g.activo; checkbox.indeterminate = g.parcial;
-    const name = document.createElement('span'); name.textContent = g.nombre;
+    const name = document.createElement('span'); name.textContent = nombrePersonaje(g);
     const count = document.createElement('small'); count.textContent = g.habilidades.length + ' perks' + (g.asesinos.length ? ' + killer' : '') + ' · ' + g.activos + '/' + g.total + ' activos'; name.append(count);
     checkbox.addEventListener('change', () => accion(checkbox, async () => {
       await request('/api/personajes/' + encodeURIComponent(g.id), 'PUT', { activo: checkbox.checked });
@@ -98,6 +103,11 @@ async function cargarContenido() {
 }
 for (const id of ['buscador', 'buscadorAsesino', 'buscarPersonaje']) $(id).addEventListener('input', () => renderContenido());
 for (const id of ['filtroTipo', 'tipoPersonaje']) $(id).addEventListener('change', () => renderContenido());
+$('idiomaPersonajes').addEventListener('change', () => accion($('idiomaPersonajes'), async () => {
+  const preferencias = await request('/api/preferencias-editor', 'PUT', { idiomaPersonajes: $('idiomaPersonajes').value });
+  estado.idiomaPersonajes = preferencias.idiomaPersonajes;
+  renderContenido();
+}));
 for (const [suffix, lista, endpoint] of [['', 'lista', '/api/habilidades-bulk-activo'], ['Asesino', 'listaAsesinos', '/api/asesinos-bulk-activo']]) {
   for (const [prefijo, activo] of [['activarTodas', true], ['desactivarTodas', false]]) {
     const button = $(prefijo + suffix);

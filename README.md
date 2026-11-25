@@ -8,6 +8,8 @@ La aplicación es para Windows de 64 bits. Instala la ruleta y ábrela desde el 
 
 En **Mi contenido** puedes activar personajes completos o elegir perks y killers uno por uno. Si vienes de una versión anterior, usa **Importar ajustes anteriores** y selecciona tu `data.json`.
 
+En **Mis personajes**, el selector **Idioma de killers** cambia los nombres entre inglés, español de España y español de México. Empieza en inglés y recuerda tu elección. Puedes buscar un personaje por cualquiera de sus nombres.
+
 ### Añadir las ruletas a OBS
 
 1. En la tarjeta **Perks de survivor**, pulsa **Copiar ruta de survivor**.

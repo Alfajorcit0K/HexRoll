@@ -5,7 +5,7 @@ La ruleta es gratuita. Todas las funciones estan disponibles para todos.
 
 PRIMER USO
 ----------
-1. Ejecuta el instalador Ruleta-Perks-Killers-1.4.0-Setup.exe.
+1. Ejecuta el instalador Ruleta-Perks-Killers-1.4.1-Setup.exe.
 2. Sigue el asistente y abre Ruleta Perks y Killers desde su acceso directo.
 3. No necesitas instalar Node.js ni abrir una consola.
 4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
@@ -13,6 +13,10 @@ PRIMER USO
 5. En "Mi contenido", busca personajes para activar sus perks de una vez,
    o busca perks y killers individuales. Terrifier y Sienna Shaw ya estan incluidos.
    Los cambios se guardan automaticamente.
+
+En "Mis personajes", "Idioma de killers" permite mostrar los nombres en
+English, Espanol ES o Espanol MX. Empieza en ingles y recuerda tu eleccion.
+La busqueda reconoce los nombres en cualquiera de los tres idiomas.
 
 APARIENCIA DEL EDITOR
 --------------------
