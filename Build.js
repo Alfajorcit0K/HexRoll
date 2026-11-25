@@ -1,0 +1,80 @@
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const { execFileSync } = require('child_process');
+const { validarDatos, construirWidgets } = require('./Roulette');
+
+function generar({ lite = false, zip = true } = {}) {
+  const root = __dirname;
+  const version = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
+  const nombre = 'HexRoll' + (lite ? 'Lite' : '') + version;
+  const dist = path.join(root, 'dist');
+  fs.mkdirSync(dist, { recursive: true });
+  // Construye siempre en una carpeta nueva para no arrastrar archivos ajenos
+  // ni sobrescribir una instalacion que alguien haya abierto desde dist/.
+  const stage = fs.mkdtempSync(path.join(dist, '.build-'));
+  const destino = path.join(stage, nombre);
+  fs.mkdirSync(destino, { recursive: true });
+  // Lista explicita: excluye archivos personales y carpetas historicas.
+  const archivos = [
+    'Server.js', 'Roulette.js', 'State.js', 'Editor.html',
+    'Editor.js', 'Theme.js',
+    'OpenEditor.bat', 'UserGuide.txt', 'README.md', 'LICENSE',
+    'Credits.md', 'Killers.json', 'Characters.json', 'SurvivorPortraits.json', 'AppLinks.json'
+  ];
+  for (const file of archivos) fs.copyFileSync(path.join(root, file), path.join(destino, file));
+  const template = fs.readFileSync(path.join(root, lite ? 'RouletteLiteTemplate.html' : 'RouletteTemplate.html'), 'utf8');
+  const catalogo = validarDatos(JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8')));
+  fs.writeFileSync(path.join(destino, 'RouletteTemplate.html'), template);
+  fs.writeFileSync(path.join(destino, 'data.json'), JSON.stringify(catalogo, null, 2));
+  const templateLite = fs.readFileSync(path.join(root, 'RouletteLiteTemplate.html'), 'utf8');
+  fs.writeFileSync(path.join(destino, 'RouletteLiteTemplate.html'), templateLite);
+  for (const [archivo, html] of Object.entries(construirWidgets({ normal: template, lite: templateLite }, catalogo))) {
+    fs.writeFileSync(path.join(destino, archivo), html);
+  }
+  fs.writeFileSync(path.join(destino, 'version.json'), JSON.stringify({ version, lite }, null, 2));
+
+  // Incluye solo las imagenes referenciadas por el catalogo.
+  for (const [key, carpeta] of [['habilidades', 'perks'], ['asesinos', 'killers']]) {
+    const imageDir = path.join(destino, 'images', carpeta);
+    fs.mkdirSync(imageDir, { recursive: true });
+    for (const item of catalogo[key] || []) {
+      if (!item.imagen) continue;
+      if (path.basename(item.imagen) !== item.imagen) throw new Error('Ruta de imagen invalida: ' + item.id);
+      fs.copyFileSync(path.join(root, 'images', carpeta, item.imagen), path.join(imageDir, item.imagen));
+    }
+  }
+
+  const retratos = require('./SurvivorPortraits.json');
+  const survivorDir = path.join(destino, 'images', 'survivors');
+  fs.mkdirSync(survivorDir, { recursive: true });
+  for (const archivo of new Set(Object.values(retratos))) {
+    if (path.basename(archivo) !== archivo) throw new Error('Ruta de retrato invalida.');
+    fs.copyFileSync(path.join(root, 'images', 'survivors', archivo), path.join(survivorDir, archivo));
+  }
+  const marcaDir = path.join(destino, 'images', 'brand');
+  fs.mkdirSync(marcaDir, { recursive: true });
+  fs.copyFileSync(path.join(root, 'images', 'brand', 'HexRoll.png'), path.join(marcaDir, 'HexRoll.png'));
+  console.log('Paquete local listo: ' + destino);
+  if (zip) {
+    if (process.platform !== 'win32') {
+      console.log('La carpeta esta lista. Comprimela como ZIP para distribuirla.');
+    } else {
+      const zipPath = path.join(root, 'dist', nombre + '.zip');
+      execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+        'Compress-Archive -LiteralPath $env:RULETA_BUILD_DIR -DestinationPath $env:RULETA_BUILD_ZIP -Force'], {
+        windowsHide: true,
+        env: { ...process.env, RULETA_BUILD_DIR: destino, RULETA_BUILD_ZIP: zipPath },
+        stdio: 'pipe'
+      });
+      console.log('ZIP local listo: ' + zipPath);
+    }
+  }
+  return destino;
+}
+
+module.exports = { generar };
+if (require.main === module) {
+  try { generar({ lite: process.argv.includes('--lite'), zip: !process.argv.includes('--sin-zip') }); }
+  catch (error) { console.error('No se pudo generar el paquete: ' + error.message); process.exitCode = 1; }
+}

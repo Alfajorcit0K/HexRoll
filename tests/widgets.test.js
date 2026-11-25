@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const { construirWidget } = require('../ruleta-core');
+const { construirWidget } = require('../Roulette');
 const root = path.resolve(__dirname, '..');
 const catalogo = JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8'));
 
@@ -39,7 +39,7 @@ async function abrir(template, modo, saved, configuracion = null) {
   return { html, context, elements, idiomas, tipos };
 }
 
-for (const template of ['widget-template.html', 'widget-template-lite.html']) {
+for (const template of ['RouletteTemplate.html', 'RouletteLiteTemplate.html']) {
   test(template + ': survivor y killer mantienen el tipo fijo aunque OBS tenga preferencias contrarias', async () => {
     const saved = new Map([['perks_tipo', 'killer'], ['ruleta_perks_survivor_tipo', 'killer'], ['ruleta_perks_killer_tipo', 'survivor']]);
     for (const tipo of ['survivor', 'killer']) {
@@ -93,15 +93,15 @@ for (const template of ['widget-template.html', 'widget-template-lite.html']) {
 
 test('perks y killers conservan colores e idiomas independientes al reabrirse', async () => {
   const saved = new Map([['perks_idioma', 'es-es'], ['perks_color', 'hsl(90,90%,55%)']]);
-  const perks = await abrir('widget-template.html', 'perks', saved);
-  await abrir('widget-template.html', 'asesino', saved);
+  const perks = await abrir('RouletteTemplate.html', 'perks', saved);
+  await abrir('RouletteTemplate.html', 'asesino', saved);
   perks.idiomas.find(btn => btn.dataset.idioma === 'en').click();
   perks.elements.get('hueSlider').listeners.mousedown({ clientX: 120 });
-  const killers = await abrir('widget-template.html', 'asesino', saved);
+  const killers = await abrir('RouletteTemplate.html', 'asesino', saved);
   assert.equal(vm.runInContext('currentIdioma', killers.context), 'es-es');
   assert.equal(killers.elements.get('colorToggle').style.background, 'hsl(90,90%,55%)');
   killers.idiomas.find(btn => btn.dataset.idioma === 'es').click();
-  const reabiertas = await abrir('widget-template-lite.html', 'perks', saved);
+  const reabiertas = await abrir('RouletteLiteTemplate.html', 'perks', saved);
   assert.equal(vm.runInContext('currentIdioma', reabiertas.context), 'en');
   assert.equal(reabiertas.elements.get('colorToggle').style.background, 'hsl(120,90%,55%)');
 });

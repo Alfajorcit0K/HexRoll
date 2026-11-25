@@ -1,12 +1,16 @@
-# Ruleta de perks y killers para OBS
+# HexRoll
 
 Una ruleta de Dead by Daylight para elegir cuatro perks o un killer al azar y mostrarlos en OBS. Tú decides qué entra en el sorteo. Hay tres widgets independientes: perks de survivor, perks de killer y personaje killer. Puedes ponerlos donde quieras en tu escena.
 
 ## Para empezar
 
-La aplicación es para Windows de 64 bits. Instala la ruleta y ábrela desde el escritorio o el menú Inicio; no hace falta instalar Node.js ni usar la consola.
+HexRoll es para Windows de 64 bits. Descarga el instalador de [Releases](https://github.com/Alfajorcit0K/Perks-Killer-Roulette/releases/latest), instala la aplicación y ábrela desde el escritorio o el menú Inicio; no hace falta instalar Node.js ni usar la consola.
+
+La barra superior reúne las secciones, el cambio de tema y los botones para minimizar, maximizar y cerrar. Puedes arrastrarla para mover la ventana.
 
 En **Mi contenido** puedes activar personajes completos o elegir perks y killers uno por uno. Si vienes de una versión anterior, usa **Importar ajustes anteriores** y selecciona tu `data.json`.
+
+**Mis personajes** tiene un cuadro de killers y otro de survivors, con un retrato pequeño junto a cada nombre. Las perks generales están dentro de su grupo correspondiente y los espacios vacíos tienen un apartado propio. La búsqueda sirve para ambos cuadros.
 
 En **Mis personajes**, el selector **Idioma de killers** cambia los nombres entre inglés, español de España y español de México. Empieza en inglés y recuerda tu elección. Puedes buscar un personaje por cualquiera de sus nombres.
 
@@ -19,9 +23,9 @@ En **Mis personajes**, el selector **Idioma de killers** cambia los nombres entr
 
 | Widget | Archivo | Tamaño recomendado |
 | --- | --- | --- |
-| Cuatro perks de survivor | `ruleta-perks-survivor.html` | 1120 × 440 |
-| Cuatro perks de killer | `ruleta-perks-killer.html` | 1120 × 440 |
-| Un killer | `ruleta-killers.html` | 460 × 440 |
+| Cuatro perks de survivor | `SPerksRoulette.html` | 1120 × 440 |
+| Cuatro perks de killer | `KPerksRoulette.html` | 1120 × 440 |
+| Un killer | `KRoulette.html` | 460 × 440 |
 
 Puedes probar cada widget desde la aplicación antes de añadirlo a OBS. Una vez configurados, puedes cerrar el editor: las fuentes siguen funcionando con sus archivos locales.
 
@@ -35,21 +39,22 @@ En **Mis widgets** puedes cambiar el color, el idioma y la duración del giro. C
 - Cada widget tiene una versión ligera por si necesitas reducir los efectos.
 - Los controles están ocultos por defecto. Si los activas, usa 520 de alto en OBS.
 - El interruptor de modo claro y oscuro cambia el tema del editor y recuerda tu elección.
+- Puedes elegir el color del editor desde la paleta o el selector de color. Los fondos y el texto se adaptan al modo claro u oscuro; el switch lleva un sol y una luna. Tu elección se conserva al reiniciar y actualizar.
 - En **Perfiles y respaldos** puedes guardar distintas selecciones y apariencias para recuperarlas después.
 
-El catálogo incluye a **Terrifier**, sus tres perks y las tres de **Sienna Shaw**. Las perks de The Cenobite, The Shape, Laurie Strode y The Good Guy muestran también sus nombres generales entre paréntesis. Las traducciones de esos alias se comprobaron en los archivos del juego; están anotadas en [este registro](docs/localizaciones-perks.json).
+El catálogo incluye a **Terrifier**, sus tres perks y las tres de **Sienna Shaw**. Las perks de The Cenobite, The Shape, Laurie Strode y The Good Guy muestran también sus nombres generales entre paréntesis. Las traducciones de esos alias se comprobaron en los archivos del juego; están anotadas en [este registro](docs/PerkNames.json).
 
 ## Actualizar y conservar tus ajustes
 
-Por ahora las actualizaciones se instalan a mano: cierra la aplicación y ejecuta el instalador nuevo. Tus selecciones, perfiles y apariencia se guardan aparte del programa y se conservan al actualizar. El contenido nuevo queda desactivado para que elijas si quieres añadirlo a tus sorteos.
+La versión 1.0.0 se instala una vez. Después, HexRoll busca actualizaciones al abrirse y cada seis horas, descarga las versiones nuevas y muestra **Reiniciar e instalar** cuando están listas. Tú eliges cuándo reiniciar; cerrar la aplicación por tu cuenta no instala nada. No necesitas cuenta de GitHub ni tokens. Tus selecciones, perfiles y apariencia se guardan aparte del programa y se conservan al actualizar. El contenido nuevo queda desactivado para que elijas si quieres añadirlo a tus sorteos.
 
 Los datos y las imágenes están en `%APPDATA%\RuletaPerksKillers\widget`. Puedes llegar desde **Abrir carpeta de widgets**. Para hacer una copia completa, guarda esa carpeta, incluidas tus imágenes propias y los perfiles.
 
 La aplicación crea un respaldo antes de actualizar el catálogo, cargar un perfil o restaurar datos. Los respaldos se pueden recuperar desde **Perfiles y respaldos**.
 
-Al actualizar desde la versión 1.3, añade las dos fuentes de perks una sola vez con las rutas nuevas. Se conservan tus selecciones y cada una toma inicialmente la apariencia de la ruleta de perks anterior. `ruleta-perks.html` conserva su funcionamiento anterior para las escenas existentes; la combinada también sigue disponible como `ruleta-completa.html`.
+Al actualizar se conservan tus selecciones y los ajustes de cada widget. Las fuentes que ya tengas en OBS mantienen sus rutas anteriores; al añadir una fuente nueva, usa los nombres de la tabla. La ruleta combinada está disponible como `CombinedRoulette.html`.
 
-Tienes más detalles y soluciones a problemas comunes en la [guía de uso](GUIA_DE_USO.txt).
+Tienes más detalles y soluciones a problemas comunes en la [guía de uso](UserGuide.txt).
 
 ## Desarrollo
 
@@ -64,9 +69,9 @@ npm run dist:windows
 
 El instalador se genera en `release/`. También puedes arrancar solo el editor con `npm run start:server`, o generar un paquete ZIP con `npm run build`. El editor de ese ZIP sí necesita Node.js.
 
-Las plantillas de los widgets son `widget-template.html` y `widget-template-lite.html`. Los HTML finales se generan a partir de ellas.
+Las plantillas de los widgets son `RouletteTemplate.html` y `RouletteLiteTemplate.html`. Los HTML finales se generan a partir de ellas.
 
-GitHub Actions ejecuta las pruebas y comprueba la instalación y la conservación de ajustes en Windows. El instalador queda en el artefacto **instalador-windows** de cada ejecución de [Pruebas](https://github.com/Alfajorcit0K/Perks-Killer-Roulette/actions/workflows/tests.yml); necesitas acceso al repositorio para descargarlo. Todavía no hay actualizador automático.
+GitHub Actions prueba la aplicación y la instalación en Windows. Para publicar una versión, cambia el número en package.json y package-lock.json, actualiza ReleaseNotes.md y sube una etiqueta como v1.0.1. Si las comprobaciones pasan, el workflow publica juntos el instalador, su blockmap y latest.yml en GitHub Releases. HexRoll usa esa release para actualizarse. No reemplaces los archivos de una versión ya publicada: crea una nueva.
 
 Para proponer cambios, consulta [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -74,4 +79,4 @@ Para proponer cambios, consulta [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Hecha por [Alfajorcit0K_](https://www.twitch.tv/alfajorcit0k_). Puedes encontrar la comunidad en [Discord](https://discord.gg/mKQ4ynsQKS).
 
-El código original está bajo [MIT](LICENSE). Los nombres, personajes e imágenes de Dead by Daylight pertenecen a sus respectivos titulares y quedan fuera de esa licencia; consulta los [avisos de terceros](THIRD_PARTY_NOTICES.md). Este es un proyecto de fans, sin afiliación oficial con Behaviour Interactive.
+El código original está bajo [MIT](LICENSE). Los nombres, personajes e imágenes de Dead by Daylight pertenecen a sus respectivos titulares y quedan fuera de esa licencia; consulta los [avisos de terceros](Credits.md). Este es un proyecto de fans, sin afiliación oficial con Behaviour Interactive.

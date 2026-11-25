@@ -2,26 +2,28 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { validarDatos, fusionarDatos, guardarDatos } = require('../ruleta-core');
+const { validarDatos, fusionarDatos, guardarDatos, nombreRespaldo } = require('../Roulette');
 
 function respaldar(root) {
   const dir = path.join(root, 'backups');
   fs.mkdirSync(dir, { recursive: true });
-  const backup = path.join(dir, 'data-' + Date.now() + '-' + crypto.randomUUID() + '.json');
+  const backup = path.join(dir, nombreRespaldo());
   fs.copyFileSync(path.join(root, 'data.json'), backup);
   return backup;
 }
 
 function copiarImagenes(source, root, overwrite) {
-  for (const carpeta of ['perks', 'killers']) {
-    const origen = path.join(source, 'imagenes', carpeta);
-    const destino = path.join(root, 'imagenes', carpeta);
+  for (const carpeta of ['perks', 'killers', 'survivors', 'brand']) {
+    const destino = path.join(root, 'images', carpeta);
     fs.mkdirSync(destino, { recursive: true });
-    if (!fs.existsSync(origen)) continue;
-    for (const file of fs.readdirSync(origen, { withFileTypes: true })) {
-      if (!file.isFile() || !/\.(png|jpe?g|webp|gif|svg)$/i.test(file.name)) continue;
-      const target = path.join(destino, file.name);
-      if (overwrite || !fs.existsSync(target)) fs.copyFileSync(path.join(origen, file.name), target);
+    for (const origen of [path.join(source, 'imagenes', carpeta === 'brand' ? 'marca' : carpeta), path.join(source, 'images', carpeta)]) {
+      if (!fs.existsSync(origen)) continue;
+      for (const file of fs.readdirSync(origen, { withFileTypes: true })) {
+        if (!file.isFile() || !/\.(png|jpe?g|webp|gif|svg)$/i.test(file.name)) continue;
+        const input = path.join(origen, file.name), target = path.join(destino, file.name);
+        if (path.resolve(input) === path.resolve(target)) continue;
+        if (carpeta === 'brand' || overwrite || !fs.existsSync(target)) fs.copyFileSync(input, target);
+      }
     }
   }
 }
@@ -32,9 +34,10 @@ function prepararInstalacion(source, root, version = 'desarrollo') {
   const hash = crypto.createHash('sha256').update(catalogoText).update(version).digest('hex');
   fs.mkdirSync(root, { recursive: true });
   const dataFile = path.join(root, 'data.json');
-  const estadoFile = path.join(root, 'catalogo-instalado.json');
+  const estadoFile = path.join(root, 'CatalogStamp.json');
+  const estadoAnterior = fs.existsSync(estadoFile) ? estadoFile : path.join(root, 'catalogo-instalado.json');
   let hashPrevio;
-  if (fs.existsSync(estadoFile)) hashPrevio = JSON.parse(fs.readFileSync(estadoFile, 'utf8')).hash;
+  if (fs.existsSync(estadoAnterior)) hashPrevio = JSON.parse(fs.readFileSync(estadoAnterior, 'utf8')).hash;
   if (fs.existsSync(dataFile)) {
     // Validar antes de copiar o escribir: una instalacion dañada se conserva.
     const actual = validarDatos(JSON.parse(fs.readFileSync(dataFile, 'utf8')));
@@ -45,14 +48,15 @@ function prepararInstalacion(source, root, version = 'desarrollo') {
   } else {
     guardarDatos(dataFile, catalogo);
   }
+  copiarImagenes(root, root, false);
   copiarImagenes(source, root, hashPrevio !== hash);
   fs.writeFileSync(estadoFile, JSON.stringify({ hash }, null, 2));
   return {
     root,
-    perksSurvivor: path.join(root, 'ruleta-perks-survivor.html'), perksSurvivorLite: path.join(root, 'ruleta-perks-survivor-lite.html'),
-    perksKiller: path.join(root, 'ruleta-perks-killer.html'), perksKillerLite: path.join(root, 'ruleta-perks-killer-lite.html'),
-    widget: path.join(root, 'ruleta-perks.html'), widgetLite: path.join(root, 'ruleta-perks-lite.html'),
-    killer: path.join(root, 'ruleta-killers.html'), killerLite: path.join(root, 'ruleta-killers-lite.html')
+    perksSurvivor: path.join(root, 'SPerksRoulette.html'), perksSurvivorLite: path.join(root, 'SPerksRouletteLite.html'),
+    perksKiller: path.join(root, 'KPerksRoulette.html'), perksKillerLite: path.join(root, 'KPerksRouletteLite.html'),
+    widget: path.join(root, 'PerksRoulette.html'), widgetLite: path.join(root, 'PerksRouletteLite.html'),
+    killer: path.join(root, 'KRoulette.html'), killerLite: path.join(root, 'KRouletteLite.html')
   };
 }
 

@@ -1,0 +1,115 @@
+HEXROLL - GUIA DE USO
+==================================
+
+La ruleta es gratuita. Todas las funciones estan disponibles para todos.
+
+PRIMER USO
+----------
+1. Ejecuta el instalador HexRollSetup1.0.0.exe.
+2. Sigue el asistente y abre HexRoll desde su acceso directo.
+3. No necesitas instalar Node.js ni abrir una consola.
+   La barra superior permite cambiar de seccion, cambiar el tema y controlar
+   la ventana. Arrastrala por el nombre HexRoll para mover la aplicacion.
+4. Si usabas la version anterior, pulsa "Importar ajustes anteriores" y elige
+   su data.json. Se conservaran sus selecciones y se creara un respaldo.
+5. En "Mi contenido", busca personajes para activar sus perks de una vez,
+   o busca perks y killers individuales. Terrifier y Sienna Shaw ya estan incluidos.
+   Los cambios se guardan automaticamente.
+
+En "Mis personajes", "Idioma de killers" permite mostrar los nombres en
+English, Espanol ES o Espanol MX. Empieza en ingles y recuerda tu eleccion.
+La busqueda reconoce los nombres en cualquiera de los tres idiomas.
+Killers y survivors tienen cuadros separados y un retrato junto a cada nombre.
+El buscador filtra ambos cuadros. Los espacios vacios aparecen debajo.
+
+APARIENCIA DEL EDITOR
+--------------------
+El switch de la esquina superior derecha alterna entre modo oscuro y claro.
+El sol indica el modo claro y la luna el oscuro. En "Mis widgets", usa
+"Color del editor" para elegir un tema o cualquier color que prefieras.
+Tu eleccion se conserva al volver a abrir y al actualizar la aplicacion.
+Este tema es independiente del color de tus widgets en OBS.
+
+CONFIGURACION DE OBS
+-------------------
+1. En Fuentes, pulsa + y elige Navegador.
+2. En "Perks de survivor" pulsa "Copiar ruta de survivor". Marca "Archivo local"
+   en las propiedades de la fuente de OBS y pega esa ruta.
+3. Para perks de killer, crea otra fuente con "Copiar ruta de killer".
+   Para sortear el personaje, usa "Copiar ruta de killers" de "Personaje killer".
+   Tamanos recomendados: ambos widgets de perks 1120 x 440; personaje 460 x 440.
+4. En "Mis widgets", ajusta el color, idioma y duracion de cada fuente.
+   Pulsa "Aplicar apariencia" y refresca la fuente de OBS.
+5. Oculta y muestra la fuente para girar. Tambien puedes pulsar Espacio al
+   interactuar con ella. Puedes asignar atajos de mostrar/ocultar en OBS.
+
+Cada tarjeta tiene un boton para probar su widget antes de configurarlo en OBS.
+Marca "Usar version ligera" en la tarjeta que prefieras aligerar.
+El editor puede cerrarse al terminar: el widget funciona desde el archivo local.
+La ruleta no necesita conexion para autorizar su uso. Las fuentes tipograficas
+externas pueden necesitar internet; se usa una fuente de respaldo sin conexion.
+
+CONTROLES
+---------
+- Perks de survivor: sortea cuatro perks de superviviente activas.
+- Perks de killer: sortea cuatro perks de asesino activas.
+- Personaje killer: sortea un killer. Puede usarse junto con las perks de killer.
+- Color y ES-MX / ES-ES / EN: personaliza cada widget de forma independiente.
+La apariencia se guarda por separado en la aplicacion y se conserva al actualizar.
+Los controles no se muestran en la transmision de forma predeterminada. Si marcas
+"Mostrar controles dentro del widget", usa 520 de alto e Interactuar en OBS.
+Para sortear perks, activa al menos cuatro entradas del tipo elegido, contando
+los espacios vacios. Para sortear un killer, activa al menos uno.
+
+SI ACTUALIZAS DESDE UNA VERSION ANTERIOR
+--------------------------------------
+Agrega una vez SPerksRoulette.html y KPerksRoulette.html a OBS.
+Cada fuente mantiene siempre su tipo. Puedes dejar una en cada escena y cambiar
+de rol sin abrir el editor ni refrescar la fuente. Tambien hay versiones ligeras.
+Se conservan tus selecciones y se copia la apariencia anterior a ambas fuentes.
+Las fuentes que ya tenias en OBS conservan su ruta al actualizar.
+La version combinada anterior sigue disponible como CombinedRoulette.html.
+
+ACTUALIZACIONES Y RESPALDOS
+-------------------------
+HexRoll busca actualizaciones al abrirse y cada seis horas. Las descarga
+automaticamente y muestra "Reiniciar e instalar" cuando estan listas. No necesitas
+cuenta de GitHub ni tokens. La version 1.0.0 se instala una vez para incorporar
+este actualizador. Los ajustes
+estan separados del programa, en %APPDATA%\RuletaPerksKillers\widget.
+La aplicacion combina el catalogo nuevo con tus selecciones y crea un respaldo.
+El contenido nuevo queda desactivado para que puedas elegir si quieres usarlo.
+En "Perfiles y respaldos", guarda selecciones y apariencia con nombres para
+recuperarlas despues. Tambien puedes crear y restaurar respaldos. Antes de cargar
+un perfil o restaurar se respalda tu configuracion actual.
+Puedes abrir la carpeta de tus datos con "Abrir carpeta de widgets" y copiarla
+completa para incluir Profiles.json, backups/ y tus imagenes propias.
+Conserva tambien las imagenes propias si agregaste contenido personalizado.
+Despues de cambiar el widget, refresca la fuente en OBS.
+El importador del servidor conserva selecciones y crea un respaldo en backups/.
+Las nuevas entradas importadas quedan desactivadas para que puedas elegirlas.
+"Importar ajustes anteriores" permite migrar tus selecciones desde otra carpeta.
+
+PROBLEMAS COMUNES
+----------------
+El instalador 1.2.0 pide cerrar una ruleta que no esta abierta: cancela y cierra
+ese instalador y utiliza la version 1.2.1 o posterior. Se corrigio la deteccion.
+El nuevo instalador solo bloquea la instalacion si encuentra el ejecutable
+exacto de la aplicacion; no cierra otros programas ni borra tus ajustes.
+No abre la aplicacion: comprueba que usas Windows de 64 bits e intenta reinstalar.
+Los datos se conservan separados del programa. Un mensaje de arranque indica
+su ubicacion si hay que recuperar un respaldo.
+No gira: revisa que haya suficientes entradas activas del tipo seleccionado.
+No refleja cambios: actualiza la cache de la fuente de navegador en OBS.
+Un data.json dañado detiene el arranque para evitar sobrescribir tus ajustes.
+Guarda el archivo dañado y recupera una copia desde tu respaldo.
+
+PAQUETE ZIP ANTERIOR
+-------------------
+Si recibiste el paquete antiguo en lugar del instalador, su editor todavia usa
+Node.js y OpenEditor.bat. El instalador nuevo ya incluye su propio entorno.
+
+CODIGO Y RECURSOS DEL JUEGO
+-------------------------
+El codigo propio se ofrece bajo MIT. Los recursos del juego tienen titulares y
+condiciones diferentes. Consulta LICENSE y Credits.md.

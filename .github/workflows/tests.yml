@@ -17,6 +17,8 @@ jobs:
       - name: Ejecutar pruebas
         run: npm test
   installer:
+    permissions:
+      contents: write
     needs: test
     if: github.event_name != 'pull_request'
     runs-on: windows-latest
@@ -37,11 +39,16 @@ jobs:
       - name: Comprobar deteccion real de procesos del instalador
         run: npm run test:installer
       - name: Probar instalacion y recuperacion en Windows limpio
-        run: node scripts/test-installation.js
+        run: node scripts/InstallSmoke.js
       - name: Guardar instalador privado
         uses: actions/upload-artifact@v4
         with:
-          name: instalador-windows
-          path: release/*-Setup.exe
+          name: HexRollInstaller
+          path: release/HexRollSetup*.exe
           if-no-files-found: error
           retention-days: 14
+      - name: Publicar version
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/Publish.js

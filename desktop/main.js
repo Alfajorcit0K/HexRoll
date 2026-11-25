@@ -1,17 +1,20 @@
 'use strict';
 const { app, BrowserWindow, Menu, dialog, shell, clipboard, ipcMain } = require('electron');
+const { NsisUpdater } = require('electron-updater');
+const { createUpdates } = require('./Updates');
 const path = require('path');
 const fs = require('fs');
-const { configuracionActual } = require('../app-state');
+const { configuracionActual } = require('../State');
 const { once } = require('events');
 const { prepararInstalacion, importarInstalacion } = require('./storage');
-const { iniciarServidor } = require('../editor-ruleta-perks');
+const { iniciarServidor } = require('../Server');
 
-app.setName('Ruleta Perks y Killers');
+app.setName('HexRoll');
 app.setPath('userData', process.env.RULETA_DESKTOP_DATA || path.join(app.getPath('appData'), 'RuletaPerksKillers'));
 let mainWindow, server, origin, instalacion;
 const previewWindows = new Map();
 const source = path.resolve(__dirname, '..');
+const appIcon = path.join(source, 'images', 'brand', 'HexRoll.png');
 const smoke = process.argv.includes('--smoke-test');
 const lock = app.requestSingleInstanceLock();
 
@@ -53,9 +56,9 @@ async function abrirVistaPrevia(tipo, lite = false, mostrar = true) {
   const anterior = previewWindows.get(key);
   if (anterior && !anterior.isDestroyed()) { if (mostrar) anterior.focus(); return anterior; }
   const url = origin + '/' + path.basename(elegido.ruta);
-  const win = new BrowserWindow({ width: elegido.ancho + 40, height: elegido.alto + 70, show: mostrar, parent: mainWindow,
+  const win = new BrowserWindow({ icon: appIcon, width: elegido.ancho + 40, height: elegido.alto + 70, show: mostrar, parent: mainWindow,
     title: 'Vista previa · ' + ({ perksSurvivor: 'Perks de survivor', perksKiller: 'Perks de killer', killers: 'Personaje killer', perks: 'Perks (anterior)' }[tipo]) + (lite ? ' · Ligera' : ''),
-    backgroundColor: '#1a1a1f', webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true } });
+    backgroundColor: '#1b1417', webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true } });
   previewWindows.set(key, win);
   protegerVentana(win, url);
   await win.loadURL(url);
@@ -70,11 +73,23 @@ async function iniciar() {
   origin = 'http://127.0.0.1:' + server.address().port;
   Menu.setApplicationMenu(null);
   mainWindow = new BrowserWindow({
-    width: 1180, height: 850, minWidth: 800, minHeight: 600,
-    title: 'Ruleta Perks y Killers', backgroundColor: '#1a1a1f', show: false,
+    icon: appIcon, width: 1180, height: 850, minWidth: 800, minHeight: 600, frame: false,
+    title: 'HexRoll', backgroundColor: '#1b1417', show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), nodeIntegration: false, contextIsolation: true, sandbox: true }
   });
   protegerVentana(mainWindow, origin + '/editor');
+  const estadoVentana = () => ({ maximizada: mainWindow.isMaximized() });
+  for (const evento of ['maximize', 'unmaximize']) mainWindow.on(evento, () => {
+    if (!mainWindow.webContents.isDestroyed()) mainWindow.webContents.send('ruleta:estado-ventana', estadoVentana());
+  });
+  manejar('ruleta:estado-ventana', estadoVentana);
+  manejar('ruleta:controlar-ventana', accion => {
+    if (!['minimizar', 'maximizar', 'cerrar'].includes(accion)) throw new Error('Accion de ventana invalida.');
+    if (accion === 'minimizar') mainWindow.minimize();
+    if (accion === 'maximizar') { if (mainWindow.isMaximized()) mainWindow.unmaximize(); else mainWindow.maximize(); }
+    if (accion === 'cerrar') { app.quit(); return {}; }
+    return estadoVentana();
+  });
   // La aplicacion utiliza recursos locales. Las fuentes externas del widget
   // tienen alternativas de sistema y no deben retrasar el arranque sin internet.
   mainWindow.webContents.session.webRequest.onBeforeRequest((details, callback) => {
@@ -108,6 +123,19 @@ async function iniciar() {
     server.regenerateWidget();
     return result;
   });
+  const updates = createUpdates({
+    version: app.getVersion(), updater: new NsisUpdater(),
+    enabled: app.isPackaged && !smoke,
+    changed: state => { if (!mainWindow.webContents.isDestroyed()) mainWindow.webContents.send('ruleta:actualizaciones', state); }
+  });
+  manejar('ruleta:actualizaciones', () => updates.state());
+  manejar('ruleta:buscar-actualizacion', () => updates.check());
+  manejar('ruleta:instalar-actualizacion', () => updates.install());
+  if (!smoke) {
+    const initialCheck = setTimeout(() => { void updates.check(); }, 15000); initialCheck.unref();
+    const checks = setInterval(() => { void updates.check(); }, 6 * 60 * 60 * 1000); checks.unref();
+    app.once('before-quit', () => { clearTimeout(initialCheck); clearInterval(checks); });
+  }
   await mainWindow.loadURL(origin + '/editor');
   if (smoke) {
     const estado = await mainWindow.webContents.executeJavaScript(`(async () => {
@@ -120,13 +148,29 @@ async function iniciar() {
         nodeExpuesto: typeof require !== 'undefined' };
     })()`);
     if (!estado.puenteDisponible || !estado.panelVisible || estado.nodeExpuesto || !estado.habilidades) throw new Error('La aplicacion no supero la prueba de arranque.');
+    const barraCorrecta = await mainWindow.webContents.executeJavaScript(`(async () => {
+      const barra = document.getElementById('barraApp');
+      const ventana = await window.ruletaDesktop.estadoVentana();
+      const botones = ['minimizarVentana', 'maximizarVentana', 'cerrarVentana'].map(id => document.getElementById(id));
+      const navegacion = barra.querySelector('nav');
+      const contenido = navegacion.querySelector('[data-pestana="contenido"]');
+      contenido.click();
+      const cambio = !document.querySelector('[data-vista="contenido"]').hidden;
+      navegacion.querySelector('[data-pestana="widgets"]').click();
+      return !barra.hidden && document.title === 'HexRoll' && typeof ventana.maximizada === 'boolean' &&
+        cambio && navegacion.querySelectorAll('[data-pestana]').length === 3 &&
+        getComputedStyle(barra).getPropertyValue('-webkit-app-region') === 'drag' &&
+        botones.every(b => b.getAttribute('aria-label') && getComputedStyle(b).getPropertyValue('-webkit-app-region') === 'no-drag');
+    })()`);
+    if (!barraCorrecta) throw new Error('La barra de navegacion de HexRoll no se preparo correctamente.');
+    estado.barraPropia = true;
     await mainWindow.webContents.executeJavaScript("localStorage.setItem('perks_modo', 'asesino')");
     const perks = await abrirVistaPrevia('perksSurvivor', false, false);
     const perksKiller = await abrirVistaPrevia('perksKiller', false, false);
     const killers = await abrirVistaPrevia('killers', false, false);
     const perksCorrectas = await perks.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'survivor' && currentTipo === 'survivor' && activePool().every(h => h.esVacio || h.tipo === 'survivor') && ASESINOS.length === 0 && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
     await perks.webContents.executeJavaScript("document.querySelector('[data-idioma=\"en\"]').click(); applyColor(120)");
-    await killers.loadURL(origin + '/ruleta-killers.html');
+    await killers.loadURL(origin + '/KRoulette.html');
     const killersCorrectos = await killers.webContents.executeJavaScript("currentModo === 'asesino' && HABILIDADES.length === 0 && currentIdioma === 'es' && hueFromColorValue(localStorage.getItem(STORAGE_PREFIX + 'color')) !== 120 && document.querySelectorAll('.modo-btn').length === 0");
     const perksKillerCorrectas = await perksKiller.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'killer' && currentTipo === 'killer' && activePool().every(h => h.esVacio || h.tipo === 'killer') && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
     if (!perksCorrectas || !perksKillerCorrectas || !killersCorrectos) throw new Error('Los widgets no son independientes.');
@@ -163,7 +207,7 @@ async function iniciar() {
     const idiomaCorrecto = await mainWindow.webContents.executeJavaScript(`(async () => {
       pestana('contenido');
       const selector = document.getElementById('idiomaPersonajes');
-      const nombres = () => [...document.querySelectorAll('#personajes .personaje > span')].map(n => n.firstChild.textContent);
+      const nombres = () => [...document.querySelectorAll('#personajes .personaje-nombre')].map(n => n.firstChild.textContent);
       for (const [idioma, esperado] of [['en', 'The Executioner'], ['es', 'El Ejecutor'], ['es-es', 'El Verdugo']]) {
         selector.value = idioma;
         selector.dispatchEvent(new Event('change'));
@@ -177,6 +221,27 @@ async function iniciar() {
       return encuentraOtroIdioma && !document.body.textContent.includes('Ruleta Perks es gratuita.');
     })()`);
     if (!idiomaCorrecto || fs.readFileSync(path.join(instalacion.root, 'data.json'), 'utf8') !== datosAntesIdioma) throw new Error('El idioma de personajes no se aplico correctamente.');
+    const retratosCorrectos = await mainWindow.webContents.executeJavaScript(`(async () => {
+      const grupos = (await (await fetch('/api/estado')).json()).personajes;
+      const [killers, survivors] = [document.getElementById('personajesKillers'), document.getElementById('personajesSurvivors')];
+      if (!killers.querySelector('.personaje img') || !survivors.querySelector('.personaje img')) return false;
+      for (const grupo of grupos.filter(g => g.imagen)) {
+        const respuesta = await fetch('/images/' + grupo.imagen);
+        if (!respuesta.ok || !respuesta.headers.get('content-type')?.startsWith('image/')) return false;
+      }
+      const aestri = grupos.find(g => g.nombre === 'Aestri Yazar & Baermar Uraz');
+      const rick = grupos.find(g => g.nombre === 'Rick Grimes');
+      return aestri?.imagen?.includes('TheTroupe') && rick?.imagen?.includes('RickGrimes') &&
+        survivors.querySelectorAll('.personaje').length === grupos.filter(g => g.tipo === 'survivor').length &&
+        killers.querySelectorAll('.personaje').length === grupos.filter(g => g.tipo === 'killer').length;
+    })()`);
+    if (!retratosCorrectos) throw new Error('Los cuadros de personajes o sus retratos no se cargaron correctamente.');
+    estado.personajesConRetratos = true;
+    await mainWindow.webContents.executeJavaScript(`(async () => {
+      const color = document.getElementById('colorEditor');
+      color.value = '#2478cc'; color.dispatchEvent(new Event('input')); color.dispatchEvent(new Event('change'));
+      while (color.disabled) await new Promise(r => setTimeout(r, 30));
+    })()`);
     const temaAnterior = await mainWindow.webContents.executeJavaScript('document.documentElement.dataset.tema');
     await mainWindow.webContents.executeJavaScript(`(async () => {
       document.getElementById('cambiarTema').click();
@@ -186,10 +251,12 @@ async function iniciar() {
     const temaRecuperado = await mainWindow.webContents.executeJavaScript(`(async () => {
       await window.ruletaLista;
       return { tema: document.documentElement.dataset.tema, guardado: (await (await fetch('/api/estado')).json()).temaEditor,
-        checked: document.getElementById('cambiarTema').getAttribute('aria-checked'), idiomaPersonajes: document.getElementById('idiomaPersonajes').value };
+        checked: document.getElementById('cambiarTema').getAttribute('aria-checked'), idiomaPersonajes: document.getElementById('idiomaPersonajes').value, colorEditor: document.getElementById('colorEditor').value, acento: getComputedStyle(document.documentElement).getPropertyValue('--acento').trim(), iconos: document.querySelectorAll('#cambiarTema .tema-icon').length };
     })()`);
     if (temaRecuperado.tema === temaAnterior || temaRecuperado.tema !== temaRecuperado.guardado || temaRecuperado.checked !== String(temaRecuperado.tema === 'oscuro')) throw new Error('El tema del editor no se conserva.');
     estado.temaPersistente = true;
+    if (temaRecuperado.colorEditor !== '#2478cc' || temaRecuperado.acento !== '#2478cc' || temaRecuperado.iconos !== 2) throw new Error('El color del editor o los iconos del tema no se conservaron.');
+    estado.colorEditorPersistente = true;
     if (temaRecuperado.idiomaPersonajes !== 'es-es') throw new Error('El idioma de personajes no se conserva al cambiar el tema y recargar.');
     estado.idiomaPersonajesPersistente = true;
     await mainWindow.webContents.executeJavaScript(`(async () => {
@@ -200,18 +267,22 @@ async function iniciar() {
     if (process.env.RULETA_SMOKE_SCREENSHOTS) {
       const dir = process.env.RULETA_SMOKE_SCREENSHOTS;
       fs.mkdirSync(dir, { recursive: true });
-      for (const tab of ['widgets', 'contenido', 'perfiles']) {
+      for (const [tab, name] of [['widgets', 'Dashboard'], ['contenido', 'Characters'], ['perfiles', 'Profiles']]) {
         await mainWindow.webContents.executeJavaScript(`pestana('${tab}')`);
         await new Promise(resolve => setTimeout(resolve, 150));
-        fs.writeFileSync(path.join(dir, tab + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
+        fs.writeFileSync(path.join(dir, name + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
       }
-      for (const [name, win] of [['widget-perks-survivor', perks], ['widget-perks-killer', perksKiller], ['widget-killers', killers]]) {
+      for (const [name, win] of [['SPerksPreview', perks], ['KPerksPreview', perksKiller], ['KillerPreview', killers]]) {
         fs.writeFileSync(path.join(dir, name + '.png'), (await win.webContents.capturePage()).toPNG());
       }
       for (const tema of ['oscuro', 'claro']) {
+        const suffix = tema === 'oscuro' ? 'Dark' : 'Light';
         await mainWindow.webContents.executeJavaScript(`aplicarTema('${tema}'); pestana('widgets'); window.scrollTo(0,0)`);
         await new Promise(resolve => setTimeout(resolve, 150));
-        fs.writeFileSync(path.join(dir, 'editor-' + tema + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
+        fs.writeFileSync(path.join(dir, 'Editor' + suffix + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
+        await mainWindow.webContents.executeJavaScript("pestana('contenido'); window.scrollTo(0,0)");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        fs.writeFileSync(path.join(dir, 'Characters' + suffix + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
       }
     }
     console.log('RULETA_SMOKE_OK ' + JSON.stringify(estado));
