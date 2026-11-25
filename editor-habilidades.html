@@ -44,7 +44,7 @@
   .paso strong{display:block;color:var(--destacado);margin-bottom:5px;}
   .ruta{font-family:Consolas,monospace!important;font-size:12px!important;}
   .estado-app{min-height:22px;margin-top:12px;color:var(--destacado);font-size:13px;}
-  .widgets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
+  .widgets{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:18px 0;}
   .widget-config{min-width:0;background:var(--panel2);border:1px solid var(--borde);border-radius:12px;padding:18px;}
   .widget-config h3{margin:0 0 8px;font-size:19px;font-weight:650;}
   .widget-config .toolbar{margin:12px 0;}
@@ -81,33 +81,48 @@
 </nav>
 <div id="estadoGlobal" class="banner" role="status" aria-live="polite" hidden></div>
 <section class="panel inicio" id="inicioDesktop" data-vista="widgets" hidden aria-labelledby="tituloInicio">
-  <h2 id="tituloInicio">Dos ruletas, tu propia escena</h2>
-  <p>Personaliza cada widget aquí y agrégalo como fuente independiente en OBS. Puedes usar ambos a la vez y cerrar esta aplicación al terminar.</p>
+  <h2 id="tituloInicio">Tres ruletas, tu propia escena</h2>
+  <p>Personaliza cada widget aquí y agrégalo como fuente independiente en OBS. Puedes usarlos a la vez y cerrar esta aplicación al terminar.</p>
   <div class="pasos">
     <div class="paso"><strong>1. Elige tu contenido</strong>En «Mi contenido», activa personajes completos o selecciona perks y killers individuales.</div>
-    <div class="paso"><strong>2. Agrega cada widget</strong>Crea dos fuentes de Navegador en OBS, marca «Archivo local» y pega la ruta correspondiente.</div>
+    <div class="paso"><strong>2. Agrega cada widget</strong>Crea una fuente de Navegador por widget en OBS, marca «Archivo local» y pega la ruta correspondiente.</div>
     <div class="paso"><strong>3. Hazlos girar</strong>Oculta y muestra cada fuente para sortear. La transmisión muestra la ruleta sin controles superpuestos.</div>
   </div>
   <div class="widgets">
-    <section class="widget-config" aria-labelledby="tituloPerks">
-      <h3 id="tituloPerks">Ruleta de perks</h3>
-      <p>Cuatro perks por sorteo. Configura su apariencia y el tipo de habilidades.</p>
-      <form id="ajustesPerks" class="ajustes">
-        <label>Color <input type="color" id="colorPerks" value="#c83cff"></label>
-        <label>Idioma <select id="idiomaPerks"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
-        <label>Tipo <select id="tipoPerks"><option value="survivor">Supervivientes</option><option value="killer">Asesinos</option></select></label>
-        <label>Duración <select id="duracionPerks"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
-        <label class="ancho"><input type="checkbox" id="controlesPerks"> Mostrar controles dentro del widget</label>
-        <button type="submit" id="guardarPerks">Aplicar apariencia</button>
+    <section class="widget-config" aria-labelledby="tituloSurvivor">
+      <h3 id="tituloSurvivor">Perks de survivor</h3>
+      <p>Cuatro perks de survivor por sorteo, con su propia fuente en OBS.</p>
+      <form id="ajustesSurvivor" class="ajustes">
+        <label>Color <input type="color" id="colorSurvivor" value="#c83cff"></label>
+        <label>Idioma <select id="idiomaSurvivor"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Duración <select id="duracionSurvivor"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
+        <label class="ancho"><input type="checkbox" id="controlesSurvivor"> Mostrar controles dentro del widget</label>
+        <button type="submit" id="guardarSurvivor">Aplicar apariencia</button>
       </form>
-      <label for="rutaWidgetPerks">Archivo de perks para OBS</label>
-      <input class="ruta" id="rutaWidgetPerks" type="text" readonly>
-      <div class="toolbar"><button id="copiarPerks">Copiar ruta de perks</button><button class="secondary" id="probarPerks">Probar perks</button></div>
-      <label><input type="checkbox" id="litePerks"> Usar versión ligera</label>
-      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoPerks">1120 × 440</strong></p>
+      <label for="rutaWidgetSurvivor">Archivo de perks de survivor para OBS</label>
+      <input class="ruta" id="rutaWidgetSurvivor" type="text" readonly>
+      <div class="toolbar"><button id="copiarSurvivor">Copiar ruta de survivor</button><button class="secondary" id="probarSurvivor">Probar survivor</button></div>
+      <label><input type="checkbox" id="liteSurvivor"> Usar versión ligera</label>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoSurvivor">1120 × 440</strong></p>
+    </section>
+    <section class="widget-config" aria-labelledby="tituloPerksKiller">
+      <h3 id="tituloPerksKiller">Perks de killer</h3>
+      <p>Cuatro perks de killer por sorteo, con su propia fuente en OBS.</p>
+      <form id="ajustesPerksKiller" class="ajustes">
+        <label>Color <input type="color" id="colorPerksKiller" value="#c83cff"></label>
+        <label>Idioma <select id="idiomaPerksKiller"><option value="es">Español MX</option><option value="es-es">Español ES</option><option value="en">English</option></select></label>
+        <label>Duración <select id="duracionPerksKiller"><option value="1000">Rápida · 1 s</option><option value="2200">Normal · 2,2 s</option><option value="4000">Lenta · 4 s</option><option value="6000">Suspenso · 6 s</option></select></label>
+        <label class="ancho"><input type="checkbox" id="controlesPerksKiller"> Mostrar controles dentro del widget</label>
+        <button type="submit" id="guardarPerksKiller">Aplicar apariencia</button>
+      </form>
+      <label for="rutaWidgetPerksKiller">Archivo de perks de killer para OBS</label>
+      <input class="ruta" id="rutaWidgetPerksKiller" type="text" readonly>
+      <div class="toolbar"><button id="copiarPerksKiller">Copiar ruta de killer</button><button class="secondary" id="probarPerksKiller">Probar killer</button></div>
+      <label><input type="checkbox" id="litePerksKiller"> Usar versión ligera</label>
+      <p class="nota" style="margin:12px 0 0">Tamaño recomendado: <strong id="tamanoPerksKiller">1120 × 440</strong></p>
     </section>
     <section class="widget-config" aria-labelledby="tituloKillers">
-      <h3 id="tituloKillers">Ruleta de killers</h3>
+      <h3 id="tituloKillers">Personaje killer</h3>
       <p>Un killer por sorteo. Ubícala donde quieras, con su propio tamaño y apariencia.</p>
       <form id="ajustesKillers" class="ajustes">
         <label>Color <input type="color" id="colorKillers" value="#c83cff"></label>
@@ -179,7 +194,7 @@
 <section data-vista="perfiles" hidden>
   <div class="panel">
     <h2>Perfiles guardados</h2>
-    <p class="nota">Guarda tu selección de perks y killers junto con la apariencia de ambos widgets. Al cargar un perfil se crea un respaldo de tu configuración actual.</p>
+    <p class="nota">Guarda tu selección de perks y killers junto con la apariencia de los tres widgets. Al cargar un perfil se crea un respaldo de tu configuración actual.</p>
     <div class="toolbar"><input type="text" id="nombrePerfil" maxlength="60" placeholder="Ej.: Mis perks o Desafío difícil" aria-label="Nombre del perfil"><button id="guardarPerfil">Guardar perfil nuevo</button></div>
     <div class="toolbar"><select id="listaPerfiles" aria-label="Perfiles guardados"></select><button id="aplicarPerfil">Cargar perfil</button><button class="secondary" id="borrarPerfil">Eliminar perfil</button></div>
   </div>

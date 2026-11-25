@@ -36,10 +36,29 @@ async function abrir(template, modo, saved, configuracion = null) {
   });
   vm.runInContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], context);
   await new Promise(setImmediate);
-  return { html, context, elements, idiomas };
+  return { html, context, elements, idiomas, tipos };
 }
 
 for (const template of ['widget-template.html', 'widget-template-lite.html']) {
+  test(template + ': survivor y killer mantienen el tipo fijo aunque OBS tenga preferencias contrarias', async () => {
+    const saved = new Map([['perks_tipo', 'killer'], ['ruleta_perks_survivor_tipo', 'killer'], ['ruleta_perks_killer_tipo', 'survivor']]);
+    for (const tipo of ['survivor', 'killer']) {
+      const app = await abrir(template, 'perks', saved, { tipoFijo: tipo, tipo, color: tipo === 'survivor' ? '#22cc88' : '#cc2288', idioma: tipo === 'survivor' ? 'en' : 'es-es', duracion: 1000, mostrarControles: true, administrado: true });
+      assert.equal(vm.runInContext('currentTipo', app.context), tipo);
+      assert.doesNotMatch(app.html, /data-tipo=|data-modo=/);
+      const ids = vm.runInContext('lastTargets.filter(Boolean).map(h => h.id)', app.context);
+      assert.equal(ids.length, 4);
+      assert.equal(new Set(ids).size, 4);
+      assert.ok(vm.runInContext('activePool().every(h => h.esVacio || h.tipo === currentTipo)', app.context));
+      app.tipos.find(btn => btn.dataset.tipo !== tipo).click();
+      assert.equal(vm.runInContext('currentTipo', app.context), tipo);
+      assert.equal(app.elements.get('tipoToggle').style.display, 'none');
+      app.idiomas.find(btn => btn.dataset.idioma === 'es').click();
+      assert.equal(saved.get('ruleta_perks_' + tipo + '_idioma'), 'es');
+    }
+    assert.equal(saved.get('ruleta_perks_survivor_tipo'), 'killer', 'El widget no utiliza ni cambia la preferencia de tipo de OBS.');
+    assert.equal(saved.get('ruleta_perks_killer_tipo'), 'survivor');
+  });
   test(template + ': configuracion de la app prevalece sobre preferencias antiguas de OBS', async () => {
     const saved = new Map([['ruleta_perks_idioma', 'es-es'], ['ruleta_perks_tipo', 'survivor'], ['ruleta_perks_color', 'hsl(90,90%,55%)']]);
     const app = await abrir(template, 'perks', saved, { color: '#aabb22', idioma: 'en', tipo: 'killer', duracion: 4000, mostrarControles: false, administrado: true });

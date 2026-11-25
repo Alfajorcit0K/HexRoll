@@ -1,5 +1,10 @@
 'use strict';
 const $ = id => document.getElementById(id);
+const WIDGETS = [
+  ['perksSurvivor', 'Survivor', 1120, 'ruleta-perks-survivor'],
+  ['perksKiller', 'PerksKiller', 1120, 'ruleta-perks-killer'],
+  ['killers', 'Killers', 460, 'ruleta-killers']
+];
 let habilidades = [], asesinos = [], estado;
 function aplicarTema(tema) {
   document.documentElement.dataset.tema = tema;
@@ -103,7 +108,7 @@ for (const [suffix, lista, endpoint] of [['', 'lista', '/api/habilidades-bulk-ac
   }
 }
 function renderAjustes() {
-  for (const [tipo, sufijo, ancho] of [['perks', 'Perks', 1120], ['killers', 'Killers', 460]]) {
+  for (const [tipo, sufijo, ancho] of WIDGETS) {
     const config = estado.configuracion[tipo];
     $('color' + sufijo).value = config.color; $('idioma' + sufijo).value = config.idioma;
     const duracion = $('duracion' + sufijo);
@@ -111,15 +116,13 @@ function renderAjustes() {
     duracion.value = config.duracion; $('controles' + sufijo).checked = config.mostrarControles;
     $('tamano' + sufijo).textContent = ancho + ' × ' + (config.mostrarControles ? 520 : 440);
   }
-  $('tipoPerks').value = estado.configuracion.perks.tipo;
 }
-for (const [tipo, sufijo] of [['perks', 'Perks'], ['killers', 'Killers']]) {
+for (const [tipo, sufijo] of WIDGETS) {
   $('ajustes' + sufijo).addEventListener('submit', event => {
     event.preventDefault();
     accion($('guardar' + sufijo), async () => {
       const config = structuredClone(estado.configuracion);
       config[tipo] = { color: $('color' + sufijo).value, idioma: $('idioma' + sufijo).value, duracion: Number($('duracion' + sufijo).value), mostrarControles: $('controles' + sufijo).checked };
-      if (tipo === 'perks') config.perks.tipo = $('tipoPerks').value;
       estado.configuracion = await request('/api/configuracion', 'PUT', config);
       renderAjustes(); await refrescarVistas();
     }, 'Apariencia guardada y vista previa actualizada. Refresca la fuente en OBS.');
@@ -158,16 +161,18 @@ $('restaurarRespaldo').addEventListener('click', () => {
 });
 async function iniciarDesktop() {
   if (!window.ruletaDesktop) {
-    for (const id of ['copiarPerks', 'copiarKillers', 'probarPerks', 'probarKillers', 'abrirCarpeta', 'importarAnterior']) $(id).hidden = true;
-    $('rutaWidgetPerks').value = 'ruleta-perks.html'; $('rutaWidgetKillers').value = 'ruleta-killers.html';
-    for (const sufijo of ['Perks', 'Killers']) $('lite' + sufijo).addEventListener('change', () => {
-      $('rutaWidget' + sufijo).value = 'ruleta-' + sufijo.toLowerCase() + ($('lite' + sufijo).checked ? '-lite' : '') + '.html';
-    });
+    for (const [tipo, sufijo, ancho, archivo] of WIDGETS) {
+      for (const accion of ['copiar', 'probar']) $(accion + sufijo).hidden = true;
+      const ruta = $('rutaWidget' + sufijo), lite = $('lite' + sufijo);
+      ruta.value = archivo + '.html';
+      lite.addEventListener('change', () => { ruta.value = archivo + (lite.checked ? '-lite' : '') + '.html'; });
+    }
+    $('abrirCarpeta').hidden = $('importarAnterior').hidden = true;
     pestana('contenido'); return;
   }
   const api = window.ruletaDesktop, info = await api.informacion();
   $('estadoDesktop').textContent = 'Versión ' + info.version + ' · Lista para configurar';
-  for (const [tipo, sufijo] of [['perks', 'Perks'], ['killers', 'Killers']]) {
+  for (const [tipo, sufijo] of WIDGETS) {
     const widget = info.widgets[tipo], lite = $('lite' + sufijo), ruta = $('rutaWidget' + sufijo);
     ruta.value = widget.ruta; lite.addEventListener('change', () => { ruta.value = lite.checked ? widget.rutaLite : widget.ruta; });
     $('copiar' + sufijo).addEventListener('click', () => accion($('copiar' + sufijo), () => api.copiarRuta(tipo, lite.checked), 'Ruta copiada. Pégala en la fuente de OBS.'));

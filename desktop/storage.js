@@ -49,6 +49,8 @@ function prepararInstalacion(source, root, version = 'desarrollo') {
   fs.writeFileSync(estadoFile, JSON.stringify({ hash }, null, 2));
   return {
     root,
+    perksSurvivor: path.join(root, 'ruleta-perks-survivor.html'), perksSurvivorLite: path.join(root, 'ruleta-perks-survivor-lite.html'),
+    perksKiller: path.join(root, 'ruleta-perks-killer.html'), perksKillerLite: path.join(root, 'ruleta-perks-killer-lite.html'),
     widget: path.join(root, 'ruleta-perks.html'), widgetLite: path.join(root, 'ruleta-perks-lite.html'),
     killer: path.join(root, 'ruleta-killers.html'), killerLite: path.join(root, 'ruleta-killers-lite.html')
   };

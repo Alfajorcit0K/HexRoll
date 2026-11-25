@@ -1,6 +1,6 @@
 # Ruleta de perks y killers para OBS
 
-Una ruleta de Dead by Daylight para elegir cuatro perks o un killer al azar y mostrarlos en OBS. Tú decides qué entra en el sorteo. Los dos widgets funcionan por separado, así que puedes ponerlos donde quieras en tu escena.
+Una ruleta de Dead by Daylight para elegir cuatro perks o un killer al azar y mostrarlos en OBS. Tú decides qué entra en el sorteo. Hay tres widgets independientes: perks de survivor, perks de killer y personaje killer. Puedes ponerlos donde quieras en tu escena.
 
 ## Para empezar
 
@@ -10,21 +10,24 @@ En **Mi contenido** puedes activar personajes completos o elegir perks y killers
 
 ### Añadir las ruletas a OBS
 
-1. En la tarjeta de perks, pulsa **Copiar ruta de perks**.
+1. En la tarjeta **Perks de survivor**, pulsa **Copiar ruta de survivor**.
 2. En OBS, crea una fuente de **Navegador**, marca **Archivo local** y pega la ruta.
-3. Para el killer, crea otra fuente y usa **Copiar ruta de killers**.
+3. Repite con **Perks de killer** y, si quieres sortear también el personaje, con **Personaje killer**.
 4. Oculta y vuelve a mostrar la fuente para hacer un sorteo. También puedes usar Espacio desde **Interactuar** en OBS.
 
 | Widget | Archivo | Tamaño recomendado |
 | --- | --- | --- |
-| Cuatro perks | `ruleta-perks.html` | 1120 × 440 |
+| Cuatro perks de survivor | `ruleta-perks-survivor.html` | 1120 × 440 |
+| Cuatro perks de killer | `ruleta-perks-killer.html` | 1120 × 440 |
 | Un killer | `ruleta-killers.html` | 460 × 440 |
 
 Puedes probar cada widget desde la aplicación antes de añadirlo a OBS. Una vez configurados, puedes cerrar el editor: las fuentes siguen funcionando con sus archivos locales.
 
+Deja cada fuente en su escena de survivor o killer. El tipo de perks es fijo en cada una: para cambiar de rol basta con cambiar de escena o mostrar la otra fuente, sin editar la configuración ni refrescarla.
+
 ## Dejarla a tu gusto
 
-En **Mis widgets** puedes cambiar el color, el idioma, la duración del giro y el tipo de perks. Cada widget tiene sus propios ajustes. Pulsa **Aplicar apariencia** y refresca las fuentes en OBS para ver los cambios.
+En **Mis widgets** puedes cambiar el color, el idioma y la duración del giro. Cada widget tiene sus propios ajustes. Pulsa **Aplicar apariencia** y refresca las fuentes en OBS para ver los cambios de apariencia.
 
 - Hay nombres en inglés, español de España y español de México.
 - Cada widget tiene una versión ligera por si necesitas reducir los efectos.
@@ -42,7 +45,7 @@ Los datos y las imágenes están en `%APPDATA%\RuletaPerksKillers\widget`. Puede
 
 La aplicación crea un respaldo antes de actualizar el catálogo, cargar un perfil o restaurar datos. Los respaldos se pueden recuperar desde **Perfiles y respaldos**.
 
-Si usabas la antigua ruleta combinada para sortear killers, cambia esa fuente a `ruleta-killers.html`. La combinada sigue disponible como `ruleta-completa.html`.
+Al actualizar desde la versión 1.3, añade las dos fuentes de perks una sola vez con las rutas nuevas. Se conservan tus selecciones y cada una toma inicialmente la apariencia de la ruleta de perks anterior. `ruleta-perks.html` conserva su funcionamiento anterior para las escenas existentes; la combinada también sigue disponible como `ruleta-completa.html`.
 
 Tienes más detalles y soluciones a problemas comunes en la [guía de uso](GUIA_DE_USO.txt).
 

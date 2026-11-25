@@ -443,7 +443,8 @@
 
     const MODO_FIJO = /*START_MODO_FIJO*/null/*END_MODO_FIJO*/;
     const CONFIG_WIDGET = /*START_CONFIG_WIDGET*/null/*END_CONFIG_WIDGET*/;
-    const STORAGE_PREFIX = MODO_FIJO === 'asesino' ? 'ruleta_killers_' : MODO_FIJO === 'perks' ? 'ruleta_perks_' : 'perks_';
+    const TIPO_FIJO = CONFIG_WIDGET?.tipoFijo || null;
+    const STORAGE_PREFIX = TIPO_FIJO ? 'ruleta_perks_' + TIPO_FIJO + '_' : MODO_FIJO === 'asesino' ? 'ruleta_killers_' : MODO_FIJO === 'perks' ? 'ruleta_perks_' : 'perks_';
     function preferencia(clave, valorInicial) {
       const actual = localStorage.getItem(STORAGE_PREFIX + clave);
       if (actual != null) return actual;
@@ -553,13 +554,14 @@
     });
     marcarIdiomaActivo();
 
-    let currentTipo = CONFIG_WIDGET?.administrado ? (CONFIG_WIDGET.tipo || 'survivor') : preferencia('tipo', 'survivor');
+    let currentTipo = TIPO_FIJO || (CONFIG_WIDGET?.administrado ? (CONFIG_WIDGET.tipo || 'survivor') : preferencia('tipo', 'survivor'));
     const tipoBtns = Array.from(document.querySelectorAll('.tipo-btn'));
     function marcarTipoActivo() {
       tipoBtns.forEach(b => b.classList.toggle('activo', b.dataset.tipo === currentTipo));
     }
     tipoBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        if (TIPO_FIJO) return;
         currentTipo = btn.dataset.tipo;
         localStorage.setItem(STORAGE_PREFIX + 'tipo', currentTipo);
         marcarTipoActivo();
@@ -574,7 +576,7 @@
       modoBtns.forEach(b => b.classList.toggle('activo', b.dataset.modo === currentModo));
       reelsPerks.style.display = currentModo === 'perks' ? 'flex' : 'none';
       reelAsesino.style.display = currentModo === 'asesino' ? 'flex' : 'none';
-      tipoToggle.style.display = currentModo === 'perks' ? 'flex' : 'none';
+      if (tipoToggle) tipoToggle.style.display = currentModo === 'perks' && !TIPO_FIJO ? 'flex' : 'none';
       warningEl.hidden = currentModo !== 'perks' || activePool().length >= REEL_COUNT;
       warningAsesinoEl.hidden = currentModo !== 'asesino' || activeAsesinos().length >= 1;
     }

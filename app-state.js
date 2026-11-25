@@ -5,18 +5,30 @@ const crypto = require('crypto');
 
 const BASE = { color: '#c83cff', idioma: 'es', duracion: 2200, mostrarControles: false };
 function configuracionActual(data) {
-  return { perks: { ...BASE, tipo: 'survivor', ...data.ajustes?.perks }, killers: { ...BASE, ...data.ajustes?.killers } };
+  const anterior = { ...BASE, tipo: 'survivor', ...data.ajustes?.perks };
+  return {
+    perks: anterior, // Configuracion de la fuente anterior, conservada al actualizar.
+    perksSurvivor: { ...anterior, ...data.ajustes?.perksSurvivor, tipo: 'survivor' },
+    perksKiller: { ...anterior, ...data.ajustes?.perksKiller, tipo: 'killer' },
+    killers: { ...BASE, ...data.ajustes?.killers }
+  };
 }
 function validarConfiguracion(config) {
-  if (!config || typeof config !== 'object') throw new Error('Configuracion invalida.');
-  const result = {};
-  for (const tipo of ['perks', 'killers']) {
+  if (!config || typeof config !== 'object' || !config.killers ||
+      (!config.perks && (!config.perksSurvivor || !config.perksKiller))) throw new Error('Configuracion invalida.');
+  for (const tipo of ['perks', 'perksSurvivor', 'perksKiller', 'killers']) {
     const item = config[tipo];
+    if (item === undefined && tipo !== 'killers') continue; // Perfiles anteriores a la separacion.
     if (!item || !/^#[a-f0-9]{6}$/i.test(item.color) || !['es', 'es-es', 'en'].includes(item.idioma) ||
         !Number.isInteger(item.duracion) || item.duracion < 800 || item.duracion > 6000 || typeof item.mostrarControles !== 'boolean' ||
-        (tipo === 'perks' && !['survivor', 'killer'].includes(item.tipo))) throw new Error('Revisa el color, idioma, tipo y duracion (800 a 6000 ms).');
+        (tipo === 'perks' && !['survivor', 'killer'].includes(item.tipo)) ||
+        (tipo === 'perksSurvivor' && item.tipo !== undefined && item.tipo !== 'survivor') ||
+        (tipo === 'perksKiller' && item.tipo !== undefined && item.tipo !== 'killer')) throw new Error('Revisa el color, idioma, tipo y duracion (800 a 6000 ms).');
+  }
+  const normalizada = configuracionActual({ ajustes: config }), result = {};
+  for (const [tipo, item] of Object.entries(normalizada)) {
     result[tipo] = { color: item.color.toLowerCase(), idioma: item.idioma, duracion: item.duracion, mostrarControles: item.mostrarControles };
-    if (tipo === 'perks') result[tipo].tipo = item.tipo;
+    if (tipo !== 'killers') result[tipo].tipo = item.tipo;
   }
   return result;
 }

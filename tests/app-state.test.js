@@ -7,7 +7,7 @@ const path = require('node:path');
 const { once } = require('node:events');
 const { iniciarServidor } = require('../editor-ruleta-perks');
 const { prepararInstalacion } = require('../desktop/storage');
-const { configuracionActual, personajes } = require('../app-state');
+const { configuracionActual, validarConfiguracion, personajes } = require('../app-state');
 const repo = path.resolve(__dirname, '..');
 const catalogo = JSON.parse(fs.readFileSync(path.join(repo, 'data.json'), 'utf8'));
 
@@ -52,6 +52,51 @@ async function fixture(t) {
   };
   return { root, api, read: () => JSON.parse(fs.readFileSync(path.join(root, 'data.json'), 'utf8')) };
 }
+
+test('configuracion anterior conserva su apariencia y crea ajustes independientes por rol', () => {
+  const anterior = { perks: { color: '#123abc', idioma: 'en', duracion: 4000, mostrarControles: true, tipo: 'killer' }, killers: { color: '#abcdef', idioma: 'es-es', duracion: 1000, mostrarControles: false } };
+  const config = validarConfiguracion(anterior);
+  assert.deepEqual(config.perks, anterior.perks);
+  assert.equal(config.perksSurvivor.tipo, 'survivor');
+  assert.equal(config.perksKiller.tipo, 'killer');
+  assert.equal(config.perksSurvivor.color, anterior.perks.color);
+  config.perksSurvivor.color = '#112233';
+  assert.equal(config.perksKiller.color, '#123abc');
+  assert.equal(anterior.perks.color, '#123abc');
+  assert.throws(() => validarConfiguracion({ ...config, perksKiller: { ...config.perksKiller, tipo: 'survivor' } }));
+});
+
+test('fuentes por rol conservan apariencia propia al guardar perfiles y al recuperar perfiles antiguos', async t => {
+  const { root, api, read } = await fixture(t);
+  const config = configuracionActual(catalogo);
+  config.perksSurvivor.color = '#11aa44'; config.perksSurvivor.idioma = 'en';
+  config.perksKiller.color = '#cc5522'; config.perksKiller.idioma = 'es-es';
+  await api('configuracion', 'PUT', config);
+  for (const [archivo, color, tipo] of [['ruleta-perks-survivor.html', '#11aa44', 'survivor'], ['ruleta-perks-killer-lite.html', '#cc5522', 'killer']]) {
+    const html = fs.readFileSync(path.join(root, archivo), 'utf8');
+    const payload = JSON.parse(html.match(/\/\*START_HABILIDADES\*\/([\s\S]*?)\/\*END_HABILIDADES\*\//)[1]);
+    assert.ok(payload.some(h => !h.esVacio));
+    assert.ok(payload.every(h => h.esVacio || h.tipo === tipo));
+    assert.ok(html.includes('"color":"' + color + '"'));
+    assert.doesNotMatch(html, /data-tipo=/);
+  }
+  const saved = await api('perfiles', 'POST', { nombre: 'Dos tipos' });
+  config.perksKiller.color = '#223344'; await api('configuracion', 'PUT', config);
+  await api('perfiles/' + saved.id + '/aplicar', 'POST');
+  assert.equal(read().ajustes.perksKiller.color, '#cc5522');
+  assert.equal(read().ajustes.perksSurvivor.color, '#11aa44');
+
+  const file = path.join(root, 'perfiles.json'), profiles = JSON.parse(fs.readFileSync(file, 'utf8'));
+  profiles[0].ajustes = { perks: { ...config.perks, color: '#aabbcc', tipo: 'killer' }, killers: config.killers };
+  fs.writeFileSync(file, JSON.stringify(profiles));
+  await api('perfiles/' + saved.id + '/aplicar', 'POST');
+  const restored = read().ajustes;
+  assert.equal(restored.perks.tipo, 'killer');
+  assert.equal(restored.perksSurvivor.tipo, 'survivor');
+  assert.equal(restored.perksKiller.tipo, 'killer');
+  assert.equal(restored.perksSurvivor.color, '#aabbcc');
+  assert.equal(restored.perksKiller.color, '#aabbcc');
+});
 
 test('API configura widgets, agrupa personajes y recupera un perfil sin eliminar catalogo nuevo', async t => {
   const { root, api, read } = await fixture(t);

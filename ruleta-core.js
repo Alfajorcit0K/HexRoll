@@ -50,7 +50,9 @@ function construirWidget(template, data, { modo = null, configuracion = null } =
   if (![null, 'perks', 'asesino'].includes(modo)) throw new Error('Modo de widget invalido.');
   let output = template;
   if (modo && !output.includes('/*START_MODO_FIJO*/')) throw new Error('La plantilla no admite widgets independientes.');
-  for (const [marker, value] of [['HABILIDADES', modo === 'asesino' ? [] : data.habilidades], ['ASESINOS', modo === 'perks' ? [] : data.asesinos || []]]) {
+  const habilidades = configuracion?.tipoFijo
+    ? data.habilidades.filter(h => h.esVacio || h.tipo === configuracion.tipoFijo) : data.habilidades;
+  for (const [marker, value] of [['HABILIDADES', modo === 'asesino' ? [] : habilidades], ['ASESINOS', modo === 'perks' ? [] : data.asesinos || []]]) {
     const regex = new RegExp('/\\*START_' + marker + '\\*/.*?/\\*END_' + marker + '\\*/', 's');
     if (!regex.test(output)) throw new Error('Falta el marcador ' + marker + ' en la plantilla.');
     const json = JSON.stringify(value).replace(/</g, '\\u003c');
@@ -64,10 +66,18 @@ function construirWidget(template, data, { modo = null, configuracion = null } =
     output = output.replace(/\s*<div class="idioma-toggle" id="modoToggle" title="Modo de ruleta">[\s\S]*?<\/div>/, '');
     output = output.replace('<title>Ruleta Perks</title>', '<title>Ruleta de ' + (modo === 'perks' ? 'perks' : 'killers') + '</title>');
   }
+  if (configuracion?.tipoFijo) {
+    output = output.replace(/\s*<div class="idioma-toggle" id="tipoToggle" title="Tipo de perks">[\s\S]*?<\/div>/, '');
+    output = output.replace('<title>Ruleta de perks</title>', '<title>Perks de ' + configuracion.tipoFijo + '</title>');
+  }
   return output;
 }
 
 const VARIANTES_WIDGET = Object.freeze([
+  { archivo: 'ruleta-perks-survivor.html', modo: 'perks', config: 'perksSurvivor', tipo: 'survivor' },
+  { archivo: 'ruleta-perks-killer.html', modo: 'perks', config: 'perksKiller', tipo: 'killer' },
+  { archivo: 'ruleta-perks-survivor-lite.html', modo: 'perks', config: 'perksSurvivor', tipo: 'survivor', lite: true },
+  { archivo: 'ruleta-perks-killer-lite.html', modo: 'perks', config: 'perksKiller', tipo: 'killer', lite: true },
   { archivo: 'ruleta-perks.html', modo: 'perks' },
   { archivo: 'ruleta-killers.html', modo: 'asesino' },
   { archivo: 'ruleta-perks-lite.html', modo: 'perks', lite: true },
@@ -81,7 +91,10 @@ const VARIANTES_WIDGET = Object.freeze([
 function construirWidgets({ normal, lite = normal }, data) {
   const config = require('./app-state').configuracionActual(data);
   return Object.fromEntries(VARIANTES_WIDGET.map(variante => [variante.archivo,
-    construirWidget(variante.lite ? lite : normal, data, { modo: variante.modo, configuracion: variante.modo ? { ...config[variante.modo === 'perks' ? 'perks' : 'killers'], administrado: !!data.ajustes } : null })]));
+    construirWidget(variante.lite ? lite : normal, data, { modo: variante.modo, configuracion: variante.modo ? {
+      ...config[variante.config || (variante.modo === 'perks' ? 'perks' : 'killers')],
+      ...(variante.tipo ? { tipoFijo: variante.tipo } : {}), administrado: !!variante.tipo || !!data.ajustes
+    } : null })]));
 }
 
 function guardarDatos(file, data) {

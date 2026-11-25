@@ -98,7 +98,7 @@ test('servidor instalado escribe solo en la carpeta del usuario y sirve el edito
   assert.equal(JSON.parse(fs.readFileSync(path.join(source, 'data.json'), 'utf8')).habilidades[0].activo, true);
   assert.ok(fs.existsSync(path.join(root, 'ruleta-perks.html')));
   assert.ok(fs.existsSync(path.join(root, 'ruleta-perks-lite-libre.html')));
-  for (const archivo of ['ruleta-perks-lite.html', 'ruleta-killers.html', 'ruleta-killers-lite.html']) {
+  for (const archivo of ['ruleta-perks-survivor.html', 'ruleta-perks-killer.html', 'ruleta-perks-survivor-lite.html', 'ruleta-perks-killer-lite.html', 'ruleta-perks-lite.html', 'ruleta-killers.html', 'ruleta-killers-lite.html']) {
     assert.ok(fs.existsSync(path.join(root, archivo)));
     assert.equal((await fetch(base + '/' + archivo)).status, 200);
   }

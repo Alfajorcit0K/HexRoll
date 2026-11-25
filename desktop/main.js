@@ -37,10 +37,11 @@ function manejar(channel, callback) {
 }
 
 function widgetElegido(tipo, lite = false) {
-  if (!['perks', 'killers'].includes(tipo)) throw new Error('Selecciona perks o killers.');
+  if (!['perksSurvivor', 'perksKiller', 'perks', 'killers'].includes(tipo)) throw new Error('Selecciona un widget valido.');
   const killer = tipo === 'killers';
   return {
-    ruta: killer ? (lite ? instalacion.killerLite : instalacion.killer) : (lite ? instalacion.widgetLite : instalacion.widget),
+    ruta: tipo.startsWith('perks') && tipo !== 'perks' ? instalacion[tipo + (lite ? 'Lite' : '')]
+      : killer ? (lite ? instalacion.killerLite : instalacion.killer) : (lite ? instalacion.widgetLite : instalacion.widget),
     ancho: killer ? 460 : 1120,
     alto: configuracionActual(JSON.parse(fs.readFileSync(path.join(instalacion.root, 'data.json'), 'utf8')))[tipo].mostrarControles ? 520 : 440
   };
@@ -53,7 +54,7 @@ async function abrirVistaPrevia(tipo, lite = false, mostrar = true) {
   if (anterior && !anterior.isDestroyed()) { if (mostrar) anterior.focus(); return anterior; }
   const url = origin + '/' + path.basename(elegido.ruta);
   const win = new BrowserWindow({ width: elegido.ancho + 40, height: elegido.alto + 70, show: mostrar, parent: mainWindow,
-    title: 'Vista previa · ' + (tipo === 'killers' ? 'Killers' : 'Perks') + (lite ? ' · Ligera' : ''),
+    title: 'Vista previa · ' + ({ perksSurvivor: 'Perks de survivor', perksKiller: 'Perks de killer', killers: 'Personaje killer', perks: 'Perks (anterior)' }[tipo]) + (lite ? ' · Ligera' : ''),
     backgroundColor: '#1a1a1f', webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true } });
   previewWindows.set(key, win);
   protegerVentana(win, url);
@@ -81,7 +82,7 @@ async function iniciar() {
     callback({ cancel: resource.origin !== origin && !['data:', 'devtools:'].includes(resource.protocol) });
   });
   manejar('ruleta:informacion', () => ({ version: app.getVersion(), ruta: instalacion.widget, rutaLite: instalacion.widgetLite,
-    widgets: Object.fromEntries(['perks', 'killers'].map(tipo => [tipo, { ...widgetElegido(tipo), rutaLite: widgetElegido(tipo, true).ruta }])) }));
+    widgets: Object.fromEntries(['perksSurvivor', 'perksKiller', 'killers'].map(tipo => [tipo, { ...widgetElegido(tipo), rutaLite: widgetElegido(tipo, true).ruta }])) }));
   manejar('ruleta:copiar-ruta', (tipo, lite) => { clipboard.writeText(widgetElegido(tipo, lite === true).ruta); return true; });
   manejar('ruleta:abrir-carpeta', async () => {
     const error = await shell.openPath(instalacion.root);
@@ -120,25 +121,36 @@ async function iniciar() {
     })()`);
     if (!estado.puenteDisponible || !estado.panelVisible || estado.nodeExpuesto || !estado.habilidades) throw new Error('La aplicacion no supero la prueba de arranque.');
     await mainWindow.webContents.executeJavaScript("localStorage.setItem('perks_modo', 'asesino')");
-    const perks = await abrirVistaPrevia('perks', false, false);
+    const perks = await abrirVistaPrevia('perksSurvivor', false, false);
+    const perksKiller = await abrirVistaPrevia('perksKiller', false, false);
     const killers = await abrirVistaPrevia('killers', false, false);
-    const perksCorrectas = await perks.webContents.executeJavaScript("currentModo === 'perks' && ASESINOS.length === 0 && document.querySelectorAll('.modo-btn').length === 0");
+    const perksCorrectas = await perks.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'survivor' && currentTipo === 'survivor' && activePool().every(h => h.esVacio || h.tipo === 'survivor') && ASESINOS.length === 0 && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
     await perks.webContents.executeJavaScript("document.querySelector('[data-idioma=\"en\"]').click(); applyColor(120)");
     await killers.loadURL(origin + '/ruleta-killers.html');
     const killersCorrectos = await killers.webContents.executeJavaScript("currentModo === 'asesino' && HABILIDADES.length === 0 && currentIdioma === 'es' && hueFromColorValue(localStorage.getItem(STORAGE_PREFIX + 'color')) !== 120 && document.querySelectorAll('.modo-btn').length === 0");
-    if (!perksCorrectas || !killersCorrectos) throw new Error('Los widgets no son independientes.');
+    const perksKillerCorrectas = await perksKiller.webContents.executeJavaScript("currentModo === 'perks' && TIPO_FIJO === 'killer' && currentTipo === 'killer' && activePool().every(h => h.esVacio || h.tipo === 'killer') && document.querySelectorAll('.modo-btn,.tipo-btn').length === 0");
+    if (!perksCorrectas || !perksKillerCorrectas || !killersCorrectos) throw new Error('Los widgets no son independientes.');
     estado.widgetsIndependientes = true;
     // Prueba el formulario real, sus rutas HTTP y la recarga de vistas previas.
     await mainWindow.webContents.executeJavaScript(`(async () => {
-      document.getElementById('colorPerks').value = '#22bb88';
-      document.getElementById('idiomaPerks').value = 'en';
-      document.getElementById('tipoPerks').value = 'killer';
-      document.getElementById('duracionPerks').value = '1000';
-      document.getElementById('ajustesPerks').requestSubmit();
-      while (document.getElementById('guardarPerks').disabled) await new Promise(r => setTimeout(r, 30));
+      document.getElementById('colorSurvivor').value = '#22bb88';
+      document.getElementById('idiomaSurvivor').value = 'en';
+      document.getElementById('duracionSurvivor').value = '1000';
+      document.getElementById('ajustesSurvivor').requestSubmit();
+      while (document.getElementById('guardarSurvivor').disabled) await new Promise(r => setTimeout(r, 30));
     })()`);
-    const ajustesCorrectos = await perks.webContents.executeJavaScript("currentIdioma === 'en' && currentTipo === 'killer' && BASE_DURATION === 1000 && document.querySelector('.top-controls').hidden && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'");
+    const ajustesCorrectos = await perks.webContents.executeJavaScript("currentIdioma === 'en' && currentTipo === 'survivor' && BASE_DURATION === 1000 && document.querySelector('.top-controls').hidden && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'");
     if (!ajustesCorrectos) throw new Error('La apariencia del formulario no se aplico al widget.');
+    await mainWindow.webContents.executeJavaScript(`(async () => {
+      document.getElementById('colorPerksKiller').value = '#ffaa44';
+      document.getElementById('idiomaPerksKiller').value = 'es-es';
+      document.getElementById('duracionPerksKiller').value = '4000';
+      document.getElementById('ajustesPerksKiller').requestSubmit();
+      while (document.getElementById('guardarPerksKiller').disabled) await new Promise(r => setTimeout(r, 30));
+    })()`);
+    if (!await perksKiller.webContents.executeJavaScript("currentTipo === 'killer' && currentIdioma === 'es-es' && BASE_DURATION === 4000 && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#ffaa44'") ||
+        !await perks.webContents.executeJavaScript("currentTipo === 'survivor' && currentIdioma === 'en' && BASE_DURATION === 1000 && getComputedStyle(document.documentElement).getPropertyValue('--neon').trim() === '#22bb88'")) throw new Error('Los ajustes de survivor y killer se mezclaron.');
+    estado.perksSeparadas = true;
     const perfilCorrecto = await mainWindow.webContents.executeJavaScript(`(async () => {
       document.getElementById('nombrePerfil').value = 'Prueba de escritorio';
       document.getElementById('guardarPerfil').click();
@@ -168,7 +180,7 @@ async function iniciar() {
         await new Promise(resolve => setTimeout(resolve, 150));
         fs.writeFileSync(path.join(dir, tab + '.png'), (await mainWindow.webContents.capturePage()).toPNG());
       }
-      for (const [name, win] of [['widget-perks', perks], ['widget-killers', killers]]) {
+      for (const [name, win] of [['widget-perks-survivor', perks], ['widget-perks-killer', perksKiller], ['widget-killers', killers]]) {
         fs.writeFileSync(path.join(dir, name + '.png'), (await win.webContents.capturePage()).toPNG());
       }
       for (const tema of ['oscuro', 'claro']) {
